@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Portal Sign In | Berea Bible Institute</title>
-  <meta name="description" content="Sign in to your Berea Bible Institute Student Portal via verified mobile OTP or password.">
+  <title>Student Portal Sign In | Bethesda Bible Institute Hyderabad</title>
+  <meta name="description" content="Sign in to your Bethesda Bible Institute (Bethesda Church Hyderabad) Student Portal via verified mobile OTP or password.">
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/responsive.css">
 </head>
@@ -16,8 +16,8 @@
       <a href="index.html" class="brand">
         <div class="brand-crest">B</div>
         <div class="brand-text">
-          <span class="brand-title">Berea Bible Institute</span>
-          <span class="brand-subtitle">& Theological Seminary</span>
+          <span class="brand-title">Bethesda Bible Institute</span>
+          <span class="brand-subtitle">Bethesda Church Hyderabad</span>
         </div>
       </a>
       <div>
@@ -98,7 +98,7 @@
         <form id="formPasswordLogin" style="display:none;" onsubmit="handlePasswordSubmit(event)">
           <div class="form-group">
             <label for="loginEmail" class="form-label">Registered Email Address <span class="required">*</span></label>
-            <input type="email" id="loginEmail" class="form-control" placeholder="timothy@example.org" value="timothy.disciple@berea-seminary.edu" required>
+            <input type="email" id="loginEmail" class="form-control" placeholder="timothy@example.org" value="timothy.disciple@bethesdabible.edu" required>
           </div>
 
           <div class="form-group">
@@ -129,7 +129,7 @@
 
           <div class="form-group" style="margin-bottom:0.85rem;">
             <label for="signupEmail" class="form-label">Email Address <span class="required">*</span></label>
-            <input type="email" id="signupEmail" class="form-control" placeholder="e.g. j.edwards@example.com" value="j.edwards@berea-seminary.edu" required>
+            <input type="email" id="signupEmail" class="form-control" placeholder="e.g. j.edwards@example.com" value="j.edwards@bethesdabible.edu" required>
           </div>
 
           <div class="form-group" style="margin-bottom:0.85rem;">
@@ -139,7 +139,7 @@
 
           <div class="form-group" style="margin-bottom:0.85rem;">
             <label for="signupPassword" class="form-label">Create Password <span class="required">*</span></label>
-            <input type="password" id="signupPassword" class="form-control" value="Pass@2026Berea" required>
+            <input type="password" id="signupPassword" class="form-control" value="Pass@2026Bethesda" required>
           </div>
 
           <div class="form-group" style="margin-bottom:1.25rem;">
@@ -173,7 +173,7 @@
   <footer class="site-footer" style="padding-top:2rem;">
     <div class="container">
       <div class="footer-bottom">
-        <p>© 2026 Berea Bible Institute & Theological Seminary. Prototype Demonstration Login.</p>
+        <p>© 2026 Bethesda Bible Institute Hyderabad (Bethesda Church Hyderabad). Student Portal Login.</p>
       </div>
     </div>
   </footer>
@@ -309,7 +309,7 @@
         localStorage.setItem('berea_auth_student', JSON.stringify(student));
       }
 
-      showToast(`✓ Welcome to Berea Institute, ${name}! Your student account is active.`, 'success');
+      showToast(`✓ Welcome to Bethesda Bible Institute, ${name}! Your student account is active.`, 'success');
 
       const urlParams = new URLSearchParams(window.location.search);
       const returnUrl = urlParams.get('returnUrl');

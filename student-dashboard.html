@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Enrolled Courses Hub | Berea Bible Institute</title>
-  <meta name="description" content="View your enrolled theological courses, academic progress, and live classroom access.">
+  <title>Student Enrolled Courses Hub | Bethesda Bible Institute Hyderabad</title>
+  <meta name="description" content="View your enrolled theological courses, academic progress, and live classroom access at Bethesda Bible Institute (Bethesda Church Hyderabad).">
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/responsive.css">
 </head>
@@ -16,8 +16,8 @@
       <a href="index.html" class="brand">
         <div class="brand-crest">B</div>
         <div class="brand-text">
-          <span class="brand-title">Berea Bible Institute</span>
-          <span class="brand-subtitle">Student Portal Hub</span>
+          <span class="brand-title">Bethesda Bible Institute</span>
+          <span class="brand-subtitle">Bethesda Church Hyderabad</span>
         </div>
       </a>
 
@@ -164,7 +164,7 @@
   <footer class="site-footer">
     <div class="container">
       <div class="footer-bottom">
-        <p>© 2026 Berea Bible Institute & Theological Seminary. Student Portal Demonstration.</p>
+        <p>© 2026 Bethesda Bible Institute Hyderabad (Bethesda Church Hyderabad). Student Portal Demonstration.</p>
         <div class="footer-bottom-links">
           <a href="#" class="footer-link">Academic Catalog</a>
           <a href="#" class="footer-link">Student Handbook</a>
@@ -193,7 +193,7 @@
                   Student Hub Access
                 </h1>
                 <p style="color: var(--charcoal-600); font-size: 1rem; line-height: 1.6; margin-bottom: 2rem;">
-                  Access to course syllabi, live seminar classrooms, academic transcripts, and curriculum materials is reserved for registered Berea students. Please sign up for your free student account or sign in to continue.
+                  Access to course syllabi, live seminar classrooms, academic transcripts, and curriculum materials is reserved for registered Bethesda students. Please sign up for your free student account or sign in to continue.
                 </p>
                 <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
                   <button type="button" class="btn btn-gold btn-lg" onclick="openAuthModal('signup', 'student-dashboard.html')">
@@ -231,12 +231,12 @@
         const welcomeEl = document.getElementById('dashboardWelcomeTitle');
         if (welcomeEl) welcomeEl.textContent = `Welcome back, ${student.fullName}`;
         const trackEl = document.getElementById('dashboardStudentTrack');
-        if (trackEl) trackEl.textContent = `Student ID: ${student.studentId || 'BEREA-2026-8941'} • Candidate for ${student.track || 'Biblical Studies & Exegesis'}`;
+        if (trackEl) trackEl.textContent = `Student ID: ${student.studentId || 'BBI-2026-8941'} • Candidate for ${student.track || 'Biblical Studies & Exegesis'}`;
 
         const headerName = document.getElementById('dashHeaderName');
         if (headerName) headerName.textContent = student.fullName;
         const headerId = document.getElementById('dashHeaderId');
-        if (headerId) headerId.textContent = `ID: ${student.studentId || 'BEREA-2026-8941'}`;
+        if (headerId) headerId.textContent = `ID: ${student.studentId || 'BBI-2026-8941'}`;
         const headerAvatar = document.getElementById('dashHeaderAvatar');
         if (headerAvatar) {
           headerAvatar.textContent = (student.fullName || 'S').split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
@@ -258,7 +258,7 @@
             <div style="font-size:3rem; color:var(--gold-600); margin-bottom:1rem;">📚</div>
             <h3 style="font-size:1.4rem; color:var(--burgundy-950); margin-bottom:0.5rem;">No Enrolled Courses Yet</h3>
             <p style="color:var(--charcoal-600); max-width:520px; margin:0 auto 1.5rem; font-size:0.95rem; line-height:1.65;">
-              Welcome to your Berea Student Portal! You have not enrolled in any study cohorts yet. Explore our comprehensive course catalogue to select and purchase your courses.
+              Welcome to your Bethesda Student Portal! You have not enrolled in any study cohorts yet. Explore our comprehensive course catalogue to select and purchase your courses.
             </p>
             <a href="courses.html" class="btn btn-gold btn-lg">Browse Course Catalogue & Enroll</a>
           </div>

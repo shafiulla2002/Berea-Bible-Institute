@@ -285,7 +285,7 @@ function updateFirstTimeVisitorBanner() {
     banner.id = 'welcomeFirstTimeBanner';
     banner.innerHTML = `
       <div style="display:flex; align-items:center; gap:0.6rem;">
-        <span style="color:var(--gold-400); font-weight:700;">✨ Welcome to Berea Bible Institute:</span>
+        <span style="color:var(--gold-400); font-weight:700;">✨ Welcome to Bethesda Bible Institute:</span>
         <span>First time visiting? Sign up for a free student account to enroll in courses and access syllabi.</span>
       </div>
       <div style="display:flex; align-items:center; gap:0.5rem;">
@@ -538,7 +538,7 @@ function createAuthModalDOM() {
             Create Account & Access Course Purchase
           </button>
           <p style="font-size:0.75rem; text-align:center; color:var(--charcoal-500);">
-            By signing up, you agree to Berea Institute's Doctrinal Statement and Academic Honor Code.
+            By signing up, you agree to Bethesda Bible Institute's Doctrinal Statement and Academic Honor Code.
           </p>
         </form>
 
@@ -599,7 +599,7 @@ function handleModalSignup(e) {
     sessionStorage.removeItem('berea_pending_course');
     showToast(`✓ Welcome, ${name}! Your student account is active. Course added to your cart.`, 'success');
   } else {
-    showToast(`✓ Welcome to Berea Institute, ${name}! Your student account has been created.`, 'success');
+    showToast(`✓ Welcome to Bethesda Bible Institute, ${name}! Your student account has been created.`, 'success');
   }
 
   if (authModalTargetUrl) {
@@ -905,7 +905,7 @@ function initPrototypeNavigator() {
   // Brand
   const brandWrap = document.createElement('div');
   brandWrap.className = 'proto-bar-brand';
-  brandWrap.innerHTML = `<span>🎓</span> <span>Berea Prototype Navigator</span>`;
+  brandWrap.innerHTML = `<span>🎓</span> <span>Bethesda Prototype Navigator</span>`;
   bar.appendChild(brandWrap);
 
   // Pills

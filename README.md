@@ -1,5 +1,5 @@
-# Berea Bible Institute & Theological Seminary
-## Complete Student Enrollment & Course Purchase UI/UX Prototype
+# Bethesda Bible Institute Hyderabad
+## Bethesda Church Hyderabad — Complete Student Enrollment & Course Purchase UI/UX Prototype
 
 **Phase 1: Frontend User Experience Prototype**  
 **Tech Stack**: HTML5, CSS3 (Custom Academic Design System), Vanilla JavaScript (Zero External Frameworks)  
@@ -9,9 +9,9 @@
 
 ### 1. Project Overview & Design Identity
 
-This standalone prototype implements the complete, production-ready frontend experience for student enrollment and course purchase at a premium Bible Institute:
+This standalone prototype implements the complete, production-ready frontend experience for student enrollment and course purchase for Bethesda Bible Institute, affiliated with Bethesda Church Hyderabad:
 
-- **Institutional Identity**: Berea Bible Institute & Theological Seminary (*Veritas et Fides* — "Truth and Faith").
+- **Institutional Identity**: Bethesda Bible Institute Hyderabad (Bethesda Church Hyderabad).
 - **Palette**: Deep Burgundy (`#3D0C17` / `#7A1931`), Subtle Academic Gold (`#C5A059`), Warm Cream (`#FBF9F5` / `#F4EFEA`), and Crisp White.
 - **Typography**: Playfair Display (historical academic serif headings) & Plus Jakarta Sans (clean, highly readable body typography).
 - **Design Inspiration**: Stanford Continuing Studies course catalogue and multi-step checkout workflow, adapted to an authentic theological seminary identity.

@@ -56,8 +56,8 @@ function ensureCheckoutStudentAuth() {
     const emailInput = document.getElementById('checkoutEmail');
     const phoneInput = document.getElementById('checkoutPhone');
     const name = (nameInput && nameInput.value.trim()) || 'Admissions Candidate';
-    const email = (emailInput && emailInput.value.trim()) || 'candidate@bereabible.edu';
-    const phone = (phoneInput && phoneInput.value.trim()) || '+1 (555) 019-2834';
+    const email = (emailInput && emailInput.value.trim()) || 'candidate@bethesdabible.edu';
+    const phone = (phoneInput && phoneInput.value.trim()) || '+91 (040) 2765-0199';
     if (typeof loginStudent === 'function') {
       loginStudent({
         fullName: name,
@@ -361,7 +361,7 @@ function validateCurrentStep(step) {
     const referralSelect = document.getElementById('referralSource');
     if (referralSelect && !referralSelect.value) {
       referralSelect.classList.add('is-invalid');
-      if (typeof showToast === 'function') showToast('Please let us know how you heard about Berea.', 'danger');
+      if (typeof showToast === 'function') showToast('Please let us know how you heard about Bethesda.', 'danger');
       valid = false;
     } else if (referralSelect) {
       referralSelect.classList.remove('is-invalid');
@@ -506,7 +506,7 @@ function executeDemoPayment() {
   const totals = typeof calculateCartTotals === 'function' ? calculateCartTotals() : {};
 
   const orderRecord = {
-    orderRef: `BEREA-${Date.now().toString().slice(-6)}`,
+    orderRef: `BBI-${Date.now().toString().slice(-6)}`,
     studentName: document.getElementById('checkoutFullName')?.value || 'Student Candidate',
     email: document.getElementById('checkoutEmail')?.value || 'student@example.org',
     courses: cart,
