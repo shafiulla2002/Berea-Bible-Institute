@@ -765,7 +765,7 @@ function initPrototypeNavigator() {
       border-bottom: 2px solid var(--gold-500, #C5A059);
       box-shadow: 0 4px 15px rgba(0,0,0,0.4);
       padding: 0.4rem 1rem;
-      display: flex;
+      display: none; /* Collapsed into corner button by default */
       align-items: center;
       justify-content: space-between;
       gap: 0.75rem;
@@ -862,7 +862,7 @@ function initPrototypeNavigator() {
       font-size: 0.8rem;
       cursor: pointer;
       box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-      display: none;
+      display: flex; /* Visible in the corner by default */
       align-items: center;
       gap: 0.4rem;
     }
@@ -993,31 +993,34 @@ function initPrototypeNavigator() {
   aShowcase.innerHTML = `🖥️ Showcase Hub`;
   actionsWrap.appendChild(aShowcase);
 
-  // Minimize button
+  // Minimize / Collapse button
   const btnMin = document.createElement('button');
   btnMin.type = 'button';
   btnMin.className = 'proto-btn-action';
   btnMin.title = 'Collapse topbar to corner button';
-  btnMin.innerHTML = `−`;
+  btnMin.innerHTML = `✕ Collapse`;
   btnMin.onclick = () => {
     bar.style.display = 'none';
     floatingBtn.style.display = 'flex';
-    sessionStorage.setItem('berea_proto_collapsed', 'true');
+    sessionStorage.removeItem('berea_proto_expanded');
   };
   actionsWrap.appendChild(btnMin);
 
   floatingBtn.onclick = () => {
     bar.style.display = 'flex';
     floatingBtn.style.display = 'none';
-    sessionStorage.removeItem('berea_proto_collapsed');
+    sessionStorage.setItem('berea_proto_expanded', 'true');
   };
 
   bar.appendChild(actionsWrap);
   document.body.prepend(bar);
   document.body.appendChild(floatingBtn);
 
-  // Check persisted collapsed state
-  if (sessionStorage.getItem('berea_proto_collapsed') === 'true') {
+  // Default behavior: collapsed into the corner button unless explicitly expanded by the user
+  if (sessionStorage.getItem('berea_proto_expanded') === 'true') {
+    bar.style.display = 'flex';
+    floatingBtn.style.display = 'none';
+  } else {
     bar.style.display = 'none';
     floatingBtn.style.display = 'flex';
   }
