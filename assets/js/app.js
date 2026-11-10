@@ -762,7 +762,7 @@ function initPrototypeNavigator() {
       z-index: 999999;
       background: #0F172A;
       color: #E2E8F0;
-      border-bottom: 2px solid var(--gold-500, #C5A059);
+      border-bottom: 2px solid var(--gold-500, #EAB308);
       box-shadow: 0 4px 15px rgba(0,0,0,0.4);
       padding: 0.4rem 1rem;
       display: none; /* Collapsed into corner button by default */
@@ -777,7 +777,7 @@ function initPrototypeNavigator() {
       align-items: center;
       gap: 0.5rem;
       white-space: nowrap;
-      color: var(--gold-400, #DFBE7B);
+      color: var(--gold-400, #FACC15);
       font-weight: 700;
       text-decoration: none;
     }
@@ -840,8 +840,8 @@ function initPrototypeNavigator() {
       background: #475569;
     }
     .proto-btn-seed {
-      background: linear-gradient(135deg, #B58A3E, #C5A059);
-      color: #0F172A;
+      background: linear-gradient(135deg, #CA8A04, #EAB308);
+      color: #060D1A;
       border: none;
       font-weight: 700;
     }
@@ -853,9 +853,9 @@ function initPrototypeNavigator() {
       bottom: 1.25rem;
       right: 1.25rem;
       z-index: 999999;
-      background: #0F172A;
-      color: var(--gold-400, #DFBE7B);
-      border: 1px solid var(--gold-500, #C5A059);
+      background: #0B1930;
+      color: var(--gold-400, #FACC15);
+      border: 1.5px solid var(--gold-500, #EAB308);
       padding: 0.5rem 0.9rem;
       border-radius: 30px;
       font-weight: 700;

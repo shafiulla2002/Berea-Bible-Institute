@@ -46,7 +46,7 @@ const SAMPLE_COURSES = [
     eligibility: 'High School Diploma or equivalent. No prior language experience required.',
     nextBatch: 'June 1, 2026',
     availableBatches: ['June 1, 2026 - Morning', 'July 15, 2026 - Evening', 'September 1, 2026 - Weekend'],
-    color: '#7A1931',
+    color: '#15325B',
     image: 'https://images.unsplash.com/photo-1461360370896-922624d12aa1?auto=format&fit=crop&w=800&q=80'
   },
   {
@@ -89,7 +89,7 @@ const SAMPLE_COURSES = [
     eligibility: 'Introductory Bible Survey or equivalent undergraduate coursework.',
     nextBatch: 'June 15, 2026',
     availableBatches: ['June 15, 2026 - Evening', 'August 1, 2026 - Saturday Intensive'],
-    color: '#93712C',
+    color: '#CA8A04',
     image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80'
   },
   {
@@ -132,7 +132,7 @@ const SAMPLE_COURSES = [
     eligibility: 'Open to all students desiring theological depth.',
     nextBatch: 'May 20, 2026',
     availableBatches: ['May 20, 2026 - Self-Paced Cohort', 'July 1, 2026 - Evening Cohort'],
-    color: '#3D0C17',
+    color: '#0B1930',
     image: 'https://images.unsplash.com/photo-1507842229451-7f01be8610ce?auto=format&fit=crop&w=800&q=80'
   },
   {
@@ -175,7 +175,7 @@ const SAMPLE_COURSES = [
     eligibility: 'Basic Greek recommended or concurrent enrollment in BIB-101.',
     nextBatch: 'June 10, 2026',
     availableBatches: ['June 10, 2026 - Tuesday & Thursday Seminars'],
-    color: '#621427',
+    color: '#102445',
     image: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=800&q=80'
   },
   {
@@ -218,7 +218,7 @@ const SAMPLE_COURSES = [
     eligibility: 'Open to pastors, ministry leaders, and aspiring teachers.',
     nextBatch: 'July 5, 2026',
     availableBatches: ['July 5, 2026 - Evening Cohort', 'September 12, 2026 - Weekend Cohort'],
-    color: '#AF8838',
+    color: '#EAB308',
     image: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80'
   },
   {
@@ -261,7 +261,7 @@ const SAMPLE_COURSES = [
     eligibility: 'General interest in Christian history.',
     nextBatch: 'July 10, 2026',
     availableBatches: ['July 10, 2026 - Online Cohort'],
-    color: '#26070E',
+    color: '#060D1A',
     image: 'https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=800&q=80'
   },
   {
@@ -304,7 +304,7 @@ const SAMPLE_COURSES = [
     eligibility: 'Open to all students.',
     nextBatch: 'June 20, 2026',
     availableBatches: ['June 20, 2026 - Evening Cohort'],
-    color: '#785B22',
+    color: '#854D0E',
     image: 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=800&q=80'
   },
   {
@@ -347,7 +347,7 @@ const SAMPLE_COURSES = [
     eligibility: 'None.',
     nextBatch: 'August 10, 2026',
     availableBatches: ['August 10, 2026 - Morning Cohort'],
-    color: '#4F101F',
+    color: '#1B4073',
     image: 'https://images.unsplash.com/photo-1509021436665-8f07dbf76572?auto=format&fit=crop&w=800&q=80'
   },
   {
@@ -390,7 +390,7 @@ const SAMPLE_COURSES = [
     eligibility: 'None.',
     nextBatch: 'May 25, 2026',
     availableBatches: ['May 25, 2026 - Morning', 'July 20, 2026 - Evening'],
-    color: '#931F3B',
+    color: '#1E4ED8',
     image: 'https://images.unsplash.com/photo-1504052434569-70ad5836ab65?auto=format&fit=crop&w=800&q=80'
   },
   {
@@ -433,7 +433,7 @@ const SAMPLE_COURSES = [
     eligibility: 'Prior coursework in pastoral ministry or counseling recommended.',
     nextBatch: 'July 1, 2026',
     availableBatches: ['July 1, 2026 - Wednesday Evening Cohort'],
-    color: '#C5A059',
+    color: '#FACC15',
     image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=800&q=80'
   },
   {
@@ -517,7 +517,7 @@ const SAMPLE_COURSES = [
     eligibility: 'Completion of THE-101 or equivalent reading.',
     nextBatch: 'July 15, 2026',
     availableBatches: ['July 15, 2026 - Evening Seminars'],
-    color: '#7A1931',
+    color: '#15325B',
     image: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=800&q=80'
   }
 ];

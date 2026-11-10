@@ -1,53 +1,54 @@
 /* ==========================================================================
-   BEREA BIBLE INSTITUTE & THEOLOGICAL SEMINARY
+   BETHESDA BIBLE INSTITUTE & THEOLOGICAL SEMINARY
+   Bethesda Church Hyderabad
    Student Enrollment & Course Catalogue Design System
-   Palette: Academic Burgundy, Warm Cream, Crisp White & Subtle Gold Accent
+   Palette: Royal Oxford Navy, Radiant Amber Gold, Clean Slate & Brilliant White
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
-  /* Color Tokens */
-  --burgundy-950: #26070E;
-  --burgundy-900: #3D0C17;
-  --burgundy-850: #4F101F;
-  --burgundy-800: #621427;
-  --burgundy-700: #7A1931;
-  --burgundy-600: #931F3B;
-  --burgundy-500: #AC2848;
-  --burgundy-100: #F6E7EB;
-  --burgundy-50:  #FCF6F7;
+  /* Color Tokens - Vibrant Modern Royal Oxford Navy & Radiant Sunlit Gold */
+  --burgundy-950: #060D1A; /* Ultra-deep authoritative Midnight Oxford Navy */
+  --burgundy-900: #0B1930; /* Deep Royal Oxford Navy */
+  --burgundy-850: #102445; /* Vibrant Imperial Navy */
+  --burgundy-800: #15325B; /* Majestic Royal Navy */
+  --burgundy-700: #1B4073; /* Rich Cobalt Blue */
+  --burgundy-600: #1E4ED8; /* Radiant Sapphire Accent */
+  --burgundy-500: #2563EB; /* Brilliant Blue Accent */
+  --burgundy-100: #EFF6FF; /* Crisp Ice Blue Wash */
+  --burgundy-50:  #F8FAFC; /* Porcelain Slate White */
 
-  --gold-800:     #785B22;
-  --gold-700:     #93712C;
-  --gold-600:     #AF8838;
-  --gold-500:     #C5A059;
-  --gold-400:     #D6B678;
-  --gold-300:     #E5CD9E;
-  --gold-100:     #F8F2E4;
-  --gold-50:      #FCFAF5;
+  --gold-800:     #854D0E; /* Deep Burnished Bronze */
+  --gold-700:     #A16207; /* Warm Amber */
+  --gold-600:     #CA8A04; /* Rich Honey Gold */
+  --gold-500:     #EAB308; /* Radiant Sunlit Gold - vibrant, high-visibility */
+  --gold-400:     #FACC15; /* Luminous Gold Highlight */
+  --gold-300:     #FDE047; /* Warm Champagne */
+  --gold-100:     #FEF9C3; /* Soft Gold Tint */
+  --gold-50:      #FEFCE8; /* Delicate Cream Wash */
 
-  --cream-bg:     #FBF9F5;
-  --cream-card:   #FFFFFF;
-  --cream-alt:    #F4EFEA;
-  --cream-border: #E8E1D5;
-  --cream-border-dark: #D4CABE;
+  --cream-bg:     #F8FAFC; /* Crisp, modern slate-canvas (airy & clean) */
+  --cream-card:   #FFFFFF; /* Pure brilliant white cards */
+  --cream-alt:    #F1F5F9; /* Clean subtle slate-100 section contrast */
+  --cream-border: #E2E8F0; /* Crisp modern slate-200 border */
+  --cream-border-dark: #CBD5E1; /* Slate-300 active/focus border */
 
-  --charcoal-900: #1B1A19;
-  --charcoal-800: #2C2A29;
-  --charcoal-700: #423F3D;
-  --charcoal-600: #5C5854;
-  --charcoal-500: #77726D;
-  --charcoal-400: #98938C;
-  --charcoal-300: #C2BCB4;
+  --charcoal-900: #0F172A; /* Slate-900, sharp and readable */
+  --charcoal-800: #1E293B; /* Slate-800 */
+  --charcoal-700: #334155; /* Slate-700 */
+  --charcoal-600: #475569; /* Slate-600 */
+  --charcoal-500: #64748B; /* Slate-500 */
+  --charcoal-400: #94A3B8; /* Slate-400 */
+  --charcoal-300: #CBD5E1; /* Slate-300 */
 
-  --status-success: #15803D;
+  --status-success: #16A34A;
   --status-success-bg: #DCFCE7;
-  --status-warning: #B45309;
+  --status-warning: #D97706;
   --status-warning-bg: #FEF3C7;
-  --status-danger:  #B91C1C;
+  --status-danger:  #DC2626;
   --status-danger-bg: #FEE2E2;
-  --status-info:    #1D4ED8;
+  --status-info:    #2563EB;
   --status-info-bg: #DBEAFE;
 
   /* Typography */
@@ -65,12 +66,12 @@
   --radius-xl: 24px;
   --radius-full: 9999px;
 
-  /* Shadows */
-  --shadow-xs: 0 1px 2px rgba(27, 26, 25, 0.04);
-  --shadow-sm: 0 2px 6px rgba(61, 12, 23, 0.05), 0 1px 2px rgba(27, 26, 25, 0.04);
-  --shadow-md: 0 8px 24px rgba(61, 12, 23, 0.07), 0 2px 6px rgba(27, 26, 25, 0.04);
-  --shadow-lg: 0 16px 40px rgba(61, 12, 23, 0.11), 0 4px 12px rgba(27, 26, 25, 0.05);
-  --shadow-xl: 0 24px 60px rgba(61, 12, 23, 0.16);
+  /* Elevation Shadows (Modern cool slate undertone) */
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-sm: 0 2px 8px rgba(11, 25, 48, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 10px 25px -3px rgba(11, 25, 48, 0.09), 0 4px 10px -2px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 20px 35px -4px rgba(11, 25, 48, 0.13), 0 8px 16px -4px rgba(15, 23, 42, 0.06);
+  --shadow-xl: 0 25px 50px -10px rgba(11, 25, 48, 0.22);
 
   /* Transitions */
   --transition-fast: 160ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -221,7 +222,9 @@ p {
 }
 
 .section-burgundy {
-  background: linear-gradient(135deg, var(--burgundy-950) 0%, var(--burgundy-900) 60%, var(--burgundy-850) 100%);
+  background: radial-gradient(circle at 85% 15%, rgba(234, 179, 8, 0.14) 0%, transparent 45%),
+              radial-gradient(circle at 15% 85%, rgba(37, 99, 235, 0.16) 0%, transparent 50%),
+              linear-gradient(135deg, var(--burgundy-950) 0%, var(--burgundy-900) 50%, var(--burgundy-850) 100%);
   color: #FFFFFF;
 }
 
@@ -233,7 +236,7 @@ p {
 }
 
 .section-burgundy p {
-  color: rgba(255, 255, 255, 0.82);
+  color: rgba(255, 255, 255, 0.88);
 }
 
 /* ----------------------------------------------------
@@ -245,7 +248,7 @@ p {
   font-size: 0.8rem;
   font-weight: 500;
   letter-spacing: 0.02em;
-  border-bottom: 1px solid rgba(197, 160, 89, 0.25);
+  border-bottom: 1.5px solid rgba(234, 179, 8, 0.35);
 }
 
 .topbar .container {
@@ -304,7 +307,7 @@ p {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 0 2px var(--gold-500), 0 4px 10px rgba(61, 12, 23, 0.2);
+  box-shadow: 0 0 0 2px var(--gold-500), 0 4px 14px rgba(11, 25, 48, 0.25);
   font-family: var(--font-serif);
   font-size: 1.35rem;
   font-weight: 700;
@@ -317,7 +320,7 @@ p {
   position: absolute;
   inset: 2px;
   border-radius: 50%;
-  border: 1px dashed rgba(197, 160, 89, 0.5);
+  border: 1px dashed rgba(250, 204, 21, 0.6);
   pointer-events: none;
 }
 
@@ -449,33 +452,33 @@ p {
   cursor: not-allowed;
 }
 
-/* Primary Burgundy */
+/* Primary Royal Navy Button */
 .btn-primary {
-  background: linear-gradient(135deg, var(--burgundy-800) 0%, var(--burgundy-700) 100%);
+  background: linear-gradient(135deg, var(--burgundy-800) 0%, var(--burgundy-900) 100%);
   color: #FFFFFF;
-  border: 1px solid var(--burgundy-900);
-  box-shadow: 0 2px 4px rgba(61, 12, 23, 0.15);
+  border: 1px solid var(--burgundy-950);
+  box-shadow: 0 2px 6px rgba(11, 25, 48, 0.22);
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, var(--burgundy-900) 0%, var(--burgundy-800) 100%);
-  box-shadow: 0 4px 12px rgba(61, 12, 23, 0.25);
+  background: linear-gradient(135deg, var(--burgundy-600) 0%, var(--burgundy-800) 100%);
+  box-shadow: 0 6px 18px rgba(30, 78, 216, 0.32);
   transform: translateY(-1px);
 }
 
-/* Gold Accent */
+/* Radiant Gold Accent Button */
 .btn-gold {
-  background: linear-gradient(135deg, var(--gold-500) 0%, var(--gold-600) 100%);
+  background: linear-gradient(135deg, var(--gold-400) 0%, var(--gold-500) 100%);
   color: var(--burgundy-950);
-  border: 1px solid var(--gold-700);
+  border: 1px solid var(--gold-600);
   font-weight: 700;
-  box-shadow: 0 2px 4px rgba(175, 136, 56, 0.2);
+  box-shadow: 0 2px 8px rgba(234, 179, 8, 0.3);
 }
 
 .btn-gold:hover {
-  background: linear-gradient(135deg, var(--gold-600) 0%, var(--gold-700) 100%);
-  color: #FFFFFF;
-  box-shadow: 0 4px 12px rgba(175, 136, 56, 0.35);
+  background: linear-gradient(135deg, var(--gold-300) 0%, var(--gold-400) 100%);
+  color: var(--burgundy-950);
+  box-shadow: 0 6px 18px rgba(234, 179, 8, 0.45);
   transform: translateY(-1px);
 }
 
@@ -487,21 +490,24 @@ p {
 }
 
 .btn-outline:hover {
-  background-color: var(--burgundy-50);
-  color: var(--burgundy-900);
-  border-color: var(--burgundy-900);
+  background-color: var(--burgundy-100);
+  color: var(--burgundy-950);
+  border-color: var(--burgundy-800);
 }
 
 .btn-outline-white {
-  background: transparent;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(4px);
   color: #FFFFFF;
-  border: 1.5px solid rgba(255, 255, 255, 0.8);
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
 }
 
 .btn-outline-white:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.22);
   color: #FFFFFF;
   border-color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  transform: translateY(-1px);
 }
 
 /* Subtle Secondary */
@@ -562,7 +568,7 @@ p {
 
 .track-card:hover {
   transform: translateY(-10px) scale(1.035) !important;
-  box-shadow: 0 22px 40px -5px rgba(59, 10, 23, 0.18), 0 12px 18px -5px rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 22px 40px -5px rgba(11, 25, 48, 0.18), 0 12px 18px -5px rgba(0, 0, 0, 0.08) !important;
   border-color: var(--gold-400) !important;
   z-index: 10;
 }
@@ -578,7 +584,7 @@ p {
 
 .testimonial-card:hover {
   transform: translateY(-8px) scale(1.045) !important;
-  box-shadow: 0 20px 35px -5px rgba(59, 10, 23, 0.16), 0 10px 15px -5px rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 20px 35px -5px rgba(11, 25, 48, 0.16), 0 10px 15px -5px rgba(0, 0, 0, 0.08) !important;
   border-color: var(--gold-400) !important;
   z-index: 10;
 }
@@ -846,8 +852,8 @@ p {
 
 .form-control:focus {
   outline: none;
-  border-color: var(--burgundy-700);
-  box-shadow: 0 0 0 3px rgba(107, 29, 47, 0.12);
+  border-color: var(--burgundy-600);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.16);
 }
 
 .form-control.is-invalid {
@@ -965,7 +971,7 @@ p {
   background-color: var(--burgundy-800);
   color: #FFFFFF;
   border-color: var(--burgundy-900);
-  box-shadow: 0 0 0 4px rgba(107, 29, 47, 0.15);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
 }
 
 .step-item.completed .step-circle {
@@ -1199,8 +1205,8 @@ p {
    10. SITE FOOTER
    ---------------------------------------------------- */
 .site-footer {
-  background: linear-gradient(180deg, var(--burgundy-950) 0%, #1A0409 100%);
-  color: rgba(255, 255, 255, 0.75);
+  background: linear-gradient(180deg, var(--burgundy-950) 0%, #030712 100%);
+  color: rgba(255, 255, 255, 0.78);
   border-top: 3px solid var(--gold-500);
   padding-top: 4.5rem;
   margin-top: auto;
@@ -1211,7 +1217,7 @@ p {
   grid-template-columns: 2fr 1fr 1fr 1.5fr;
   gap: 3rem;
   padding-bottom: 3.5rem;
-  border-bottom: 1px solid rgba(197, 160, 89, 0.2);
+  border-bottom: 1px solid rgba(234, 179, 8, 0.22);
 }
 
 .footer-brand-title {
@@ -1420,7 +1426,7 @@ p {
 }
 
 .welcome-first-time-banner {
-  background: linear-gradient(90deg, var(--burgundy-900) 0%, #1A0409 100%);
+  background: linear-gradient(90deg, var(--burgundy-950) 0%, var(--burgundy-900) 50%, var(--burgundy-850) 100%);
   color: #FFFFFF;
   border-bottom: 2px solid var(--gold-500);
   padding: 0.65rem 1rem;
@@ -1432,18 +1438,22 @@ p {
 }
 
 .welcome-first-time-banner .banner-cta {
-  background: var(--gold-500);
+  background: linear-gradient(135deg, var(--gold-400) 0%, var(--gold-500) 100%);
   color: var(--burgundy-950);
   font-weight: 700;
   font-size: 0.75rem;
-  padding: 0.25rem 0.75rem;
+  padding: 0.25rem 0.85rem;
   border-radius: 20px;
   text-decoration: none;
   white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(234, 179, 8, 0.3);
+  transition: all var(--transition-fast);
 }
 
 .welcome-first-time-banner .banner-cta:hover {
-  filter: brightness(1.1);
+  background: #FFFFFF;
+  color: var(--burgundy-950);
+  transform: translateY(-1px);
 }
 
 /* Step 2 In-Admission Course Selection Card Styling */
