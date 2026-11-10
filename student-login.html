@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Portal Sign In | Berea Bible Institute</title>
+  <meta name="description" content="Sign in to your Berea Bible Institute Student Portal via verified mobile OTP or password.">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+</head>
+<body style="background:var(--cream-bg); display:flex; flex-direction:column; min-height:100vh;">
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="brand">
+        <div class="brand-crest">B</div>
+        <div class="brand-text">
+          <span class="brand-title">Berea Bible Institute</span>
+          <span class="brand-subtitle">& Theological Seminary</span>
+        </div>
+      </a>
+      <div>
+        <a href="registration.html" class="btn btn-secondary btn-sm">New Student Application</a>
+      </div>
+    </div>
+  </header>
+
+  <main style="display:flex; align-items:center; justify-content:center; padding:3.5rem 1rem;">
+    <div class="container container-narrow" style="max-width:480px;">
+      <div class="card" style="padding:2.5rem 2rem; box-shadow:var(--shadow-lg); border-top:4px solid var(--burgundy-800);">
+        
+        <!-- Logo / Seal -->
+        <div style="text-align:center; margin-bottom:1.75rem;">
+          <div class="brand-crest" style="width:56px; height:56px; margin:0 auto 1rem; font-size:1.5rem;">B</div>
+          <h1 id="loginPageTitle" style="font-size:1.75rem; color:var(--burgundy-950); margin-bottom:0.35rem;">Student Portal Sign In</h1>
+          <p id="loginPageSubtitle" style="font-size:0.875rem; color:var(--charcoal-600);">
+            Access your course syllabi, live classrooms, and grades.
+          </p>
+        </div>
+
+        <!-- Auth Method Tabs (OTP, Password & New Student Sign Up) -->
+        <div style="display:grid; grid-template-columns:1fr 1fr 1.25fr; gap:0.4rem; background:var(--cream-alt); padding:4px; border-radius:var(--radius-md); margin-bottom:1.75rem;">
+          <button type="button" id="tabOtpMode" class="btn btn-sm btn-primary" onclick="switchLoginTab('otp')">
+            Mobile OTP
+          </button>
+          <button type="button" id="tabPasswordMode" class="btn btn-sm btn-secondary" onclick="switchLoginTab('password')">
+            Password
+          </button>
+          <button type="button" id="tabSignupMode" class="btn btn-sm btn-secondary" onclick="switchLoginTab('signup')">
+            ✨ Sign Up
+          </button>
+        </div>
+
+        <!-- METHOD 1: MOBILE & OTP LOGIN -->
+        <form id="formOtpLogin" onsubmit="handleOtpSubmit(event)">
+          <div class="form-group">
+            <label for="loginMobile" class="form-label">Registered Mobile Number <span class="required">*</span></label>
+            <div style="display:flex; gap:0.5rem;">
+              <select class="form-control form-select" style="width:110px; padding:0.75rem 1.5rem 0.75rem 0.75rem; font-size:0.85rem;">
+                <option value="+1">+1 (US)</option>
+                <option value="+91">+91 (IN)</option>
+                <option value="+44">+44 (UK)</option>
+                <option value="+1">+1 (CA)</option>
+              </select>
+              <input type="tel" id="loginMobile" class="form-control" placeholder="(555) 234-5678" value="9876543210" required>
+            </div>
+            <span class="form-hint">A 6-digit verification code will be dispatched to this number.</span>
+          </div>
+
+          <button type="button" id="btnSendOtp" class="btn btn-secondary btn-block" style="margin-bottom:1.25rem;" onclick="triggerSendOtp()">
+            Request Verification Code
+          </button>
+
+          <!-- OTP Input Field Container (revealed on click) -->
+          <div id="otpInputSection" style="display:none; background:var(--cream-bg); padding:1.25rem; border-radius:var(--radius-md); border:1px solid var(--cream-border); margin-bottom:1.5rem;">
+            <label class="form-label" style="text-align:center; margin-bottom:0.5rem;">Enter 6-Digit Verification Code</label>
+            <div style="display:flex; justify-content:center; gap:0.4rem; margin-bottom:0.75rem;">
+              <input type="text" maxlength="1" class="form-control otp-box text-mono" value="7" style="width:42px; height:48px; text-align:center; font-size:1.25rem; font-weight:700;">
+              <input type="text" maxlength="1" class="form-control otp-box text-mono" value="2" style="width:42px; height:48px; text-align:center; font-size:1.25rem; font-weight:700;">
+              <input type="text" maxlength="1" class="form-control otp-box text-mono" value="9" style="width:42px; height:48px; text-align:center; font-size:1.25rem; font-weight:700;">
+              <input type="text" maxlength="1" class="form-control otp-box text-mono" value="4" style="width:42px; height:48px; text-align:center; font-size:1.25rem; font-weight:700;">
+              <input type="text" maxlength="1" class="form-control otp-box text-mono" value="1" style="width:42px; height:48px; text-align:center; font-size:1.25rem; font-weight:700;">
+              <input type="text" maxlength="1" class="form-control otp-box text-mono" value="8" style="width:42px; height:48px; text-align:center; font-size:1.25rem; font-weight:700;">
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.78rem; color:var(--charcoal-500);">
+              <span>Code sent to registered mobile</span>
+              <a href="#" style="color:var(--burgundy-700); font-weight:700;" onclick="triggerSendOtp()">Resend (45s)</a>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-gold btn-lg btn-block">
+            Verify & Sign In to Portal
+          </button>
+        </form>
+
+        <!-- METHOD 2: EMAIL & PASSWORD LOGIN (Hidden by default) -->
+        <form id="formPasswordLogin" style="display:none;" onsubmit="handlePasswordSubmit(event)">
+          <div class="form-group">
+            <label for="loginEmail" class="form-label">Registered Email Address <span class="required">*</span></label>
+            <input type="email" id="loginEmail" class="form-control" placeholder="timothy@example.org" value="timothy.disciple@berea-seminary.edu" required>
+          </div>
+
+          <div class="form-group">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+              <label for="loginPassword" class="form-label" style="margin:0;">Account Password <span class="required">*</span></label>
+              <a href="#" style="font-size:0.78rem; color:var(--burgundy-700); text-decoration:underline;" onclick="alert('Demo: A password reset link has been simulated for your registered email.')">Forgot password?</a>
+            </div>
+            <input type="password" id="loginPassword" class="form-control" value="SamplePassword123" required>
+          </div>
+
+          <div class="form-group">
+            <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.85rem; cursor:pointer;">
+              <input type="checkbox" checked> Remember this device for 30 days
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-gold btn-lg btn-block">
+            Sign In with Password
+          </button>
+        </form>
+
+        <!-- METHOD 3: NEW STUDENT SIGN UP -->
+        <form id="formSignupLogin" style="display:none;" onsubmit="handleSignupSubmit(event)">
+          <div class="form-group" style="margin-bottom:0.85rem;">
+            <label for="signupFullName" class="form-label">Full Legal Name <span class="required">*</span></label>
+            <input type="text" id="signupFullName" class="form-control" placeholder="e.g. Jonathan Edwards" value="Jonathan Edwards" required>
+          </div>
+
+          <div class="form-group" style="margin-bottom:0.85rem;">
+            <label for="signupEmail" class="form-label">Email Address <span class="required">*</span></label>
+            <input type="email" id="signupEmail" class="form-control" placeholder="e.g. j.edwards@example.com" value="j.edwards@berea-seminary.edu" required>
+          </div>
+
+          <div class="form-group" style="margin-bottom:0.85rem;">
+            <label for="signupPhone" class="form-label">Mobile Number <span class="required">*</span></label>
+            <input type="tel" id="signupPhone" class="form-control" placeholder="(555) 234-5678" value="+1 (555) 234-5678" required>
+          </div>
+
+          <div class="form-group" style="margin-bottom:0.85rem;">
+            <label for="signupPassword" class="form-label">Create Password <span class="required">*</span></label>
+            <input type="password" id="signupPassword" class="form-control" value="Pass@2026Berea" required>
+          </div>
+
+          <div class="form-group" style="margin-bottom:1.25rem;">
+            <label for="signupTrack" class="form-label">Primary Academic Interest</label>
+            <select id="signupTrack" class="form-control form-select">
+              <option value="Biblical Languages">Biblical Languages (Koine Greek & Biblical Hebrew)</option>
+              <option value="Systematic Theology">Systematic Theology & Historical Dogmatics</option>
+              <option value="Pastoral Ministry">Pastoral Ministry & Expository Preaching</option>
+              <option value="Biblical Studies">Biblical Studies & Exegesis</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-gold btn-lg btn-block">
+            Create Student Account & Continue
+          </button>
+          <p style="font-size:0.75rem; text-align:center; color:var(--charcoal-500); margin-top:0.75rem;">
+            By signing up, you can immediately enroll and purchase academic cohorts.
+          </p>
+        </form>
+
+        <div style="margin-top:1.75rem; text-align:center; font-size:0.875rem; color:var(--charcoal-600); border-top:1px solid var(--cream-border); padding-top:1.25rem;">
+          Not yet enrolled as a student? <br>
+          <a href="registration.html" style="font-weight:700; color:var(--burgundy-800); text-decoration:underline;">
+            Submit a New Student Application
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer" style="padding-top:2rem;">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>© 2026 Berea Bible Institute & Theological Seminary. Prototype Demonstration Login.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/courses.js"></script>
+  <script src="assets/js/cart.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('mode') === 'signup') {
+        switchLoginTab('signup');
+      }
+    });
+
+    function switchLoginTab(mode) {
+      const otpTab = document.getElementById('tabOtpMode');
+      const pwdTab = document.getElementById('tabPasswordMode');
+      const signupTab = document.getElementById('tabSignupMode');
+      const otpForm = document.getElementById('formOtpLogin');
+      const pwdForm = document.getElementById('formPasswordLogin');
+      const signupForm = document.getElementById('formSignupLogin');
+      const title = document.getElementById('loginPageTitle');
+      const subtitle = document.getElementById('loginPageSubtitle');
+
+      [otpTab, pwdTab, signupTab].forEach(t => {
+        if (t) {
+          t.classList.remove('btn-primary');
+          t.classList.add('btn-secondary');
+        }
+      });
+      [otpForm, pwdForm, signupForm].forEach(f => {
+        if (f) f.style.display = 'none';
+      });
+
+      if (mode === 'otp') {
+        otpTab.classList.add('btn-primary');
+        otpTab.classList.remove('btn-secondary');
+        otpForm.style.display = 'block';
+        if (title) title.textContent = 'Student Portal Sign In';
+        if (subtitle) subtitle.textContent = 'Access your course syllabi, live classrooms, and grades.';
+      } else if (mode === 'password') {
+        pwdTab.classList.add('btn-primary');
+        pwdTab.classList.remove('btn-secondary');
+        pwdForm.style.display = 'block';
+        if (title) title.textContent = 'Sign In with Password';
+        if (subtitle) subtitle.textContent = 'Access your course syllabi, live classrooms, and grades.';
+      } else if (mode === 'signup') {
+        signupTab.classList.add('btn-primary');
+        signupTab.classList.remove('btn-secondary');
+        signupForm.style.display = 'block';
+        if (title) title.textContent = 'Create Student Account';
+        if (subtitle) subtitle.textContent = 'Sign up to unlock course enrollment, purchasing, and student portal access.';
+      }
+    }
+
+    function triggerSendOtp() {
+      const otpSection = document.getElementById('otpInputSection');
+      const sendBtn = document.getElementById('btnSendOtp');
+      if (otpSection) {
+        otpSection.style.display = 'block';
+        sendBtn.innerHTML = `✓ Verification Code Sent (Demo: 729418)`;
+        sendBtn.classList.add('btn-gold');
+        sendBtn.classList.remove('btn-secondary');
+        if (typeof showToast === 'function') {
+          showToast('Demo OTP Code: 729418 dispatched to your phone', 'success');
+        }
+      }
+    }
+
+    function handleOtpSubmit(e) {
+      e.preventDefault();
+      triggerSendOtp();
+      const mobile = document.getElementById('loginMobile').value;
+      const student = {
+        studentId: 'BEREA-2026-8941',
+        fullName: 'Jonathan Edwards',
+        email: 'j.edwards@berea-seminary.edu',
+        phone: mobile || '+1 (555) 234-5678',
+        role: 'Enrolled Candidate',
+        enrolledSince: 'Fall 2026',
+        status: 'Active'
+      };
+      if (typeof loginStudent === 'function') {
+        loginStudent(student);
+      } else {
+        localStorage.setItem('berea_auth_student', JSON.stringify(student));
+      }
+      simulateSuccessfulLogin();
+    }
+
+    function handlePasswordSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      const student = {
+        studentId: 'BEREA-2026-8941',
+        fullName: 'Rev. Timothy Disciple',
+        email: email || 'timothy.disciple@berea-seminary.edu',
+        phone: '+1 (555) 234-5678',
+        role: 'Master of Divinity Candidate',
+        enrolledSince: 'Fall 2026',
+        status: 'Active'
+      };
+      if (typeof loginStudent === 'function') {
+        loginStudent(student);
+      } else {
+        localStorage.setItem('berea_auth_student', JSON.stringify(student));
+      }
+      simulateSuccessfulLogin();
+    }
+
+    function handleSignupSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('signupFullName').value.trim();
+      const email = document.getElementById('signupEmail').value.trim();
+      const phone = document.getElementById('signupPhone').value.trim();
+      const track = document.getElementById('signupTrack').value;
+
+      const student = {
+        studentId: 'BEREA-' + Math.floor(1000 + Math.random() * 9000),
+        fullName: name,
+        email: email,
+        phone: phone,
+        track: track,
+        role: 'Registered Candidate',
+        enrolledSince: 'Fall 2026',
+        status: 'Active'
+      };
+
+      if (typeof loginStudent === 'function') {
+        loginStudent(student);
+      } else {
+        localStorage.setItem('berea_auth_student', JSON.stringify(student));
+      }
+
+      showToast(`✓ Welcome to Berea Institute, ${name}! Your student account is active.`, 'success');
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const returnUrl = urlParams.get('returnUrl');
+      const pendingCourse = sessionStorage.getItem('berea_pending_course');
+
+      if (pendingCourse && typeof addToCart === 'function') {
+        addToCart(pendingCourse);
+        sessionStorage.removeItem('berea_pending_course');
+      }
+
+      setTimeout(() => {
+        if (returnUrl) {
+          window.location.href = returnUrl;
+        } else if (pendingCourse) {
+          window.location.href = 'cart.html';
+        } else {
+          window.location.href = 'student-dashboard.html';
+        }
+      }, 700);
+    }
+
+    function simulateSuccessfulLogin() {
+      if (typeof showToast === 'function') {
+        showToast('Authentication verified! Redirecting...', 'success');
+      }
+      const urlParams = new URLSearchParams(window.location.search);
+      const returnUrl = urlParams.get('returnUrl');
+      const pendingCourse = sessionStorage.getItem('berea_pending_course');
+
+      if (pendingCourse && typeof addToCart === 'function') {
+        addToCart(pendingCourse);
+        sessionStorage.removeItem('berea_pending_course');
+      }
+
+      setTimeout(() => {
+        if (returnUrl) {
+          window.location.href = returnUrl;
+        } else if (pendingCourse) {
+          window.location.href = 'cart.html';
+        } else {
+          window.location.href = 'student-dashboard.html';
+        }
+      }, 700);
+    }
+  </script>
+</body>
+</html>
+

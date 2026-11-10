@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Berea Bible Institute | Single-URL Interactive Prototype Explorer</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+  <style>
+    :root {
+      --showcase-topbar-h: 70px;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: #0E1726;
+      color: #E2E8F0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Command Header */
+    .showcase-header {
+      background: #1E293B;
+      border-bottom: 2px solid var(--gold-500);
+      padding: 0.6rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+    .header-row-main {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    .showcase-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .showcase-crest {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--burgundy-800), var(--burgundy-950));
+      border: 1px solid var(--gold-400);
+      color: var(--gold-400);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-serif);
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+    .showcase-title-wrap h1 {
+      font-size: 1.05rem;
+      color: #FFFFFF;
+      font-family: var(--font-serif);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .showcase-title-wrap p {
+      font-size: 0.75rem;
+      color: var(--gold-400);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* Device Switcher */
+    .viewport-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #0F172A;
+      padding: 0.25rem 0.5rem;
+      border-radius: 8px;
+      border: 1px solid #334155;
+    }
+    .viewport-btn {
+      background: transparent;
+      border: none;
+      color: #94A3B8;
+      padding: 0.35rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.2s ease;
+    }
+    .viewport-btn:hover {
+      color: #FFFFFF;
+      background: rgba(255,255,255,0.08);
+    }
+    .viewport-btn.active {
+      background: var(--gold-500);
+      color: #0F172A;
+      font-weight: 700;
+    }
+
+    /* Header Actions */
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .action-btn {
+      background: #334155;
+      color: #FFFFFF;
+      border: 1px solid #475569;
+      padding: 0.35rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+    }
+    .action-btn:hover {
+      background: #475569;
+      border-color: #64748B;
+    }
+    .action-btn.btn-seed {
+      background: linear-gradient(135deg, var(--gold-600), var(--gold-500));
+      color: #0F172A;
+      border: none;
+      font-weight: 700;
+    }
+    .action-btn.btn-seed:hover {
+      filter: brightness(1.1);
+    }
+
+    /* Nav Pills Bar */
+    .pills-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      overflow-x: auto;
+      padding-bottom: 0.25rem;
+      scrollbar-width: thin;
+      scrollbar-color: #475569 transparent;
+    }
+    .pills-bar::-webkit-scrollbar {
+      height: 4px;
+    }
+    .pills-bar::-webkit-scrollbar-thumb {
+      background: #475569;
+      border-radius: 4px;
+    }
+    .pill-link {
+      background: #0F172A;
+      color: #CBD5E1;
+      border: 1px solid #334155;
+      padding: 0.35rem 0.85rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+    }
+    .pill-link:hover {
+      background: #1E293B;
+      color: #FFFFFF;
+      border-color: var(--gold-400);
+    }
+    .pill-link.active {
+      background: var(--burgundy-700);
+      color: #FFFFFF;
+      border-color: var(--gold-400);
+      font-weight: 700;
+      box-shadow: 0 0 10px rgba(197,160,89,0.3);
+    }
+    .pill-num {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      font-size: 0.68rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+    .pill-link.active .pill-num {
+      background: var(--gold-400);
+      color: #0F172A;
+    }
+
+    /* Frame Viewport Stage */
+    .viewport-stage {
+      flex: 1;
+      background: #0B111E;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 1rem;
+      overflow-y: auto;
+      min-height: calc(100vh - 120px);
+    }
+    .device-wrapper {
+      background: #FFFFFF;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: width 0.3s ease, max-width 0.3s ease, border-radius 0.3s ease;
+      width: 100%;
+      height: calc(100vh - 145px);
+      min-height: 700px;
+      border: 1px solid #1E293B;
+    }
+    .device-wrapper.mode-desktop {
+      width: 100%;
+      max-width: 100%;
+      border-radius: 8px;
+    }
+    .device-wrapper.mode-laptop {
+      width: 1200px;
+      max-width: 1200px;
+      border-radius: 12px;
+      border: 4px solid #334155;
+    }
+    .device-wrapper.mode-tablet {
+      width: 768px;
+      max-width: 768px;
+      border-radius: 16px;
+      border: 6px solid #1E293B;
+    }
+    .device-wrapper.mode-mobile {
+      width: 390px;
+      max-width: 390px;
+      border-radius: 36px;
+      border: 10px solid #1E293B;
+      height: 844px;
+    }
+
+    /* Top Frame Info Bar */
+    .frame-address-bar {
+      background: #0F172A;
+      color: #94A3B8;
+      padding: 0.35rem 0.85rem;
+      font-size: 0.72rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #1E293B;
+      font-family: monospace;
+    }
+    .address-url {
+      color: var(--gold-400);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .frame-badge {
+      background: #1E293B;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      color: #CBD5E1;
+    }
+
+    /* The Live Preview Iframe */
+    #prototypeFrame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #FFFFFF;
+      flex: 1;
+    }
+
+    /* Toast in Showcase */
+    .showcase-toast {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: #1E293B;
+      color: #FFFFFF;
+      border: 1px solid var(--gold-400);
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      z-index: 99999;
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Master Top Navigation Bar -->
+  <header class="showcase-header">
+    <div class="header-row-main">
+      <!-- Brand & Info -->
+      <div class="showcase-brand">
+        <div class="showcase-crest">B</div>
+        <div class="showcase-title-wrap">
+          <h1>Berea Bible Institute & Theological Seminary</h1>
+          <p>Unified Student Enrollment & Academic Website Prototype</p>
+        </div>
+      </div>
+
+      <!-- Viewport Device Switcher -->
+      <div class="viewport-controls" aria-label="Device Preview Controls">
+        <button type="button" class="viewport-btn active" data-mode="desktop" title="Full Desktop (100% Width)">
+          🖥️ Desktop
+        </button>
+        <button type="button" class="viewport-btn" data-mode="laptop" title="Laptop View (1200px)">
+          💻 Laptop
+        </button>
+        <button type="button" class="viewport-btn" data-mode="tablet" title="Tablet View (768px)">
+          📱 Tablet
+        </button>
+        <button type="button" class="viewport-btn" data-mode="mobile" title="Mobile Phone (390px)">
+          📱 Mobile
+        </button>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="header-actions">
+        <button type="button" class="action-btn btn-seed" id="btnSeedData" title="Load Sample Student & Cart to test Checkout immediately">
+          ⚡ Pre-Fill Demo Data
+        </button>
+        <button type="button" class="action-btn" id="btnResetData" title="Reset all demo data">
+          🔄 Reset Data
+        </button>
+        <a id="btnOpenNewTab" href="index.html" target="_blank" class="action-btn" title="Open active page in standalone new browser tab">
+          ↗ Open Standalone
+        </a>
+      </div>
+    </div>
+
+    <!-- Quick Navigation Pills (All 10 Pages Accessible In One Click) -->
+    <nav class="pills-bar" aria-label="Prototype Pages Switcher">
+      <button type="button" class="pill-link active" data-page="index.html">
+        <span class="pill-num">1</span>
+        <span>🏛️ Home Page</span>
+      </button>
+
+      <button type="button" class="pill-link" data-page="courses.html">
+        <span class="pill-num">2</span>
+        <span>📚 Course Catalogue</span>
+      </button>
+
+      <button type="button" class="pill-link" data-page="course-details.html?id=course-bib-101">
+        <span class="pill-num">3</span>
+        <span>📖 Course Detail (BIB-101)</span>
+      </button>
+
+      <button type="button" class="pill-link" data-page="registration.html">
+        <span class="pill-num">4</span>
+        <span>📝 Student Application</span>
+      </button>
+
+      <button type="button" class="pill-link" data-page="cart.html">
+        <span class="pill-num">5</span>
+        <span>🛒 Shopping Cart</span>
+      </button>
+
+      <button type="button" class="pill-link" data-page="checkout.html">
+        <span class="pill-num">6</span>
+        <span>💳 7-Step Checkout</span>
+      </button>
+
+      <button type="button" class="pill-link" data-page="order-review.html">
+        <span class="pill-num">7</span>
+        <span>🔍 Order Review</span>
+      </button>
+
+      <button type="button" class="pill-link" data-page="payment-result.html?status=success">
+        <span class="pill-num">8</span>
+        <span>🧾 Payment Receipt</span>
+      </button>
+
+      <button type="button" class="pill-link" data-page="student-login.html">
+        <span class="pill-num">9</span>
+        <span>🔐 Student Login</span>
+      </button>
+
+      <button type="button" class="pill-link" data-page="student-dashboard.html">
+        <span class="pill-num">10</span>
+        <span>🎓 Student Portal</span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- Viewport Stage -->
+  <main class="viewport-stage">
+    <div class="device-wrapper mode-desktop" id="deviceWrapper">
+      <div class="frame-address-bar">
+        <span>Active Prototype View: <span id="addressUrl" class="address-url">index.html</span></span>
+        <span class="frame-badge" id="viewportBadge">Desktop 100%</span>
+      </div>
+      <iframe id="prototypeFrame" src="index.html" title="Berea Bible Institute Prototype View"></iframe>
+    </div>
+  </main>
+
+  <div id="showcaseToast" class="showcase-toast"></div>
+
+  <script>
+    const iframe = document.getElementById('prototypeFrame');
+    const deviceWrapper = document.getElementById('deviceWrapper');
+    const addressUrl = document.getElementById('addressUrl');
+    const viewportBadge = document.getElementById('viewportBadge');
+    const btnOpenNewTab = document.getElementById('btnOpenNewTab');
+    const toast = document.getElementById('showcaseToast');
+
+    // Page switcher pills
+    const pillButtons = document.querySelectorAll('.pill-link');
+    pillButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const page = btn.getAttribute('data-page');
+        navigateTo(page);
+      });
+    });
+
+    function navigateTo(page) {
+      iframe.src = page;
+      updateActivePill(page);
+    }
+
+    function updateActivePill(pageUrl) {
+      const cleanUrl = pageUrl.split('/').pop();
+      addressUrl.textContent = cleanUrl;
+      btnOpenNewTab.href = cleanUrl;
+
+      pillButtons.forEach(btn => {
+        const btnPage = btn.getAttribute('data-page');
+        if (cleanUrl.startsWith(btnPage.split('?')[0])) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    // Monitor iframe navigation to update pills when user clicks links inside
+    iframe.addEventListener('load', () => {
+      try {
+        const innerPath = iframe.contentWindow.location.pathname.split('/').pop() || 'index.html';
+        const innerSearch = iframe.contentWindow.location.search;
+        const currentFull = innerPath + innerSearch;
+        updateActivePill(currentFull);
+      } catch (e) {
+        // Fallback if cross-origin boundary
+      }
+    });
+
+    // Viewport Resizing
+    const viewportButtons = document.querySelectorAll('.viewport-btn');
+    viewportButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        viewportButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const mode = btn.getAttribute('data-mode');
+
+        deviceWrapper.className = `device-wrapper mode-${mode}`;
+        viewportBadge.textContent = mode.charAt(0).toUpperCase() + mode.slice(1);
+        showToast(`Switched view to ${mode.toUpperCase()} display`);
+      });
+    });
+
+    // Seed Demo Data
+    document.getElementById('btnSeedData').addEventListener('click', () => {
+      // 1. Keep cart clean (no default carts)
+      localStorage.removeItem('berea_cart');
+      localStorage.removeItem('berea_prototype_cart');
+      localStorage.removeItem('berea_cart_coupon');
+
+      // 2. Seed Registration
+      const registration = {
+        fullName: 'Jonathan Edwards',
+        email: 'j.edwards@berea-seminary.edu',
+        phone: '+1 (555) 234-5678',
+        dob: '1994-08-14',
+        gender: 'male',
+        country: 'United States',
+        address: '1711 Scripture Way, Suite 400, Colorado Springs, CO',
+        emergencyName: 'Sarah Edwards',
+        emergencyRelationship: 'Spouse',
+        emergencyPhone: '+1 (555) 987-6543',
+        highestEducation: 'bachelor',
+        institution: 'Wheaton College',
+        intendedTrack: 'Pastoral Ministry & Theological Leadership',
+        studyMode: 'online',
+        christianTestimony: 'Committed to orthodox reformed theology and expository preaching.',
+        academicHonorCode: true,
+        statementOfFaith: true,
+        savedAt: new Date().toISOString()
+      };
+      localStorage.setItem('berea_student_registration', JSON.stringify(registration));
+
+      // 4. Seed Checkout Data
+      const checkoutData = {
+        student: registration,
+        cohort: 'June 1, 2026 - Morning Cohort',
+        policiesAccepted: true,
+        completedAt: new Date().toISOString()
+      };
+      localStorage.setItem('berea_checkout_data', JSON.stringify(checkoutData));
+
+      // 5. Seed Auth
+      localStorage.setItem('berea_auth_student', JSON.stringify({
+        studentId: 'BEREA-2026-8941',
+        fullName: 'Jonathan Edwards',
+        email: 'j.edwards@berea-seminary.edu',
+        role: 'Master of Divinity Candidate',
+        enrolledSince: 'Fall 2026',
+        status: 'Active'
+      }));
+
+      // Reload frame to reflect new data
+      iframe.contentWindow.location.reload();
+      showToast('✓ Demo Cart, 20% Scholarship, Registration & Student Profile Pre-Loaded!');
+    });
+
+    // Reset Data
+    document.getElementById('btnResetData').addEventListener('click', () => {
+      localStorage.removeItem('berea_cart');
+      localStorage.removeItem('berea_cart_coupon');
+      localStorage.removeItem('berea_student_registration');
+      localStorage.removeItem('berea_checkout_data');
+      localStorage.removeItem('berea_auth_student');
+      sessionStorage.removeItem('berea_cart_initialized');
+      iframe.contentWindow.location.reload();
+      showToast('🔄 Demo data reset to clean slate');
+    });
+
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.style.display = 'block';
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 3500);
+    }
+  </script>
+</body>
+</html>
+

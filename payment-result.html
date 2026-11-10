@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enrollment Confirmation | Berea Bible Institute</title>
+  <meta name="description" content="View your official Berea Bible Institute course enrollment receipt and demonstration confirmation.">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+  <style>
+    @media print {
+      body * { visibility: hidden; }
+      #printableReceipt, #printableReceipt * { visibility: visible; }
+      #printableReceipt { position: absolute; left: 0; top: 0; width: 100%; }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header no-print">
+    <div class="container">
+      <a href="index.html" class="brand">
+        <div class="brand-crest">B</div>
+        <div class="brand-text">
+          <span class="brand-title">Berea Bible Institute</span>
+          <span class="brand-subtitle">& Theological Seminary</span>
+        </div>
+      </a>
+      <div style="font-size:0.85rem; font-weight:700; color:var(--gold-700); text-transform:uppercase; letter-spacing:0.06em;">
+        Official Academic Enrollment Confirmation
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section" style="padding-top:3rem;">
+      <div class="container container-narrow">
+
+        <!-- Prototype Outcome Mode Switcher (For Reviewer Inspection) -->
+        <div class="card no-print" style="padding:1rem 1.5rem; background:var(--gold-50); border:1px solid var(--gold-400); margin-bottom:2rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+          <div style="font-size:0.85rem; color:var(--burgundy-950);">
+            <strong>Prototype Demo Controller:</strong> Toggle outcome states to review all UI flows:
+          </div>
+          <div style="display:flex; gap:0.5rem;">
+            <button type="button" class="btn btn-sm btn-gold" onclick="switchResultMode('success')">✓ Success</button>
+            <button type="button" class="btn btn-sm btn-secondary" onclick="switchResultMode('pending')">⏳ Pending</button>
+            <button type="button" class="btn btn-sm btn-secondary" onclick="switchResultMode('failed')">✕ Failed</button>
+          </div>
+        </div>
+
+        <!-- OUTCOME 1: PAYMENT SUCCESSFUL (Default) -->
+        <div id="outcomeSuccess" class="result-outcome-card">
+          <div class="card" id="printableReceipt" style="padding:3rem 2.5rem; box-shadow:var(--shadow-lg); border-top:5px solid var(--status-success);">
+            <!-- Success Icon & Header -->
+            <div style="text-align:center; padding-bottom:2rem; border-bottom:2px dashed var(--cream-border); margin-bottom:2rem;">
+              <div style="width:72px; height:72px; border-radius:50%; background:var(--status-success-bg); color:var(--status-success); display:flex; align-items:center; justify-content:center; font-size:2.5rem; margin:0 auto 1.25rem;">
+                ✓
+              </div>
+              <span class="badge badge-success" style="font-size:0.85rem; padding:0.35rem 1rem; margin-bottom:0.75rem;">
+                Enrollment Confirmed & Active
+              </span>
+              <h1 style="font-size:2.25rem; color:var(--burgundy-950); margin-bottom:0.5rem;">
+                Welcome to Berea Bible Institute
+              </h1>
+              <p style="font-size:1.05rem; color:var(--charcoal-600); max-width:600px; margin:0 auto;">
+                Your enrollment transaction has been successfully recorded in our academic registry. Your portal access credentials have been provisioned.
+              </p>
+            </div>
+
+            <!-- Receipt Meta Details -->
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:1.5rem; background:var(--cream-bg); padding:1.5rem; border-radius:var(--radius-md); border:1px solid var(--cream-border); margin-bottom:2rem; font-size:0.875rem;">
+              <div>
+                <span style="font-size:0.72rem; text-transform:uppercase; color:var(--charcoal-500); display:block;">Reference Number</span>
+                <strong id="receiptRefNumber" class="text-mono" style="font-size:1rem; color:var(--burgundy-900);">BEREA-2026-89472</strong>
+              </div>
+              <div>
+                <span style="font-size:0.72rem; text-transform:uppercase; color:var(--charcoal-500); display:block;">Student Candidate</span>
+                <strong id="receiptStudentName" style="color:var(--charcoal-900);">Timothy David Paul</strong>
+              </div>
+              <div>
+                <span style="font-size:0.72rem; text-transform:uppercase; color:var(--charcoal-500); display:block;">Confirmation Date</span>
+                <strong id="receiptDate" style="color:var(--charcoal-900);">May 10, 2026</strong>
+              </div>
+              <div>
+                <span style="font-size:0.72rem; text-transform:uppercase; color:var(--charcoal-500); display:block;">Payment Method</span>
+                <strong id="receiptPaymentMethod" style="color:var(--charcoal-900);">Visa •••• 4242 (Demo)</strong>
+              </div>
+            </div>
+
+            <!-- Enrolled Courses Table -->
+            <div style="margin-bottom:2rem;">
+              <h3 style="font-size:1.2rem; color:var(--burgundy-950); margin-bottom:1rem;">Registered Academic Cohorts</h3>
+              <div id="receiptCoursesList" style="display:flex; flex-direction:column; gap:0.75rem;">
+                <!-- Populated via JavaScript -->
+              </div>
+            </div>
+
+            <!-- Financial Summary Box -->
+            <div style="background:var(--cream-alt); border-radius:var(--radius-md); padding:1.5rem; margin-bottom:2rem;">
+              <div id="receiptFeeRows">
+                <!-- Populated via JavaScript -->
+              </div>
+            </div>
+
+            <!-- Institutional Notice -->
+            <div style="font-size:0.8rem; color:var(--charcoal-500); line-height:1.6; border-top:1px solid var(--cream-border); padding-top:1.25rem;">
+              <strong>Academic Notice:</strong> An official confirmation letter with class meeting links, course syllabus, and faculty contact information has been dispatched to your email. Orientation begins one week prior to the start date.
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="no-print" style="margin-top:2rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+            <button type="button" class="btn btn-secondary" onclick="window.print()">
+              🖨 Print / Download Official Receipt
+            </button>
+            <a href="student-dashboard.html" class="btn btn-gold btn-lg">
+              Proceed to Student Portal Hub →
+            </a>
+          </div>
+        </div>
+
+        <!-- OUTCOME 2: PAYMENT PENDING -->
+        <div id="outcomePending" class="result-outcome-card" style="display:none;">
+          <div class="card" style="padding:3.5rem 2.5rem; text-align:center; border-top:5px solid var(--status-warning);">
+            <div style="width:72px; height:72px; border-radius:50%; background:var(--status-warning-bg); color:var(--status-warning); display:flex; align-items:center; justify-content:center; font-size:2.5rem; margin:0 auto 1.25rem;">
+              ⏳
+            </div>
+            <span class="badge badge-warning" style="font-size:0.85rem; padding:0.35rem 1rem; margin-bottom:0.75rem;">
+              Awaiting Institutional Bank Clearance
+            </span>
+            <h2 style="font-size:2rem; color:var(--burgundy-950); margin-bottom:0.75rem;">
+              Enrollment Application Pending Verification
+            </h2>
+            <p style="font-size:1.05rem; color:var(--charcoal-600); max-width:600px; margin:0 auto 2rem; line-height:1.65;">
+              Your bank transfer / institutional billing voucher is currently under review by our bursar’s office. You will receive an automated confirmation email once cleared (typically within 24 business hours).
+            </p>
+
+            <div style="background:var(--cream-bg); padding:1.5rem; border-radius:var(--radius-md); max-width:480px; margin:0 auto 2rem; text-align:left; font-size:0.9rem;">
+              <p><strong>Tracking Reference:</strong> <span class="text-mono text-burgundy">BEREA-PENDING-2026</span></p>
+              <p style="margin-top:0.35rem;"><strong>Admissions Desk:</strong> bursar@berea-institute.edu</p>
+            </div>
+
+            <div style="display:flex; justify-content:center; gap:1rem;">
+              <a href="courses.html" class="btn btn-secondary">Return to Catalogue</a>
+              <a href="student-dashboard.html" class="btn btn-primary">Check Portal Status</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- OUTCOME 3: PAYMENT FAILED -->
+        <div id="outcomeFailed" class="result-outcome-card" style="display:none;">
+          <div class="card" style="padding:3.5rem 2.5rem; text-align:center; border-top:5px solid var(--status-danger);">
+            <div style="width:72px; height:72px; border-radius:50%; background:var(--status-danger-bg); color:var(--status-danger); display:flex; align-items:center; justify-content:center; font-size:2.5rem; margin:0 auto 1.25rem;">
+              ✕
+            </div>
+            <span class="badge badge-danger" style="font-size:0.85rem; padding:0.35rem 1rem; margin-bottom:0.75rem;">
+              Payment Declined / Timed Out
+            </span>
+            <h2 style="font-size:2rem; color:var(--burgundy-950); margin-bottom:0.75rem;">
+              Demonstration Transaction Not Completed
+            </h2>
+            <p style="font-size:1.05rem; color:var(--charcoal-600); max-width:600px; margin:0 auto 2rem; line-height:1.65;">
+              The payment gateway simulation encountered a test decline (e.g., insufficient test balance or authentication timeout). Your course cart remains saved.
+            </p>
+
+            <div style="background:var(--status-danger-bg); color:var(--status-danger); padding:1rem; border-radius:var(--radius-md); max-width:480px; margin:0 auto 2rem; font-size:0.85rem;">
+              Simulated Reason: Bank authorization rejected test card credentials.
+            </div>
+
+            <div style="display:flex; justify-content:center; gap:1rem;">
+              <a href="cart.html" class="btn btn-secondary">Review Cart</a>
+              <a href="checkout.html" class="btn btn-gold">Retry Checkout</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer no-print">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>© 2026 Berea Bible Institute & Theological Seminary. Demonstration Receipt.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/courses.js"></script>
+  <script src="assets/js/cart.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const status = urlParams.get('status') || 'success';
+      const ref = urlParams.get('ref') || `BEREA-${Date.now().toString().slice(-6)}`;
+
+      switchResultMode(status, ref);
+    });
+
+    function switchResultMode(mode, refNum) {
+      document.getElementById('outcomeSuccess').style.display = mode === 'success' ? 'block' : 'none';
+      document.getElementById('outcomePending').style.display = mode === 'pending' ? 'block' : 'none';
+      document.getElementById('outcomeFailed').style.display = mode === 'failed' ? 'block' : 'none';
+
+      if (mode === 'success') {
+        if (typeof clearCart === 'function') {
+          clearCart();
+        } else {
+          localStorage.removeItem('berea_cart');
+          localStorage.removeItem('berea_prototype_cart');
+        }
+        populateSuccessReceipt(refNum);
+      }
+    }
+
+    function populateSuccessReceipt(refNum) {
+      let order = {};
+      try {
+        order = JSON.parse(localStorage.getItem('berea_last_order') || '{}');
+      } catch (e) {}
+
+      document.getElementById('receiptRefNumber').textContent = refNum || order.orderRef || 'BEREA-2026-89472';
+      document.getElementById('receiptStudentName').textContent = order.studentName || 'Timothy David Paul';
+      document.getElementById('receiptDate').textContent = new Date().toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+      });
+
+      // Courses List
+      const coursesContainer = document.getElementById('receiptCoursesList');
+      const courses = order.courses && order.courses.length > 0 ? order.courses : [
+        { code: 'BIB-101', title: 'Introduction to Biblical Greek (Koine)', batch: 'June 1, 2026 - Morning', price: 280 }
+      ];
+
+      coursesContainer.innerHTML = courses.map(c => `
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:1rem; background:#FFFFFF; border:1px solid var(--cream-border); border-radius:var(--radius-md);">
+          <div>
+            <span style="font-family:var(--font-mono); font-size:0.75rem; font-weight:700; color:var(--gold-700);">${c.code}</span>
+            <div style="font-weight:700; color:var(--burgundy-950); margin:0.2rem 0;">${c.title}</div>
+            <div style="font-size:0.8rem; color:var(--charcoal-500);">Cohort: <strong>${c.batch || 'Spring 2026'}</strong></div>
+          </div>
+          <div style="font-family:var(--font-serif); font-size:1.25rem; font-weight:800; color:var(--burgundy-900);">$${c.price}</div>
+        </div>
+      `).join('');
+
+      // Fee Breakdown
+      const totals = order.totals || { subtotal: 280, registrationFeeTotal: 35, discount: 0, finalTotal: 315 };
+      document.getElementById('receiptFeeRows').innerHTML = `
+        <div class="summary-row"><span>Tuition Subtotal:</span><span>$${totals.subtotal}</span></div>
+        <div class="summary-row"><span>Registration Fee:</span><span>$${totals.registrationFeeTotal}</span></div>
+        ${totals.discount > 0 ? `<div class="summary-row" style="color:var(--status-success); font-weight:700;"><span>Scholarship Discount:</span><span>-$${totals.discount}</span></div>` : ''}
+        <div class="summary-total"><span class="summary-total-label">Total Paid (Demo):</span><span class="summary-total-amount">$${totals.finalTotal}</span></div>
+      `;
+    }
+  </script>
+</body>
+</html>
+

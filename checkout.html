@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Enrollment Checkout | Berea Bible Institute</title>
+  <meta name="description" content="Complete your multi-step academic checkout and cohort registration for Berea Bible Institute.">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+</head>
+<body>
+
+  <!-- Topbar -->
+  <aside class="topbar">
+    <div class="container">
+      <div>
+        <span class="text-gold font-bold">Secure Academic Enrollment:</span>
+        <span>SSL Encrypted Checkout • Questions? Call Admissions at +1 (800) 555-BEREA</span>
+      </div>
+      <div class="topbar-links">
+        <a href="courses.html" class="topbar-link">Catalogue</a>
+        <span>•</span>
+        <a href="cart.html" class="topbar-link">Return to Cart</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="brand">
+        <div class="brand-crest">B</div>
+        <div class="brand-text">
+          <span class="brand-title">Berea Bible Institute</span>
+          <span class="brand-subtitle">& Theological Seminary</span>
+        </div>
+      </a>
+
+      <div style="font-family:var(--font-serif); font-size:1.15rem; font-weight:700; color:var(--burgundy-900);">
+        Academic Enrollment Portal
+      </div>
+
+      <div class="nav-actions">
+        <a href="cart.html" class="cart-button" title="View Cart">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+          <span class="cart-badge">0</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section" style="padding-top:2.5rem;">
+      <div id="checkoutContainer" class="container">
+
+        <!-- Multi-Step Header (Steps 1 to 7) -->
+        <nav class="checkout-stepper" aria-label="Checkout Progress">
+          <div class="step-item active" data-step="1">
+            <div class="step-circle">1</div>
+            <span class="step-label">Personal Info</span>
+          </div>
+          <div class="step-divider"></div>
+
+          <div class="step-item" data-step="2">
+            <div class="step-circle">2</div>
+            <span class="step-label">Course Selection</span>
+          </div>
+          <div class="step-divider"></div>
+
+          <div class="step-item" data-step="3">
+            <div class="step-circle">3</div>
+            <span class="step-label">Discounts & Credits</span>
+          </div>
+          <div class="step-divider"></div>
+
+          <div class="step-item" data-step="4">
+            <div class="step-circle">4</div>
+            <span class="step-label">Policies</span>
+          </div>
+          <div class="step-divider"></div>
+
+          <div class="step-item" data-step="5">
+            <div class="step-circle">5</div>
+            <span class="step-label">Referral</span>
+          </div>
+          <div class="step-divider"></div>
+
+          <div class="step-item" data-step="6">
+            <div class="step-circle">6</div>
+            <span class="step-label">Review Order</span>
+          </div>
+          <div class="step-divider"></div>
+
+          <div class="step-item" data-step="7">
+            <div class="step-circle">7</div>
+            <span class="step-label">Payment</span>
+          </div>
+        </nav>
+
+        <!-- Two Column Layout: Active Step Panel & Sticky Order Summary -->
+        <div class="checkout-layout" style="display:grid; grid-template-columns: 1fr 380px; gap:3rem; align-items:start;">
+
+          <!-- Left Step Panels Container -->
+          <div class="checkout-steps-wrapper">
+
+            <!-- STEP 1: Personal Information -->
+            <div id="step-1" class="checkout-step-panel card" data-step-panel="1" style="padding:2.5rem;">
+              <div style="border-bottom:1px solid var(--cream-border); padding-bottom:1rem; margin-bottom:1.75rem;">
+                <span class="eyebrow" style="margin-bottom:0.35rem;">STEP 1 OF 7</span>
+                <h2 style="font-size:1.5rem; color:var(--burgundy-950);">Personal & Contact Information</h2>
+                <p style="font-size:0.9rem; color:var(--charcoal-600);">
+                  Please confirm the student candidate contact details for enrollment correspondence.
+                </p>
+              </div>
+
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem;">
+                <div class="form-group" style="grid-column: span 2;">
+                  <label for="checkoutFullName" class="form-label">Full Candidate Name <span class="required">*</span></label>
+                  <input type="text" id="checkoutFullName" class="form-control" placeholder="e.g. Timothy David Paul" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="checkoutEmail" class="form-label">Email Address <span class="required">*</span></label>
+                  <input type="email" id="checkoutEmail" class="form-control" placeholder="timothy@example.org" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="checkoutPhone" class="form-label">Mobile Phone Number <span class="required">*</span></label>
+                  <input type="tel" id="checkoutPhone" class="form-control" placeholder="+1 (555) 234-5678" required>
+                </div>
+
+                <div class="form-group" style="grid-column: span 2;">
+                  <label for="checkoutAddress" class="form-label">Street Address <span class="required">*</span></label>
+                  <input type="text" id="checkoutAddress" class="form-control" placeholder="123 Academic Way" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="checkoutCity" class="form-label">City <span class="required">*</span></label>
+                  <input type="text" id="checkoutCity" class="form-control" placeholder="City" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="checkoutPostal" class="form-label">Postal / Zip Code <span class="required">*</span></label>
+                  <input type="text" id="checkoutPostal" class="form-control" placeholder="Postal Code" required>
+                </div>
+
+                <div class="form-group" style="grid-column: span 2;">
+                  <label for="checkoutCountry" class="form-label">Country of Residence <span class="required">*</span></label>
+                  <select id="checkoutCountry" class="form-control form-select" required>
+                    <option value="United States" selected>United States</option>
+                    <option value="Canada">Canada</option>
+                    <option value="United Kingdom">United Kingdom</option>
+                    <option value="India">India</option>
+                    <option value="Australia">Australia</option>
+                    <option value="Other">Other International</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style="display:flex; justify-content:flex-end; margin-top:2rem; border-top:1px solid var(--cream-border); padding-top:1.5rem;">
+                <button type="button" class="btn btn-primary btn-next-step">
+                  Continue to Course Selection →
+                </button>
+              </div>
+            </div>
+
+            <!-- STEP 2: Course Selection -->
+            <div id="step-2" class="checkout-step-panel card" data-step-panel="2" style="display:none; padding:2.5rem;">
+              <div style="border-bottom:1px solid var(--cream-border); padding-bottom:1rem; margin-bottom:1.75rem;">
+                <span class="eyebrow" style="margin-bottom:0.35rem;">STEP 2 OF 7</span>
+                <h2 style="font-size:1.5rem; color:var(--burgundy-950);">Confirm Selected Cohorts</h2>
+                <p style="font-size:0.9rem; color:var(--charcoal-600);">
+                  Confirm your selected theological courses and schedule timings for this semester.
+                </p>
+              </div>
+
+              <div id="checkoutCourseList">
+                <!-- Dynamically rendered -->
+              </div>
+
+              <div style="display:flex; justify-content:space-between; margin-top:2rem; border-top:1px solid var(--cream-border); padding-top:1.5rem;">
+                <button type="button" class="btn btn-secondary btn-prev-step">← Back to Personal Info</button>
+                <button type="button" class="btn btn-primary btn-next-step">Continue to Discounts & Credits →</button>
+              </div>
+            </div>
+
+            <!-- STEP 3: Discounts and Enrollment Credits -->
+            <div id="step-3" class="checkout-step-panel card" data-step-panel="3" style="display:none; padding:2.5rem;">
+              <div style="border-bottom:1px solid var(--cream-border); padding-bottom:1rem; margin-bottom:1.75rem;">
+                <span class="eyebrow" style="margin-bottom:0.35rem;">STEP 3 OF 7</span>
+                <h2 style="font-size:1.5rem; color:var(--burgundy-950);">Discounts & Enrollment Credits</h2>
+                <p style="font-size:0.9rem; color:var(--charcoal-600);">
+                  Apply promotional codes, institutional sponsorships, or ministry subsidy vouchers.
+                </p>
+              </div>
+
+              <div class="card" style="padding:1.5rem; background:var(--cream-bg); margin-bottom:1.75rem;">
+                <label for="checkoutPromoCode" class="form-label">Promotional Scholarship Code</label>
+                <div style="display:flex; gap:0.75rem; margin-bottom:0.5rem;">
+                  <input type="text" id="checkoutPromoCode" class="form-control" placeholder="Enter promo code (e.g. BIBLE2026)" style="font-family:var(--font-mono); text-transform:uppercase;">
+                  <button type="button" id="checkoutApplyPromoBtn" class="btn btn-gold">Apply Code</button>
+                </div>
+                <p style="font-size:0.8rem; color:var(--charcoal-500);">
+                  Valid demo codes: <strong style="color:var(--burgundy-900);">BIBLE2026</strong> (20% tuition grant), <strong style="color:var(--burgundy-900);">GRACE50</strong> (50% ministry subsidy).
+                </p>
+              </div>
+
+              <div class="card" style="padding:1.5rem; border-left:4px solid var(--gold-500);">
+                <label style="display:flex; align-items:flex-start; gap:0.75rem; cursor:pointer;">
+                  <input type="checkbox" id="checkNeedAid" style="margin-top:0.25rem;">
+                  <div>
+                    <strong style="color:var(--burgundy-900); font-size:0.95rem;">Request Pastoral Ministry Hardship Consideration</strong>
+                    <p style="font-size:0.85rem; color:var(--charcoal-600); margin-top:0.2rem;">
+                      If your church or personal financial situation requires additional grant review, our financial aid committee will follow up with an institutional bursary form.
+                    </p>
+                  </div>
+                </label>
+              </div>
+
+              <div style="display:flex; justify-content:space-between; margin-top:2rem; border-top:1px solid var(--cream-border); padding-top:1.5rem;">
+                <button type="button" class="btn btn-secondary btn-prev-step">← Back</button>
+                <button type="button" class="btn btn-primary btn-next-step">Continue to Institutional Policies →</button>
+              </div>
+            </div>
+
+            <!-- STEP 4: Policy Acceptance -->
+            <div id="step-4" class="checkout-step-panel card" data-step-panel="4" style="display:none; padding:2.5rem;">
+              <div style="border-bottom:1px solid var(--cream-border); padding-bottom:1rem; margin-bottom:1.75rem;">
+                <span class="eyebrow" style="margin-bottom:0.35rem;">STEP 4 OF 7</span>
+                <h2 style="font-size:1.5rem; color:var(--burgundy-950);">Institutional Policy Acceptance</h2>
+                <p style="font-size:0.9rem; color:var(--charcoal-600);">
+                  Please review and accept our academic, confessional, and refund policies.
+                </p>
+              </div>
+
+              <div style="display:flex; flex-direction:column; gap:1.25rem;">
+                <label class="card" style="padding:1.25rem; display:flex; gap:1rem; cursor:pointer;">
+                  <input type="checkbox" id="policyHonorCode" style="margin-top:0.25rem;" required>
+                  <div>
+                    <strong style="font-size:0.95rem; color:var(--burgundy-950);">Academic Integrity & Christian Honor Code <span class="required">*</span></strong>
+                    <p style="font-size:0.85rem; color:var(--charcoal-600); margin-top:0.2rem;">
+                      I pledge before God to uphold the highest standards of honesty, original scholarship, and biblical integrity, abstaining from plagiarism or artificial tampering in coursework.
+                    </p>
+                  </div>
+                </label>
+
+                <label class="card" style="padding:1.25rem; display:flex; gap:1rem; cursor:pointer;">
+                  <input type="checkbox" id="policyStatementOfFaith" style="margin-top:0.25rem;" required>
+                  <div>
+                    <strong style="font-size:0.95rem; color:var(--burgundy-950);">Historic Statement of Faith Affirmation <span class="required">*</span></strong>
+                    <p style="font-size:0.85rem; color:var(--charcoal-600); margin-top:0.2rem;">
+                      I acknowledge Berea Bible Institute's commitment to the inspiration, inerrancy, and divine authority of Holy Scripture and historical orthodox Christian doctrine.
+                    </p>
+                  </div>
+                </label>
+
+                <label class="card" style="padding:1.25rem; display:flex; gap:1rem; cursor:pointer;">
+                  <input type="checkbox" id="policyRefundPolicy" style="margin-top:0.25rem;" required>
+                  <div>
+                    <strong style="font-size:0.95rem; color:var(--burgundy-950);">Tuition Refund & Withdrawal Schedule <span class="required">*</span></strong>
+                    <p style="font-size:0.85rem; color:var(--charcoal-600); margin-top:0.2rem;">
+                      100% tuition refund is available within 7 days of cohort launch. Registration and administrative processing fees ($35) are non-refundable.
+                    </p>
+                  </div>
+                </label>
+              </div>
+
+              <div style="display:flex; justify-content:space-between; margin-top:2rem; border-top:1px solid var(--cream-border); padding-top:1.5rem;">
+                <button type="button" class="btn btn-secondary btn-prev-step">← Back</button>
+                <button type="button" class="btn btn-primary btn-next-step">Continue to Referral Survey →</button>
+              </div>
+            </div>
+
+            <!-- STEP 5: How Did You Hear About Us? -->
+            <div id="step-5" class="checkout-step-panel card" data-step-panel="5" style="display:none; padding:2.5rem;">
+              <div style="border-bottom:1px solid var(--cream-border); padding-bottom:1rem; margin-bottom:1.75rem;">
+                <span class="eyebrow" style="margin-bottom:0.35rem;">STEP 5 OF 7</span>
+                <h2 style="font-size:1.5rem; color:var(--burgundy-950);">How Did You Hear About Us?</h2>
+                <p style="font-size:0.9rem; color:var(--charcoal-600);">
+                  Help us understand how students discover Berea Bible Institute.
+                </p>
+              </div>
+
+              <div class="form-group" style="margin-bottom:1.5rem;">
+                <label for="referralSource" class="form-label">Primary Referral Source <span class="required">*</span></label>
+                <select id="referralSource" class="form-control form-select" required>
+                  <option value="">Please Select</option>
+                  <option value="Pastor or Local Church Recommendation">Pastor or Local Church Recommendation</option>
+                  <option value="Berea Alumni or Current Student">Berea Alumni or Current Student</option>
+                  <option value="Christian Radio / Podcast Broadcast">Christian Radio / Podcast Broadcast</option>
+                  <option value="Theological Conference or Ministry Summit">Theological Conference or Ministry Summit</option>
+                  <option value="Web Search (Google, Bing)">Web Search (Google, Bing)</option>
+                  <option value="Christian Literature or Book Reference">Christian Literature or Book Reference</option>
+                </select>
+                <div class="invalid-feedback">Please select a referral source.</div>
+              </div>
+
+              <div class="form-group">
+                <label for="referralNotes" class="form-label">Optional Comments, Pastoral Endorsement, or Prayer Request</label>
+                <textarea id="referralNotes" class="form-control" rows="4" placeholder="Share any specific spiritual aspirations, church responsibilities, or prayer needs with our faculty team..."></textarea>
+              </div>
+
+              <div style="display:flex; justify-content:space-between; margin-top:2rem; border-top:1px solid var(--cream-border); padding-top:1.5rem;">
+                <button type="button" class="btn btn-secondary btn-prev-step">← Back</button>
+                <button type="button" class="btn btn-primary btn-next-step">Review Complete Order →</button>
+              </div>
+            </div>
+
+            <!-- STEP 6: Review Order -->
+            <div id="step-6" class="checkout-step-panel card" data-step-panel="6" style="display:none; padding:2.5rem;">
+              <div style="border-bottom:1px solid var(--cream-border); padding-bottom:1rem; margin-bottom:1.75rem;">
+                <span class="eyebrow" style="margin-bottom:0.35rem;">STEP 6 OF 7</span>
+                <h2 style="font-size:1.5rem; color:var(--burgundy-950);">Comprehensive Order Review</h2>
+                <p style="font-size:0.9rem; color:var(--charcoal-600);">
+                  Please verify all application details and course enrollments before proceeding to payment.
+                </p>
+              </div>
+
+              <div id="checkoutReviewSummary">
+                <!-- Dynamically populated -->
+              </div>
+
+              <div class="alert alert-info" style="font-size:0.875rem;">
+                <span>ℹ</span>
+                <div>
+                  <strong>Next Step:</strong> You will be directed to our secure demonstration payment interface. No actual charge will be made to any credit card.
+                </div>
+              </div>
+
+              <div style="display:flex; justify-content:space-between; margin-top:2rem; border-top:1px solid var(--cream-border); padding-top:1.5rem;">
+                <button type="button" class="btn btn-secondary btn-prev-step">← Back</button>
+                <button type="button" class="btn btn-gold btn-lg btn-next-step">Proceed to Secure Payment →</button>
+              </div>
+            </div>
+
+            <!-- STEP 7: Payment (Demo Prototype Interface) -->
+            <div id="step-7" class="checkout-step-panel card" data-step-panel="7" style="display:none; padding:2.5rem;">
+              <div style="border-bottom:1px solid var(--cream-border); padding-bottom:1rem; margin-bottom:1.75rem;">
+                <span class="eyebrow" style="color:var(--status-danger); margin-bottom:0.35rem;">STEP 7 OF 7 • PROTOTYPE DEMONSTRATION</span>
+                <h2 style="font-size:1.5rem; color:var(--burgundy-950);">Payment Authorization</h2>
+                <p style="font-size:0.9rem; color:var(--charcoal-600);">
+                  This is a simulated demonstration checkout. Do NOT enter real card credentials.
+                </p>
+              </div>
+
+              <!-- Demo Banner Warning -->
+              <div class="alert alert-warning" style="margin-bottom:1.5rem; border:2px dashed var(--gold-600);">
+                <div style="font-size:1.5rem; color:var(--gold-800);">⚠</div>
+                <div>
+                  <strong style="color:var(--burgundy-950);">DEMONSTRATION PAYMENT GATEWAY PROTOTYPE</strong>
+                  <p style="font-size:0.8rem; color:var(--charcoal-700); margin-top:0.25rem;">
+                    This interface demonstrates the student payment experience. No real financial transaction will take place, and no cardholder data is collected.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Payment Method Selection -->
+              <div style="margin-bottom:1.5rem;">
+                <label class="form-label" style="margin-bottom:0.75rem;">Select Payment Mode:</label>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                  <label class="card" style="padding:1rem; display:flex; align-items:center; gap:0.75rem; cursor:pointer;">
+                    <input type="radio" name="paymentMethod" value="CARD" checked>
+                    <div>
+                      <strong style="font-size:0.9rem;">Credit / Debit Card</strong>
+                      <div style="font-size:0.75rem; color:var(--charcoal-500);">Visa, MasterCard, Amex</div>
+                    </div>
+                  </label>
+
+                  <label class="card" style="padding:1rem; display:flex; align-items:center; gap:0.75rem; cursor:pointer;">
+                    <input type="radio" name="paymentMethod" value="NETBANKING">
+                    <div>
+                      <strong style="font-size:0.9rem;">Institutional NetBanking / UPI</strong>
+                      <div style="font-size:0.75rem; color:var(--charcoal-500);">Direct Bank Transfer / UPI</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Simulated Card Fields -->
+              <div id="cardFieldsContainer" class="card" style="padding:1.5rem; background:var(--cream-bg); margin-bottom:1.75rem;">
+                <div class="form-group">
+                  <label class="form-label">Name on Card</label>
+                  <input type="text" class="form-control" value="Rev. Timothy D. Paul" readonly>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Demo Card Number</label>
+                  <input type="text" class="form-control text-mono" value="•••• •••• •••• 4242 (Simulated Test Card)" readonly>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                  <div class="form-group">
+                    <label class="form-label">Expiry</label>
+                    <input type="text" class="form-control text-mono" value="12/28" readonly>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Security Code (CVV)</label>
+                    <input type="text" class="form-control text-mono" value="•••" readonly>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Demo Payment Triggers -->
+              <div style="display:flex; flex-direction:column; gap:0.75rem;">
+                <button type="button" id="btnSubmitDemoPayment" class="btn btn-gold btn-lg btn-block" style="font-size:1.15rem;">
+                  🔒 Authorize Demonstration Enrollment ($ Simulation)
+                </button>
+                <div style="display:flex; justify-content:center; gap:1.5rem; font-size:0.8rem; color:var(--charcoal-500); margin-top:0.5rem;">
+                  <span>Demo Mode: Instant Simulation</span>
+                  <span>•</span>
+                  <a href="payment-result.html?status=pending&ref=DEMO-PENDING-001" style="color:var(--burgundy-700); text-decoration:underline;">Test Pending Screen</a>
+                  <span>•</span>
+                  <a href="payment-result.html?status=failed&ref=DEMO-FAIL-001" style="color:var(--status-danger); text-decoration:underline;">Test Failed Screen</a>
+                </div>
+              </div>
+
+              <div style="display:flex; justify-content:flex-start; margin-top:2rem; border-top:1px solid var(--cream-border); padding-top:1.5rem;">
+                <button type="button" class="btn btn-secondary btn-prev-step">← Back to Review Order</button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right Sticky Order Summary -->
+          <aside class="order-summary-card">
+            <div class="order-summary-header">
+              <h3 class="order-summary-title">Order Summary</h3>
+            </div>
+            <div id="checkoutSummaryContent">
+              <!-- Rendered via checkout.js -->
+            </div>
+            <div style="margin-top:1.5rem; padding-top:1rem; border-top:1px solid var(--cream-border); font-size:0.75rem; color:var(--charcoal-500); line-height:1.5;">
+              By completing this order, you authorize Berea Bible Institute to enroll you in the selected semester cohorts under institutional guidelines.
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom" style="border:none; padding:1.5rem 0;">
+        <p>© 2026 Berea Bible Institute & Theological Seminary. Demonstration Checkout.</p>
+        <div class="footer-bottom-links">
+          <a href="#" class="footer-link">Security Policies</a>
+          <a href="#" class="footer-link">Privacy Statement</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/courses.js"></script>
+  <script src="assets/js/cart.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/checkout.js"></script>
+</body>
+</html>
+

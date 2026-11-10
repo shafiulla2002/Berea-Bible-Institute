@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Catalogue | Berea Bible Institute & Theological Seminary</title>
+  <meta name="description" content="Browse our complete academic catalogue of accredited Bible, theology, and pastoral ministry courses.">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+</head>
+<body>
+
+  <!-- Top Announcement Bar -->
+  <aside class="topbar">
+    <div class="container">
+      <div>
+        <span class="text-gold font-bold">Fall 2026 Admissions Open:</span>
+        <span>Use promo code <strong style="color:#FFF;">BIBLE2026</strong> at checkout for 20% tuition scholarship.</span>
+      </div>
+      <div class="topbar-links">
+        <a href="student-login.html" class="topbar-link">Student Portal Sign In</a>
+        <span>•</span>
+        <a href="cart.html" class="topbar-link">View Cart</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="brand">
+        <div class="brand-crest">B</div>
+        <div class="brand-text">
+          <span class="brand-title">Berea Bible Institute</span>
+          <span class="brand-subtitle">& Theological Seminary</span>
+        </div>
+      </a>
+
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="courses.html" class="nav-link active">Course Catalogue</a>
+        <a href="registration.html" class="nav-link">Admissions</a>
+        <a href="student-dashboard.html" class="nav-link">Student Hub</a>
+        <a href="index.html#about" class="nav-link">About Berea</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="cart.html" class="cart-button" title="View Enrollment Cart">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+          <span class="cart-badge">0</span>
+        </a>
+        <a href="student-login.html" class="btn btn-secondary btn-sm">Sign In</a>
+        <a href="registration.html" class="btn btn-primary btn-sm">Apply Now</a>
+        <button type="button" class="mobile-nav-toggle" aria-label="Open Menu">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="mobile-drawer-overlay"></div>
+  <div class="mobile-drawer">
+    <div class="drawer-header">
+      <div class="brand">
+        <div class="brand-crest" style="width:36px; height:36px; font-size:1rem;">B</div>
+        <span class="brand-title" style="font-size:1.05rem;">Berea Institute</span>
+      </div>
+      <button type="button" class="drawer-close">✕</button>
+    </div>
+    <div class="drawer-links">
+      <a href="index.html" class="drawer-link">Home</a>
+      <a href="courses.html" class="drawer-link active">Course Catalogue</a>
+      <a href="registration.html" class="drawer-link">Student Registration</a>
+      <a href="cart.html" class="drawer-link">Shopping Cart</a>
+      <a href="student-login.html" class="drawer-link">Student Login</a>
+      <a href="student-dashboard.html" class="drawer-link">Enrolled Courses Portal</a>
+    </div>
+  </div>
+
+  <main>
+    <!-- Catalogue Header Banner -->
+    <section style="background: linear-gradient(135deg, var(--burgundy-950) 0%, var(--burgundy-900) 100%); color:#FFFFFF; padding:3.5rem 0 3rem; border-bottom:3px solid var(--gold-500);">
+      <div class="container">
+        <div style="font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--gold-400); margin-bottom:0.75rem;">
+          <a href="index.html" style="color:var(--gold-300);">Home</a> / Academic Catalogue
+        </div>
+        <h1 style="color:#FFFFFF; margin-bottom:0.75rem;">Theological Course Catalogue</h1>
+        <p style="max-width:720px; font-size:1.05rem; color:rgba(255,255,255,0.85); line-height:1.6;">
+          Explore comprehensive academic offerings across biblical languages, systematic dogmatics, pastoral ministry, church history, and Christian apologetics.
+        </p>
+      </div>
+    </section>
+
+    <!-- Main Catalogue Layout with Filter Sidebar -->
+    <section class="section">
+      <div class="container">
+        <!-- Top Filter & Search Bar -->
+        <div style="background:#FFFFFF; border:1px solid var(--cream-border); border-radius:var(--radius-lg); padding:1.25rem 1.75rem; margin-bottom:2rem; box-shadow:var(--shadow-sm); display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:1.25rem;">
+          <div style="flex:1; min-width:280px; position:relative;">
+            <input type="text" id="catalogSearchInput" class="form-control" placeholder="Search by course title, code (e.g. BIB-101), or faculty..." style="padding-left:2.75rem;">
+            <svg style="position:absolute; left:1rem; top:50%; transform:translateY(-50%); color:var(--charcoal-400);" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
+            <div style="display:flex; align-items:center; gap:0.5rem;">
+              <label for="catalogSortSelect" style="font-size:0.85rem; font-weight:600; color:var(--charcoal-600); white-space:nowrap;">Sort By:</label>
+              <select id="catalogSortSelect" class="form-control form-select" style="width:auto; padding:0.45rem 2rem 0.45rem 0.85rem; font-size:0.875rem;">
+                <option value="featured">Featured & Popular</option>
+                <option value="newest">Recently Added</option>
+                <option value="price-asc">Tuition: Low to High</option>
+                <option value="price-desc">Tuition: High to Low</option>
+                <option value="name-asc">Course Title (A–Z)</option>
+              </select>
+            </div>
+
+            <button type="button" id="btnMobileFilterToggle" class="btn btn-secondary btn-sm" style="display:none;">
+              Filters
+            </button>
+          </div>
+        </div>
+
+        <!-- Catalogue Grid Layout -->
+        <div class="catalogue-layout" style="display:grid; grid-template-columns: 280px 1fr; gap:2.5rem; align-items:start;">
+          <!-- Filter Sidebar -->
+          <aside class="catalogue-sidebar" style="background:#FFFFFF; border:1px solid var(--cream-border); border-radius:var(--radius-lg); padding:1.75rem; box-shadow:var(--shadow-sm); position:sticky; top:calc(var(--header-height) + 1.5rem);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; border-bottom:1px solid var(--cream-border); padding-bottom:0.75rem;">
+              <h3 style="font-size:1.15rem; font-weight:700; color:var(--burgundy-950);">Filter Catalogue</h3>
+              <button type="button" id="btnResetFilters" style="font-size:0.78rem; font-weight:700; color:var(--burgundy-700); text-decoration:underline;">Reset All</button>
+            </div>
+
+            <!-- Categories Filter -->
+            <div style="margin-bottom:1.75rem;">
+              <h4 style="font-size:0.9rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--charcoal-800); margin-bottom:0.75rem;">
+                Curriculum Discipline
+              </h4>
+              <div style="display:flex; flex-direction:column; gap:0.5rem; font-size:0.875rem;">
+                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                  <input type="radio" name="filterCategory" value="ALL" checked> All Disciplines
+                </label>
+                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                  <input type="radio" name="filterCategory" value="Biblical Languages"> Biblical Languages
+                </label>
+                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                  <input type="radio" name="filterCategory" value="Systematic Theology"> Systematic Theology
+                </label>
+                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                  <input type="radio" name="filterCategory" value="Pastoral Ministry"> Pastoral Ministry
+                </label>
+                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                  <input type="radio" name="filterCategory" value="Church History"> Church History
+                </label>
+                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                  <input type="radio" name="filterCategory" value="Apologetics & Ethics"> Apologetics & Ethics
+                </label>
+                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                  <input type="radio" name="filterCategory" value="Biblical Studies"> Biblical Studies
+                </label>
+              </div>
+            </div>
+
+            <!-- Academic Level Filter -->
+            <div style="margin-bottom:1.75rem;">
+              <h4 style="font-size:0.9rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--charcoal-800); margin-bottom:0.75rem;">
+                Academic Level
+              </h4>
+              <div style="display:flex; flex-direction:column; gap:0.5rem; font-size:0.875rem;">
+                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                  <input type="radio" name="filterLevel" value="ALL" checked> All Levels
+                </label>
+                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                  <input type="radio" name="filterLevel" value="Beginner"> Foundational / Beginner
+                </label>
+                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                  <input type="radio" name="filterLevel" value="Intermediate"> Intermediate
+                </label>
+                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                  <input type="radio" name="filterLevel" value="Advanced"> Advanced / Exegetical
+                </label>
+              </div>
+            </div>
+
+            <!-- Study Mode Filter -->
+            <div style="margin-bottom:1.75rem;">
+              <h4 style="font-size:0.9rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--charcoal-800); margin-bottom:0.75rem;">
+                Instruction Format
+              </h4>
+              <div style="display:flex; flex-direction:column; gap:0.5rem; font-size:0.875rem;">
+                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                  <input type="radio" name="filterMode" value="ALL" checked> All Formats
+                </label>
+                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                  <input type="radio" name="filterMode" value="Online Interactive"> Live Interactive Seminars
+                </label>
+                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                  <input type="radio" name="filterMode" value="Hybrid"> Hybrid Modular
+                </label>
+                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                  <input type="radio" name="filterMode" value="Self-Paced"> Self-Paced Video Course
+                </label>
+              </div>
+            </div>
+
+            <!-- Duration Filter -->
+            <div style="margin-bottom:1.5rem;">
+              <h4 style="font-size:0.9rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--charcoal-800); margin-bottom:0.75rem;">
+                Cohort Duration
+              </h4>
+              <div style="display:flex; flex-direction:column; gap:0.5rem; font-size:0.875rem;">
+                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                  <input type="radio" name="filterDuration" value="ALL" checked> All Lengths
+                </label>
+                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                  <input type="radio" name="filterDuration" value="short"> Short (6–8 Weeks)
+                </label>
+                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                  <input type="radio" name="filterDuration" value="medium"> Standard (10–12 Weeks)
+                </label>
+                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                  <input type="radio" name="filterDuration" value="long"> Extended (14+ Weeks)
+                </label>
+              </div>
+            </div>
+          </aside>
+
+          <!-- Catalogue Results -->
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+              <p id="catalogueResultCount" style="font-size:0.9rem; font-weight:600; color:var(--charcoal-700);">
+                Showing 12 Theological Courses
+              </p>
+              <div style="font-size:0.8rem; color:var(--charcoal-500);">
+                Fall 2026 Semester Cohorts
+              </div>
+            </div>
+
+            <!-- Course Grid -->
+            <div id="catalogCourseGrid" class="courses-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr)); gap:1.75rem;">
+              <!-- Rendered via JavaScript -->
+            </div>
+
+            <!-- Empty Results State -->
+            <div id="catalogEmptyState" style="display:none; text-align:center; padding:4rem 2rem; background:#FFFFFF; border:1px solid var(--cream-border); border-radius:var(--radius-lg);">
+              <div style="font-size:3rem; margin-bottom:1rem;">🔍</div>
+              <h3 style="margin-bottom:0.5rem;">No Courses Match Your Criteria</h3>
+              <p style="color:var(--charcoal-600); max-width:440px; margin:0 auto 1.5rem;">
+                We could not find any active cohorts matching your filter selections. Try adjusting your search keyword or resetting filters.
+              </p>
+              <button type="button" class="btn btn-primary" onclick="resetFiltersAndReload()">Reset Filter Parameters</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="brand" style="margin-bottom:1rem;">
+            <div class="brand-crest" style="width:40px; height:40px; font-size:1.1rem;">B</div>
+            <div class="brand-text">
+              <span class="footer-brand-title">Berea Bible Institute</span>
+              <span class="footer-brand-motto">Veritas et Fides</span>
+            </div>
+          </div>
+          <p class="footer-desc">
+            Equipping pastors, church planters, and disciples with confessional theological training and biblical exegesis.
+          </p>
+        </div>
+        <div>
+          <h4 class="footer-col-title">Disciplines</h4>
+          <div class="footer-links">
+            <a href="courses.html?category=Biblical+Languages" class="footer-link">Biblical Languages</a>
+            <a href="courses.html?category=Systematic+Theology" class="footer-link">Systematic Theology</a>
+            <a href="courses.html?category=Pastoral+Ministry" class="footer-link">Pastoral Ministry</a>
+            <a href="courses.html?category=Church+History" class="footer-link">Church History</a>
+          </div>
+        </div>
+        <div>
+          <h4 class="footer-col-title">Enrollment</h4>
+          <div class="footer-links">
+            <a href="registration.html" class="footer-link">Student Application</a>
+            <a href="cart.html" class="footer-link">Shopping Cart</a>
+            <a href="checkout.html" class="footer-link">Tuition & Checkout</a>
+            <a href="student-login.html" class="footer-link">Student Portal Sign In</a>
+          </div>
+        </div>
+        <div>
+          <h4 class="footer-col-title">Support</h4>
+          <p class="footer-desc">
+            Admissions Hotline: +1 (800) 555-BEREA<br>
+            Office Hours: Mon–Fri, 8:00 AM – 5:00 PM MST
+          </p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Berea Bible Institute & Theological Seminary. Prototype Demonstration.</p>
+        <div class="footer-bottom-links">
+          <a href="#" class="footer-link">Statement of Faith</a>
+          <a href="#" class="footer-link">Terms & Policies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/courses.js"></script>
+  <script src="assets/js/cart.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script>
+    // Live Catalogue Filtering & Search Controller
+    document.addEventListener('DOMContentLoaded', () => {
+      const searchInput = document.getElementById('catalogSearchInput');
+      const sortSelect = document.getElementById('catalogSortSelect');
+      const resetBtn = document.getElementById('btnResetFilters');
+
+      // Check URL query parameters for initial filters (e.g. ?category=Biblical+Languages)
+      const urlParams = new URLSearchParams(window.location.search);
+      const initialCat = urlParams.get('category');
+      if (initialCat) {
+        const catRadio = document.querySelector(`input[name="filterCategory"][value="${initialCat}"]`);
+        if (catRadio) catRadio.checked = true;
+      }
+
+      function updateCatalog() {
+        const search = searchInput ? searchInput.value : '';
+        const sort = sortSelect ? sortSelect.value : 'featured';
+        const category = document.querySelector('input[name="filterCategory"]:checked')?.value || 'ALL';
+        const level = document.querySelector('input[name="filterLevel"]:checked')?.value || 'ALL';
+        const mode = document.querySelector('input[name="filterMode"]:checked')?.value || 'ALL';
+        const duration = document.querySelector('input[name="filterDuration"]:checked')?.value || 'ALL';
+
+        const filtered = queryCourses({ search, category, level, mode, duration, sort });
+        const grid = document.getElementById('catalogCourseGrid');
+        const count = document.getElementById('catalogueResultCount');
+        const empty = document.getElementById('catalogEmptyState');
+
+        if (count) count.textContent = `Showing ${filtered.length} Theological Courses`;
+
+        if (filtered.length === 0) {
+          if (grid) grid.style.display = 'none';
+          if (empty) empty.style.display = 'block';
+        } else {
+          if (empty) empty.style.display = 'none';
+          if (grid) {
+            grid.style.display = 'grid';
+            grid.innerHTML = filtered.map(createCourseCardHTML).join('');
+          }
+        }
+      }
+
+      if (searchInput) searchInput.addEventListener('input', updateCatalog);
+      if (sortSelect) sortSelect.addEventListener('change', updateCatalog);
+      document.querySelectorAll('input[type="radio"]').forEach(r => r.addEventListener('change', updateCatalog));
+
+      window.resetFiltersAndReload = function() {
+        if (searchInput) searchInput.value = '';
+        document.querySelectorAll('input[type="radio"][value="ALL"]').forEach(r => r.checked = true);
+        if (sortSelect) sortSelect.value = 'featured';
+        updateCatalog();
+      };
+
+      if (resetBtn) resetBtn.addEventListener('click', resetFiltersAndReload);
+
+      // Initial catalog render
+      updateCatalog();
+    });
+  </script>
+</body>
+</html>
+

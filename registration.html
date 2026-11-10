@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Registration & Admissions | Berea Bible Institute</title>
+  <meta name="description" content="Complete your online application and profile registration for Berea Bible Institute and Theological Seminary.">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+</head>
+<body>
+
+  <!-- Topbar -->
+  <aside class="topbar">
+    <div class="container">
+      <div>
+        <span class="text-gold font-bold">Admissions Guidance:</span>
+        <span>Need assistance with your application? Call Admissions at +1 (800) 555-BEREA</span>
+      </div>
+      <div class="topbar-links">
+        <a href="courses.html" class="topbar-link">Course Catalogue</a>
+        <span>•</span>
+        <a href="student-login.html" class="topbar-link">Sign In</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="brand">
+        <div class="brand-crest">B</div>
+        <div class="brand-text">
+          <span class="brand-title">Berea Bible Institute</span>
+          <span class="brand-subtitle">& Theological Seminary</span>
+        </div>
+      </a>
+
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="courses.html" class="nav-link">Course Catalogue</a>
+        <a href="registration.html" class="nav-link active">Admissions</a>
+        <a href="student-dashboard.html" class="nav-link">Student Hub</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="cart.html" class="cart-button" title="View Enrollment Cart">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+          <span class="cart-badge">0</span>
+        </a>
+        <a href="student-login.html" class="btn btn-secondary btn-sm">Sign In</a>
+        <button type="button" class="mobile-nav-toggle" aria-label="Open Menu">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="mobile-drawer-overlay"></div>
+  <div class="mobile-drawer">
+    <div class="drawer-header">
+      <div class="brand">
+        <div class="brand-crest" style="width:36px; height:36px; font-size:1rem;">B</div>
+        <span class="brand-title" style="font-size:1.05rem;">Berea Institute</span>
+      </div>
+      <button type="button" class="drawer-close">✕</button>
+    </div>
+    <div class="drawer-links">
+      <a href="index.html" class="drawer-link">Home</a>
+      <a href="courses.html" class="drawer-link">Course Catalogue</a>
+      <a href="registration.html" class="drawer-link active">Student Registration</a>
+      <a href="cart.html" class="drawer-link">Shopping Cart</a>
+      <a href="student-login.html" class="drawer-link">Student Login</a>
+    </div>
+  </div>
+
+  <main>
+    <!-- Page Header Banner -->
+    <section style="background: linear-gradient(135deg, var(--burgundy-950) 0%, var(--burgundy-900) 100%); color:#FFFFFF; padding:3.5rem 0 3rem; border-bottom:3px solid var(--gold-500);">
+      <div class="container container-narrow">
+        <span class="eyebrow" style="color:var(--gold-400); margin-bottom:0.75rem;">OFFICIAL ADMISSIONS</span>
+        <h1 style="color:#FFFFFF; margin-bottom:0.75rem;">Student Profile & Registration</h1>
+        <p style="font-size:1.05rem; color:rgba(255,255,255,0.85); line-height:1.6;">
+          Please complete your personal and academic background information. This profile is used for official transcript generation, cohort communication, and diploma credentials.
+        </p>
+      </div>
+    </section>
+
+    <!-- Registration Form Section -->
+    <section class="section">
+      <div class="container container-narrow">
+        <form id="studentRegistrationForm" class="card" style="padding:2.5rem 2.5rem 3rem; box-shadow:var(--shadow-md);" novalidate>
+
+          <!-- 1. Personal Identity -->
+          <div style="border-bottom:1.5px solid var(--cream-border); padding-bottom:1.75rem; margin-bottom:2rem;">
+            <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:1.25rem;">
+              <span style="width:32px; height:32px; border-radius:50%; background:var(--burgundy-800); color:#FFF; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.9rem;">1</span>
+              <h2 style="font-size:1.35rem; color:var(--burgundy-950); margin:0;">Personal Identity</h2>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:1.25rem;">
+              <div class="form-group">
+                <label for="regFullName" class="form-label">Full Legal Name <span class="required">*</span></label>
+                <input type="text" id="regFullName" name="fullName" class="form-control" placeholder="e.g. Timothy David Paul" required>
+                <div class="invalid-feedback">Full name is required as it will appear on diplomas.</div>
+              </div>
+
+              <div class="form-group">
+                <label for="regDob" class="form-label">Date of Birth <span class="required">*</span></label>
+                <input type="date" id="regDob" name="dateOfBirth" class="form-control" required>
+                <div class="invalid-feedback">Please select your date of birth.</div>
+              </div>
+
+              <div class="form-group">
+                <label for="regGender" class="form-label">Gender <span class="required">*</span></label>
+                <select id="regGender" name="gender" class="form-control form-select" required>
+                  <option value="">Select Gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
+                <div class="invalid-feedback">Please indicate gender.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Contact Information -->
+          <div style="border-bottom:1.5px solid var(--cream-border); padding-bottom:1.75rem; margin-bottom:2rem;">
+            <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:1.25rem;">
+              <span style="width:32px; height:32px; border-radius:50%; background:var(--burgundy-800); color:#FFF; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.9rem;">2</span>
+              <h2 style="font-size:1.35rem; color:var(--burgundy-950); margin:0;">Contact Details</h2>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:1.25rem;">
+              <div class="form-group">
+                <label for="regEmail" class="form-label">Email Address <span class="required">*</span></label>
+                <input type="email" id="regEmail" name="email" class="form-control" placeholder="e.g. timothy@church.org" required>
+                <div class="invalid-feedback">Valid email required for class access.</div>
+              </div>
+
+              <div class="form-group">
+                <label for="regMobile" class="form-label">Mobile Phone (with country code) <span class="required">*</span></label>
+                <input type="tel" id="regMobile" name="mobile" class="form-control" placeholder="+1 (555) 234-5678" required>
+                <div class="invalid-feedback">Valid mobile number required.</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="regAddress" class="form-label">Residential / Postal Address <span class="required">*</span></label>
+              <input type="text" id="regAddress" name="address" class="form-control" placeholder="Street Address, Apt / Suite / Unit" required>
+              <div class="invalid-feedback">Street address is required.</div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:1.25rem;">
+              <div class="form-group">
+                <label for="regCity" class="form-label">City <span class="required">*</span></label>
+                <input type="text" id="regCity" name="city" class="form-control" placeholder="City" required>
+                <div class="invalid-feedback">City is required.</div>
+              </div>
+
+              <div class="form-group">
+                <label for="regState" class="form-label">State / Province <span class="required">*</span></label>
+                <input type="text" id="regState" name="state" class="form-control" placeholder="State / Province" required>
+                <div class="invalid-feedback">State/Province is required.</div>
+              </div>
+
+              <div class="form-group">
+                <label for="regPostal" class="form-label">Postal / Zip Code <span class="required">*</span></label>
+                <input type="text" id="regPostal" name="postalCode" class="form-control" placeholder="Postal Code" required>
+                <div class="invalid-feedback">Postal code is required.</div>
+              </div>
+
+              <div class="form-group">
+                <label for="regCountry" class="form-label">Country <span class="required">*</span></label>
+                <select id="regCountry" name="country" class="form-control form-select" required>
+                  <option value="United States" selected>United States</option>
+                  <option value="Canada">Canada</option>
+                  <option value="United Kingdom">United Kingdom</option>
+                  <option value="India">India</option>
+                  <option value="Australia">Australia</option>
+                  <option value="South Africa">South Africa</option>
+                  <option value="Other">Other International</option>
+                </select>
+                <div class="invalid-feedback">Country selection is required.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Academic & Ministry Background -->
+          <div style="border-bottom:1.5px solid var(--cream-border); padding-bottom:1.75rem; margin-bottom:2rem;">
+            <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:1.25rem;">
+              <span style="width:32px; height:32px; border-radius:50%; background:var(--burgundy-800); color:#FFF; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.9rem;">3</span>
+              <h2 style="font-size:1.35rem; color:var(--burgundy-950); margin:0;">Educational & Ministry Background</h2>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:1.25rem;">
+              <div class="form-group">
+                <label for="regQualification" class="form-label">Highest Educational Qualification <span class="required">*</span></label>
+                <select id="regQualification" name="qualification" class="form-control form-select" required>
+                  <option value="">Select Level</option>
+                  <option value="High School Diploma">High School Diploma / GED</option>
+                  <option value="Associate Degree">Associate Degree</option>
+                  <option value="Bachelor Degree">Bachelor's Degree (B.A., B.S., B.Th.)</option>
+                  <option value="Master Degree">Master's Degree (M.A., M.Div., M.S.)</option>
+                  <option value="Doctoral Degree">Doctoral Degree (Ph.D., D.Min., Ed.D.)</option>
+                </select>
+                <div class="invalid-feedback">Please indicate your highest credential.</div>
+              </div>
+
+              <div class="form-group">
+                <label for="regPriorBible" class="form-label">Prior Bible / Theological Education</label>
+                <select id="regPriorBible" name="priorBible" class="form-control form-select">
+                  <option value="None">None (First formal theology course)</option>
+                  <option value="Local Church Discipleship">Local Church Training / Sunday School</option>
+                  <option value="Certificate Level">Bible College Certificate</option>
+                  <option value="Undergraduate Courses">Undergraduate Theological Coursework</option>
+                  <option value="Seminary Graduate">Graduate Seminary Studies</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:1.25rem;">
+              <div class="form-group">
+                <label for="regChurchName" class="form-label">Local Church or Ministry Affiliation <span class="form-hint" style="display:inline;">(Optional)</span></label>
+                <input type="text" id="regChurchName" name="churchName" class="form-control" placeholder="e.g. Grace Bible Church, Austin, TX">
+              </div>
+
+              <div class="form-group">
+                <label for="regEmergencyContact" class="form-label">Emergency Contact (Name & Phone) <span class="required">*</span></label>
+                <input type="text" id="regEmergencyContact" name="emergencyContact" class="form-control" placeholder="e.g. Sarah Paul (+1 555-987-6543)" required>
+                <div class="invalid-feedback">Emergency contact is required.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Upload Credentials & Photo -->
+          <div style="margin-bottom:2.5rem;">
+            <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:1.25rem;">
+              <span style="width:32px; height:32px; border-radius:50%; background:var(--burgundy-800); color:#FFF; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.9rem;">4</span>
+              <h2 style="font-size:1.35rem; color:var(--burgundy-950); margin:0;">Document & Photo Attachment</h2>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.75rem;">
+              <!-- Student Photo -->
+              <div>
+                <label class="form-label">Student ID Photo (Headshot) <span class="required">*</span></label>
+                <div class="upload-dropzone" onclick="document.getElementById('profilePhotoInput').click()">
+                  <div class="upload-icon">📷</div>
+                  <p style="font-weight:700; font-size:0.9rem; color:var(--burgundy-900); margin-bottom:0.25rem;">Click to upload portrait photo</p>
+                  <p style="font-size:0.75rem; color:var(--charcoal-500);">PNG or JPG, max 5MB (Used for student portal badge)</p>
+                  <input type="file" id="profilePhotoInput" accept="image/*" style="display:none;" required>
+                </div>
+                <div id="photoPreviewContainer"></div>
+              </div>
+
+              <!-- Document Upload -->
+              <div>
+                <label class="form-label">Academic Transcript or Resume <span class="form-hint" style="display:inline;">(Optional)</span></label>
+                <div class="upload-dropzone" onclick="document.getElementById('documentUploadInput').click()">
+                  <div class="upload-icon">📄</div>
+                  <p style="font-weight:700; font-size:0.9rem; color:var(--burgundy-900); margin-bottom:0.25rem;">Click to upload academic transcript</p>
+                  <p style="font-size:0.75rem; color:var(--charcoal-500);">PDF, DOCX, or scanned document, max 10MB</p>
+                  <input type="file" id="documentUploadInput" accept=".pdf,.doc,.docx" style="display:none;">
+                </div>
+                <div id="docPreviewContainer"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Bar -->
+          <div style="border-top:2px solid var(--cream-border); padding-top:2rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+            <a href="courses.html" class="btn btn-secondary">
+              ← Return to Catalogue
+            </a>
+            <div style="display:flex; gap:1rem;">
+              <button type="submit" class="btn btn-gold btn-lg">
+                Save & Proceed to Course Selection
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="brand" style="margin-bottom:1rem;">
+            <div class="brand-crest" style="width:40px; height:40px; font-size:1.1rem;">B</div>
+            <div class="brand-text">
+              <span class="footer-brand-title">Berea Bible Institute</span>
+              <span class="footer-brand-motto">Veritas et Fides</span>
+            </div>
+          </div>
+          <p class="footer-desc">Accredited biblical and theological education worldwide.</p>
+        </div>
+        <div>
+          <h4 class="footer-col-title">Navigation</h4>
+          <div class="footer-links">
+            <a href="courses.html" class="footer-link">Course Catalogue</a>
+            <a href="registration.html" class="footer-link">Admissions Application</a>
+            <a href="cart.html" class="footer-link">Shopping Cart</a>
+          </div>
+        </div>
+        <div>
+          <h4 class="footer-col-title">Contact</h4>
+          <p class="footer-desc">Admissions Hotline: +1 (800) 555-BEREA<br>Email: admissions@berea-institute.edu</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Berea Bible Institute & Theological Seminary. Prototype Demonstration.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/courses.js"></script>
+  <script src="assets/js/cart.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/registration.js"></script>
+</body>
+</html>
+
