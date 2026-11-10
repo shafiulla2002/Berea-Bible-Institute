@@ -176,6 +176,7 @@
 
   <script src="assets/js/courses.js"></script>
   <script src="assets/js/cart.js"></script>
+  <script src="assets/js/api.js"></script>
   <script src="assets/js/app.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -221,7 +222,7 @@
       renderEnrolledDashboard();
     });
 
-    function renderEnrolledDashboard() {
+    async function renderEnrolledDashboard() {
       const container = document.getElementById('enrolledCoursesList');
       if (!container) return;
 
@@ -243,11 +244,15 @@
         }
       }
 
-      // Retrieve enrolled courses from localStorage (saved upon demo checkout)
+      // Retrieve enrolled courses from database / API
       let enrolled = [];
-      try {
-        enrolled = JSON.parse(localStorage.getItem('berea_enrolled_courses') || '[]');
-      } catch (e) {}
+      if (typeof apiFetchStudentCourses === 'function') {
+        enrolled = await apiFetchStudentCourses();
+      } else {
+        try {
+          enrolled = JSON.parse(localStorage.getItem('berea_enrolled_courses') || '[]');
+        } catch (e) {}
+      }
 
       document.getElementById('statTotalCourses').textContent = enrolled.length;
 

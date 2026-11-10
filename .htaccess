@@ -28,3 +28,4 @@
   ExpiresByType image/png "access plus 1 year"
   ExpiresByType image/svg+xml "access plus 1 year"
 </IfModule>
+

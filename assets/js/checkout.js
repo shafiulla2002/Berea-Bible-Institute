@@ -534,6 +534,9 @@ function executeDemoPayment() {
       }
     });
     localStorage.setItem('berea_enrolled_courses', JSON.stringify(existingEnrolled));
+    if (typeof apiSaveEnrollment === 'function') {
+      apiSaveEnrollment(cart);
+    }
   } catch (e) {}
 
   setTimeout(() => {

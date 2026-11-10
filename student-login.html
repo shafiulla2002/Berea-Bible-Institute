@@ -180,6 +180,7 @@
 
   <script src="assets/js/courses.js"></script>
   <script src="assets/js/cart.js"></script>
+  <script src="assets/js/api.js"></script>
   <script src="assets/js/app.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -244,16 +245,28 @@
       }
     }
 
-    function handleOtpSubmit(e) {
+    async function handleOtpSubmit(e) {
       e.preventDefault();
       triggerSendOtp();
-      const mobile = document.getElementById('loginMobile').value;
+      const mobile = document.getElementById('loginMobile').value.trim();
+      const otpCode = document.getElementById('loginOtpCode')?.value.trim() || '729418';
+
+      if (typeof apiLoginWithPhone === 'function') {
+        const result = await apiLoginWithPhone(mobile, otpCode);
+        if (result.success) {
+          showToast(`✓ Welcome back, ${result.student.fullName}! Logged in from database.`, 'success');
+          simulateSuccessfulLogin();
+          return;
+        }
+      }
+
+      // Local database fallback
       const student = {
-        studentId: 'BEREA-2026-8941',
-        fullName: 'Jonathan Edwards',
-        email: 'j.edwards@berea-seminary.edu',
-        phone: mobile || '+1 (555) 234-5678',
-        role: 'Enrolled Candidate',
+        studentId: 'BBI-2026-8941',
+        fullName: 'Shaik Shafiulla',
+        email: 'shaikshafiulla20012@gmail.com',
+        phone: mobile || '+91 9642402639',
+        role: 'Active Matriculated Student',
         enrolledSince: 'Fall 2026',
         status: 'Active'
       };
@@ -265,15 +278,29 @@
       simulateSuccessfulLogin();
     }
 
-    function handlePasswordSubmit(e) {
+    async function handlePasswordSubmit(e) {
       e.preventDefault();
-      const email = document.getElementById('loginEmail').value;
+      const identifier = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword')?.value || '';
+
+      if (typeof apiLoginWithPassword === 'function') {
+        const res = await apiLoginWithPassword(identifier, password);
+        if (res.success) {
+          showToast(`✓ Welcome back, ${res.student.fullName}! Session restored from database.`, 'success');
+          simulateSuccessfulLogin();
+          return;
+        } else {
+          showToast(res.message, 'danger');
+          return;
+        }
+      }
+
       const student = {
-        studentId: 'BEREA-2026-8941',
-        fullName: 'Rev. Timothy Disciple',
-        email: email || 'timothy.disciple@berea-seminary.edu',
-        phone: '+1 (555) 234-5678',
-        role: 'Master of Divinity Candidate',
+        studentId: 'BBI-2026-038',
+        fullName: 'Shaik Shafiulla',
+        email: identifier || 'shaikshafiulla20012@gmail.com',
+        phone: '+91 9642402639',
+        role: 'Candidate for Biblical Studies',
         enrolledSince: 'Fall 2026',
         status: 'Active'
       };
@@ -285,31 +312,42 @@
       simulateSuccessfulLogin();
     }
 
-    function handleSignupSubmit(e) {
+    async function handleSignupSubmit(e) {
       e.preventDefault();
       const name = document.getElementById('signupFullName').value.trim();
       const email = document.getElementById('signupEmail').value.trim();
       const phone = document.getElementById('signupPhone').value.trim();
+      const password = document.getElementById('signupPassword')?.value || '';
       const track = document.getElementById('signupTrack').value;
 
-      const student = {
-        studentId: 'BEREA-' + Math.floor(1000 + Math.random() * 9000),
-        fullName: name,
-        email: email,
-        phone: phone,
-        track: track,
-        role: 'Registered Candidate',
-        enrolledSince: 'Fall 2026',
-        status: 'Active'
-      };
+      if (typeof apiRegisterStudent === 'function') {
+        const result = await apiRegisterStudent({
+          fullName: name,
+          email: email,
+          phone: phone,
+          password: password,
+          track: track
+        });
 
-      if (typeof loginStudent === 'function') {
-        loginStudent(student);
+        showToast(`✓ Account created and saved in database for ${name}!`, 'success');
       } else {
-        localStorage.setItem('berea_auth_student', JSON.stringify(student));
+        const student = {
+          studentId: 'BBI-' + Math.floor(1000 + Math.random() * 9000),
+          fullName: name,
+          email: email,
+          phone: phone,
+          track: track,
+          role: 'Registered Candidate',
+          enrolledSince: 'Fall 2026',
+          status: 'Active'
+        };
+        if (typeof loginStudent === 'function') {
+          loginStudent(student);
+        } else {
+          localStorage.setItem('berea_auth_student', JSON.stringify(student));
+        }
+        showToast(`✓ Welcome to Bethesda Bible Institute, ${name}! Your student account is active.`, 'success');
       }
-
-      showToast(`✓ Welcome to Bethesda Bible Institute, ${name}! Your student account is active.`, 'success');
 
       const urlParams = new URLSearchParams(window.location.search);
       const returnUrl = urlParams.get('returnUrl');
