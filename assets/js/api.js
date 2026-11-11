@@ -7,6 +7,32 @@
 const BIBLE_LMS_API_BASE = 'https://bible-learning-app-bm4j.vercel.app/api';
 
 /**
+ * Call backend API seamlessly via same-origin PHP proxy on cPanel (avoiding CORS)
+ * or direct fetch when hosted on static Vercel/local environments.
+ */
+async function callBackendApi(subPath, fetchOptions = {}) {
+  const cleanSubPath = subPath.startsWith('/') ? subPath : `/${subPath}`;
+  const fullApiPath = `/api${cleanSubPath}`;
+  const isHttp = window.location.protocol === 'http:' || window.location.protocol === 'https:';
+  const isVercelStatic = window.location.hostname.endsWith('vercel.app');
+
+  // On cPanel / custom domains (e.g., biblelearninglms.covenantsynergy.in), prefer same-origin PHP proxy first
+  if (isHttp && !isVercelStatic) {
+    try {
+      const proxyRes = await fetch(`api-proxy.php?path=${encodeURIComponent(fullApiPath)}`, fetchOptions);
+      const contentType = proxyRes.headers.get('content-type') || '';
+      if (contentType.includes('application/json')) {
+        return proxyRes;
+      }
+    } catch (e) {
+      // Fall through to direct API call
+    }
+  }
+
+  return await fetch(`${BIBLE_LMS_API_BASE}${cleanSubPath}`, fetchOptions);
+}
+
+/**
  * Multi-user Database Repository (indexed by email / phone)
  */
 const BBI_DB = {
@@ -21,12 +47,13 @@ const BBI_DB = {
   saveAccount(student) {
     const accounts = this.getAccounts();
     const key = (student.phone || student.email || student.studentId).toLowerCase().trim();
-    accounts[key] = {
+    const record = {
       ...student,
       updatedAt: new Date().toISOString()
     };
-    if (student.email) accounts[student.email.toLowerCase().trim()] = accounts[key];
-    if (student.phone) accounts[student.phone.replace(/\D/g, '')] = accounts[key];
+    accounts[key] = record;
+    if (student.email) accounts[student.email.toLowerCase().trim()] = record;
+    if (student.phone) accounts[student.phone.replace(/\D/g, '')] = record;
     localStorage.setItem('bbi_database_students', JSON.stringify(accounts));
   },
 
@@ -47,12 +74,35 @@ const BBI_DB = {
 };
 
 /**
+ * Helper to sync active student's courses/token into session storage cleanly
+ */
+function syncActiveAccountSession(studentData) {
+  if (studentData.accessToken) {
+    localStorage.setItem('berea_auth_token', studentData.accessToken);
+  } else {
+    localStorage.removeItem('berea_auth_token');
+  }
+
+  if (Array.isArray(studentData.enrolledCourses)) {
+    localStorage.setItem('berea_enrolled_courses', JSON.stringify(studentData.enrolledCourses));
+  } else {
+    localStorage.setItem('berea_enrolled_courses', '[]');
+  }
+
+  if (typeof loginStudent === 'function') {
+    loginStudent(studentData);
+  } else {
+    localStorage.setItem('berea_auth_student', JSON.stringify(studentData));
+  }
+}
+
+/**
  * 1. Authenticate with Live Bible Management Database (Phone / OTP)
  */
 async function apiLoginWithPhone(phoneNumber, otp = '') {
   try {
     const cleanPhone = phoneNumber.replace(/\D/g, '');
-    const res = await fetch(`${BIBLE_LMS_API_BASE}/auth/phone-login`, {
+    const res = await callBackendApi('/auth/phone-login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -64,6 +114,7 @@ async function apiLoginWithPhone(phoneNumber, otp = '') {
 
     const data = await res.json();
     if (res.ok && data.success && data.user) {
+      const existingLocal = BBI_DB.findAccount(phoneNumber);
       const studentData = {
         studentId: data.user.admissionNo || ('BBI-' + data.user.id.slice(0, 6).toUpperCase()),
         fullName: data.user.fullName,
@@ -75,26 +126,23 @@ async function apiLoginWithPhone(phoneNumber, otp = '') {
         accessToken: data.accessToken,
         studentProfileId: data.user.studentProfileId,
         instituteId: data.user.instituteId,
-        instituteName: data.user.instituteName || 'Bethesda Bible Institute'
+        instituteName: data.user.instituteName || 'Bethesda Bible Institute',
+        enrolledCourses: (existingLocal && !existingLocal.error && Array.isArray(existingLocal.enrolledCourses))
+          ? existingLocal.enrolledCourses
+          : []
       };
 
       // Persist to multi-user database & active session
       BBI_DB.saveAccount(studentData);
-      localStorage.setItem('berea_auth_token', data.accessToken);
-      if (typeof loginStudent === 'function') {
-        loginStudent(studentData);
-      } else {
-        localStorage.setItem('berea_auth_student', JSON.stringify(studentData));
-      }
+      syncActiveAccountSession(studentData);
 
       // Automatically fetch live enrolled courses from the database
       await apiFetchStudentCourses(data.accessToken);
       return { success: true, student: studentData };
     } else {
-      // Fallback to local accounts database if external phone isn't seeded yet
       const localAccount = BBI_DB.findAccount(phoneNumber);
       if (localAccount && !localAccount.error) {
-        if (typeof loginStudent === 'function') loginStudent(localAccount);
+        syncActiveAccountSession(localAccount);
         return { success: true, student: localAccount };
       }
       return { success: false, message: data.message || 'Authentication failed' };
@@ -103,7 +151,7 @@ async function apiLoginWithPhone(phoneNumber, otp = '') {
     console.warn('API phone-login fallback to local database:', err);
     const localAccount = BBI_DB.findAccount(phoneNumber);
     if (localAccount && !localAccount.error) {
-      if (typeof loginStudent === 'function') loginStudent(localAccount);
+      syncActiveAccountSession(localAccount);
       return { success: true, student: localAccount };
     }
     return { success: false, message: err.message };
@@ -119,10 +167,9 @@ async function apiLoginWithPassword(identifier, password) {
     if (account.error) {
       return { success: false, message: account.error };
     }
-    if (typeof loginStudent === 'function') {
-      loginStudent(account);
-    } else {
-      localStorage.setItem('berea_auth_student', JSON.stringify(account));
+    syncActiveAccountSession(account);
+    if (account.accessToken) {
+      await apiFetchStudentCourses(account.accessToken);
     }
     return { success: true, student: account };
   }
@@ -156,13 +203,7 @@ async function apiRegisterStudent(studentInput) {
 
   // Save to database
   BBI_DB.saveAccount(student);
-
-  // Set active session
-  if (typeof loginStudent === 'function') {
-    loginStudent(student);
-  } else {
-    localStorage.setItem('berea_auth_student', JSON.stringify(student));
-  }
+  syncActiveAccountSession(student);
 
   return { success: true, student };
 }
@@ -173,7 +214,6 @@ async function apiRegisterStudent(studentInput) {
 async function apiFetchStudentCourses(token = null) {
   const authToken = token || localStorage.getItem('berea_auth_token');
   if (!authToken) {
-    // Return student's locally persisted enrolled courses
     try {
       const student = JSON.parse(localStorage.getItem('berea_auth_student') || '{}');
       return student.enrolledCourses || JSON.parse(localStorage.getItem('berea_enrolled_courses') || '[]');
@@ -183,7 +223,8 @@ async function apiFetchStudentCourses(token = null) {
   }
 
   try {
-    const res = await fetch(`${BIBLE_LMS_API_BASE}/students/courses`, {
+    const res = await callBackendApi('/students/courses', {
+      method: 'GET',
       headers: {
         'Authorization': `Bearer ${authToken}`,
         'Content-Type': 'application/json'
@@ -206,8 +247,14 @@ async function apiFetchStudentCourses(token = null) {
           completedLessons: c.completedLessons || 0
         }));
 
-        // Cache live courses for student dashboard
+        // Cache live courses for student dashboard & save to account record
         localStorage.setItem('berea_enrolled_courses', JSON.stringify(mappedCourses));
+        const student = JSON.parse(localStorage.getItem('berea_auth_student') || '{}');
+        if (student && (student.email || student.phone)) {
+          student.enrolledCourses = mappedCourses;
+          BBI_DB.saveAccount(student);
+          localStorage.setItem('berea_auth_student', JSON.stringify(student));
+        }
         return mappedCourses;
       }
     }

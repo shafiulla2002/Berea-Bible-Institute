@@ -63,6 +63,9 @@ function loginStudent(studentData) {
 
 function logoutStudent() {
   localStorage.removeItem('berea_auth_student');
+  localStorage.removeItem('berea_auth_token');
+  localStorage.removeItem('berea_enrolled_courses');
+  localStorage.removeItem('berea_student_registration');
   if (typeof clearCart === 'function') {
     clearCart();
   } else {
@@ -567,11 +570,12 @@ function createAuthModalDOM() {
   document.body.appendChild(overlay);
 }
 
-function handleModalSignup(e) {
+async function handleModalSignup(e) {
   e.preventDefault();
   const name = document.getElementById('modalSignupName').value.trim();
   const email = document.getElementById('modalSignupEmail').value.trim();
   const phone = document.getElementById('modalSignupPhone').value.trim();
+  const password = document.getElementById('modalSignupPassword')?.value || '';
   const track = document.getElementById('modalSignupTrack').value;
 
   if (!name || !email) {
@@ -579,18 +583,30 @@ function handleModalSignup(e) {
     return;
   }
 
-  const student = {
-    studentId: 'BEREA-' + Math.floor(1000 + Math.random() * 9000),
-    fullName: name,
-    email: email,
-    phone: phone,
-    track: track,
-    role: 'Registered Candidate',
-    enrolledSince: 'Fall 2026',
-    status: 'Active'
-  };
+  let student;
+  if (typeof apiRegisterStudent === 'function') {
+    const res = await apiRegisterStudent({
+      fullName: name,
+      email: email,
+      phone: phone,
+      password: password,
+      track: track
+    });
+    student = res.student;
+  } else {
+    student = {
+      studentId: 'BBI-' + Math.floor(1000 + Math.random() * 9000),
+      fullName: name,
+      email: email,
+      phone: phone,
+      track: track,
+      role: 'Registered Candidate',
+      enrolledSince: 'Fall 2026',
+      status: 'Active'
+    };
+    loginStudent(student);
+  }
 
-  loginStudent(student);
   closeAuthModal();
 
   const pending = authModalPendingCourseId || sessionStorage.getItem('berea_pending_course');
@@ -609,22 +625,33 @@ function handleModalSignup(e) {
   }
 }
 
-function handleModalSignin(e) {
+async function handleModalSignin(e) {
   e.preventDefault();
   const identifier = document.getElementById('modalSigninIdentifier').value.trim();
-  const name = identifier.includes('@') ? identifier.split('@')[0].replace('.', ' ') : 'Registered Student';
+  const password = document.getElementById('modalSigninPassword')?.value || '';
 
-  const student = {
-    studentId: 'BEREA-2026-8941',
-    fullName: name.charAt(0).toUpperCase() + name.slice(1),
-    email: identifier.includes('@') ? identifier : 'student@berea-seminary.edu',
-    phone: identifier.includes('@') ? '+1 (555) 234-5678' : identifier,
-    role: 'Enrolled Candidate',
-    enrolledSince: 'Fall 2026',
-    status: 'Active'
-  };
+  let student = null;
+  if (typeof apiLoginWithPassword === 'function') {
+    const res = await apiLoginWithPassword(identifier, password);
+    if (!res.success) {
+      showToast(res.message || 'Invalid credentials.', 'danger');
+      return;
+    }
+    student = res.student;
+  } else {
+    const name = identifier.includes('@') ? identifier.split('@')[0].replace('.', ' ') : 'Registered Student';
+    student = {
+      studentId: 'BBI-2026-8941',
+      fullName: name.charAt(0).toUpperCase() + name.slice(1),
+      email: identifier.includes('@') ? identifier : 'student@bethesdabible.edu',
+      phone: identifier.includes('@') ? '+1 (555) 234-5678' : identifier,
+      role: 'Enrolled Candidate',
+      enrolledSince: 'Fall 2026',
+      status: 'Active'
+    };
+    loginStudent(student);
+  }
 
-  loginStudent(student);
   closeAuthModal();
 
   const pending = authModalPendingCourseId || sessionStorage.getItem('berea_pending_course');
