@@ -9,14 +9,15 @@ header('Content-Type: application/json; charset=utf-8');
 
 $path = isset($_GET['path']) ? trim($_GET['path']) : '';
 
-// Strictly allow only auth and student endpoints
-if (!preg_match('#^/api/(auth|students)/[a-zA-Z0-9/_-]+$#', $path)) {
+// Strictly allow only auth, students, and public endpoints
+if (!preg_match('#^/api(/v1)?/(auth|students|public)/[a-zA-Z0-9/_-]+$#', $path)) {
     http_response_code(400);
     echo json_encode(['error' => 'Invalid API endpoint path']);
     exit;
 }
 
-$targetUrl = 'https://bible-learning-app-bm4j.vercel.app' . $path;
+$normalizedPath = preg_replace('#^/api/(?!v1/)#', '/api/v1/', $path);
+$targetUrl = 'https://bible-learning-app-bm4j.vercel.app' . $normalizedPath;
 $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method !== 'GET' && $method !== 'POST') {
