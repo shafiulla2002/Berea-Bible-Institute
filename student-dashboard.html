@@ -244,14 +244,13 @@
         }
       }
 
+      if (typeof loadPublicCourses === 'function') {
+        await loadPublicCourses();
+      }
       // Retrieve enrolled courses from database / API
       let enrolled = [];
       if (typeof apiFetchStudentCourses === 'function') {
         enrolled = await apiFetchStudentCourses();
-      } else {
-        try {
-          enrolled = JSON.parse(localStorage.getItem('berea_enrolled_courses') || '[]');
-        } catch (e) {}
       }
 
       document.getElementById('statTotalCourses').textContent = enrolled.length;
@@ -263,7 +262,7 @@
             <div style="font-size:3rem; color:var(--gold-600); margin-bottom:1rem;">📚</div>
             <h3 style="font-size:1.4rem; color:var(--burgundy-950); margin-bottom:0.5rem;">No Enrolled Courses Yet</h3>
             <p style="color:var(--charcoal-600); max-width:520px; margin:0 auto 1.5rem; font-size:0.95rem; line-height:1.65;">
-              Welcome to your Bethesda Student Portal! You have not enrolled in any study cohorts yet. Explore our comprehensive course catalogue to select and purchase your courses.
+              Welcome to your Bethesda Student Portal! You have not enrolled in any study cohorts yet. Explore our comprehensive course catalogue to select and enroll in your courses.
             </p>
             <a href="courses.html" class="btn btn-gold btn-lg">Browse Course Catalogue & Enroll</a>
           </div>
@@ -273,41 +272,45 @@
 
       container.innerHTML = enrolled.map(item => {
         const fullCourse = typeof getCourseById === 'function' ? getCourseById(item.courseId) : null;
-        const instructorName = fullCourse ? fullCourse.instructor.name : 'Dr. Paul Apostle';
-        const duration = fullCourse ? fullCourse.duration : '12 Weeks';
+        const instructorName = fullCourse?.instructor?.name || item.instructorName || 'Institute Faculty';
+        const duration = fullCourse?.duration || item.durationLabel || 'Guided Cohort';
+        const code = fullCourse?.code || item.code || (item.courseId || '').slice(0, 8).toUpperCase();
+        const title = item.course?.title || fullCourse?.title || item.title || 'Enrolled Program';
+        const batchName = item.batch?.name || item.batch || 'Assigned Cohort';
+        const pct = Number(item.progressPct ?? item.progressPercent ?? 0);
 
         return `
           <div class="card" style="padding:2rem; box-shadow:var(--shadow-sm); border-left:5px solid var(--burgundy-700);">
             <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:1rem; flex-wrap:wrap; gap:0.5rem;">
               <div>
-                <span style="font-family:var(--font-mono); font-size:0.75rem; font-weight:700; color:var(--gold-700); background:var(--gold-50); padding:0.2rem 0.5rem; border-radius:4px; border:1px solid var(--gold-300);">${item.code}</span>
-                <h3 style="font-size:1.35rem; color:var(--burgundy-950); margin:0.35rem 0 0.2rem;">${item.title}</h3>
+                <span style="font-family:var(--font-mono); font-size:0.75rem; font-weight:700; color:var(--gold-700); background:var(--gold-50); padding:0.2rem 0.5rem; border-radius:4px; border:1px solid var(--gold-300);">${code}</span>
+                <h3 style="font-size:1.35rem; color:var(--burgundy-950); margin:0.35rem 0 0.2rem;">${title}</h3>
                 <p style="font-size:0.85rem; color:var(--charcoal-600);">Faculty: <strong>${instructorName}</strong> • ${duration}</p>
               </div>
-              <span class="badge badge-success">In Progress (${item.status})</span>
+              <span class="badge badge-success">${item.status || 'ACTIVE'}</span>
             </div>
 
             <!-- Progress Bar -->
             <div style="margin:1.5rem 0;">
               <div style="display:flex; justify-content:space-between; font-size:0.85rem; font-weight:700; color:var(--charcoal-700); margin-bottom:0.4rem;">
                 <span>Curriculum Progress</span>
-                <span style="color:var(--burgundy-800);">${item.progressPct}% Completed</span>
+                <span style="color:var(--burgundy-800);">${pct}% Completed</span>
               </div>
               <div style="width:100%; height:8px; background:var(--cream-border); border-radius:4px; overflow:hidden;">
-                <div style="width:${item.progressPct}%; height:100%; background:linear-gradient(90deg, var(--burgundy-800), var(--gold-500)); border-radius:4px;"></div>
+                <div style="width:${pct}%; height:100%; background:linear-gradient(90deg, var(--burgundy-800), var(--gold-500)); border-radius:4px;"></div>
               </div>
             </div>
 
             <!-- Footer Action Buttons -->
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; border-top:1px solid var(--cream-border); padding-top:1.25rem;">
               <div style="font-size:0.8rem; color:var(--charcoal-500);">
-                Cohort: <strong>${item.batch}</strong>
+                Cohort: <strong>${batchName}</strong>
               </div>
               <div style="display:flex; gap:0.75rem;">
                 <a href="course-details.html?id=${item.courseId}" class="btn btn-secondary btn-sm">Course Syllabus</a>
-                <button type="button" class="btn btn-gold btn-sm" onclick="alert('Demo: Opening lecture modules and reading assignments for ${item.code}')">
-                  Continue Learning →
-                </button>
+                <a href="http://localhost:3000/student/courses/${item.courseId}" class="btn btn-gold btn-sm">
+                  Open Learning Portal →
+                </a>
               </div>
             </div>
           </div>

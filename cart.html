@@ -130,13 +130,13 @@
               </div>
             </div>
 
-            <!-- Demo Promo Notice Box -->
+            <!-- Institutional Scholarship Info -->
             <div class="card" style="padding:1.5rem; margin-top:2rem; background:var(--gold-50); border:1px solid var(--gold-300);">
               <h4 style="font-size:0.95rem; font-weight:700; color:var(--gold-800); margin-bottom:0.35rem;">
-                Available Prototype Demonstration Promo Codes:
+                Institutional Scholarships & Waivers
               </h4>
               <p style="font-size:0.85rem; color:var(--charcoal-700);">
-                Use code <strong style="font-family:var(--font-mono); color:var(--burgundy-900);">BIBLE2026</strong> for 20% tuition scholarship discount, or <strong style="font-family:var(--font-mono); color:var(--burgundy-900);">GRACE50</strong> for a 50% ministry subsidy.
+                Have a scholarship coupon issued by Bethesda Bible Institute Admissions? Enter it in the summary panel to validate against your cohort order.
               </p>
             </div>
           </div>
@@ -155,7 +155,7 @@
             <div style="margin:1.5rem 0; border-top:1px solid var(--cream-border); padding-top:1.25rem;">
               <label for="cartCouponInput" class="form-label" style="font-size:0.8rem;">Have a Scholarship Promo Code?</label>
               <div style="display:flex; gap:0.5rem;">
-                <input type="text" id="cartCouponInput" class="form-control" placeholder="e.g. BIBLE2026" style="text-transform:uppercase; font-family:var(--font-mono); font-size:0.85rem;">
+                <input type="text" id="cartCouponInput" class="form-control" placeholder="Enter coupon code" style="text-transform:uppercase; font-family:var(--font-mono); font-size:0.85rem;">
                 <button type="button" id="btnApplyCartCoupon" class="btn btn-primary btn-sm">Apply</button>
               </div>
             </div>
@@ -170,7 +170,7 @@
             </a>
 
             <div style="margin-top:1.25rem; font-size:0.78rem; text-align:center; color:var(--charcoal-500);">
-              🔒 256-Bit SSL Encrypted Demonstration Checkout
+              🔒 256-Bit TLS Encrypted Razorpay Checkout
             </div>
           </aside>
         </div>
@@ -239,10 +239,10 @@
       });
 
       // Apply Coupon
-      document.getElementById('btnApplyCartCoupon').addEventListener('click', () => {
+      document.getElementById('btnApplyCartCoupon').addEventListener('click', async () => {
         const input = document.getElementById('cartCouponInput');
         if (input && typeof applyCoupon === 'function') {
-          applyCoupon(input.value.trim());
+          await applyCoupon(input.value.trim());
           renderCartView();
         }
       });
@@ -285,13 +285,13 @@
             <div style="font-weight:700; font-size:1.05rem; color:var(--burgundy-950); margin:0.35rem 0 0.2rem;">
               <a href="course-details.html?id=${item.courseId}">${item.title}</a>
             </div>
-            <div style="font-size:0.78rem; color:var(--charcoal-500);">Registration Fee: $${item.registrationFee} (one-time)</div>
+            <div style="font-size:0.78rem; color:var(--charcoal-500);">Registration Fee: ₹${Number(item.registrationFee || 0).toLocaleString('en-IN')} (one-time)</div>
           </td>
           <td style="padding:1.25rem 0.5rem; font-size:0.85rem; color:var(--charcoal-700);">
             <strong>${item.batch || 'Standard Cohort'}</strong>
           </td>
           <td style="padding:1.25rem 0.5rem; text-align:right;">
-            <span style="font-family:var(--font-serif); font-size:1.25rem; font-weight:800; color:var(--burgundy-900);">$${item.price}</span>
+            <span style="font-family:var(--font-serif); font-size:1.25rem; font-weight:800; color:var(--burgundy-900);">₹${Number(item.price || 0).toLocaleString('en-IN')}</span>
           </td>
           <td style="padding:1.25rem 0.5rem; text-align:center;">
             <button type="button" onclick="removeItem('${item.courseId}')" title="Remove course" style="color:var(--status-danger); font-size:1.25rem; cursor:pointer;">
@@ -305,22 +305,22 @@
       const totals = typeof calculateCartTotals === 'function' ? calculateCartTotals() : {};
       summary.innerHTML = `
         <div class="summary-row">
-          <span>Tuition Subtotal (${totals.itemCount} courses)</span>
-          <span>$${totals.subtotal}</span>
+          <span>Tuition Subtotal (${totals.itemCount || 0} courses)</span>
+          <span>₹${Number(totals.subtotal || 0).toLocaleString('en-IN')}</span>
         </div>
         <div class="summary-row">
           <span>Registration & Transcript Fee</span>
-          <span>$${totals.registrationFeeTotal}</span>
+          <span>₹${Number(totals.registrationFeeTotal || 0).toLocaleString('en-IN')}</span>
         </div>
         ${totals.discount > 0 ? `
           <div class="summary-row" style="color:var(--status-success); font-weight:700;">
             <span>Promo Discount (${totals.appliedCoupon.code})</span>
-            <span>-$${totals.discount}</span>
+            <span>-₹${Number(totals.discount || 0).toLocaleString('en-IN')}</span>
           </div>
         ` : ''}
         <div class="summary-total">
           <span class="summary-total-label">Total Payable:</span>
-          <span class="summary-total-amount">$${totals.finalTotal}</span>
+          <span class="summary-total-amount">₹${Number(totals.finalTotal || 0).toLocaleString('en-IN')}</span>
         </div>
       `;
     }

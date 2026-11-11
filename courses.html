@@ -323,10 +323,14 @@
   <script src="assets/js/app.js"></script>
   <script>
     // Live Catalogue Filtering & Search Controller
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       const searchInput = document.getElementById('catalogSearchInput');
       const sortSelect = document.getElementById('catalogSortSelect');
       const resetBtn = document.getElementById('btnResetFilters');
+
+      if (typeof loadPublicCourses === 'function') {
+        await loadPublicCourses();
+      }
 
       // Check URL query parameters for initial filters (e.g. ?category=Biblical+Languages)
       const urlParams = new URLSearchParams(window.location.search);

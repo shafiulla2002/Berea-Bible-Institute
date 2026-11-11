@@ -313,11 +313,17 @@
   <script src="assets/js/api.js"></script>
   <script src="assets/js/app.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // 1. Resolve Course by ID from query string
+    document.addEventListener('DOMContentLoaded', async () => {
+      // 1. Resolve Course by ID/slug from query string via live backend API
       const urlParams = new URLSearchParams(window.location.search);
-      const courseId = urlParams.get('id') || 'course-bib-101';
-      const course = typeof getCourseById === 'function' ? getCourseById(courseId) : null;
+      const courseId = urlParams.get('id');
+      if (!courseId) {
+        window.location.href = 'courses.html';
+        return;
+      }
+      const course = typeof fetchCourseDetailLive === 'function'
+        ? await fetchCourseDetailLive(courseId)
+        : (typeof getCourseById === 'function' ? getCourseById(courseId) : null);
 
       if (!course) {
         window.location.href = 'courses.html';
@@ -339,7 +345,10 @@
       document.getElementById('detailNextBatch').textContent = course.nextBatch;
 
       document.getElementById('detailFullDesc').textContent = course.fullDesc;
-      document.getElementById('detailPriceAmount').textContent = `$${course.price}`;
+      document.getElementById('detailPriceAmount').textContent =
+        course.pricing === 'FREE' || course.price === 0
+          ? 'Free'
+          : `₹${course.price.toLocaleString('en-IN')}`;
 
       // Course Image Preview
       const imgEl = document.getElementById('detailCourseImage');

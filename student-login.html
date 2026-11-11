@@ -57,13 +57,13 @@
           <div class="form-group">
             <label for="loginMobile" class="form-label">Registered Mobile Number <span class="required">*</span></label>
             <div style="display:flex; gap:0.5rem;">
-              <select class="form-control form-select" style="width:110px; padding:0.75rem 1.5rem 0.75rem 0.75rem; font-size:0.85rem;">
+              <select id="loginCountryCode" class="form-control form-select" style="width:110px; padding:0.75rem 1.5rem 0.75rem 0.75rem; font-size:0.85rem;">
+                <option value="+91" selected>+91 (IN)</option>
                 <option value="+1">+1 (US)</option>
-                <option value="+91">+91 (IN)</option>
                 <option value="+44">+44 (UK)</option>
                 <option value="+1">+1 (CA)</option>
               </select>
-              <input type="tel" id="loginMobile" class="form-control" placeholder="(555) 234-5678" value="9876543210" required>
+              <input type="tel" id="loginMobile" class="form-control" placeholder="Enter registered mobile number" required>
             </div>
             <span class="form-hint">A 6-digit verification code will be dispatched to this number.</span>
           </div>
@@ -76,16 +76,16 @@
           <div id="otpInputSection" style="display:none; background:var(--cream-bg); padding:1.25rem; border-radius:var(--radius-md); border:1px solid var(--cream-border); margin-bottom:1.5rem;">
             <label class="form-label" style="text-align:center; margin-bottom:0.5rem;">Enter 6-Digit Verification Code</label>
             <div style="display:flex; justify-content:center; gap:0.4rem; margin-bottom:0.75rem;">
-              <input type="text" maxlength="1" class="form-control otp-box text-mono" value="7" style="width:42px; height:48px; text-align:center; font-size:1.25rem; font-weight:700;">
-              <input type="text" maxlength="1" class="form-control otp-box text-mono" value="2" style="width:42px; height:48px; text-align:center; font-size:1.25rem; font-weight:700;">
-              <input type="text" maxlength="1" class="form-control otp-box text-mono" value="9" style="width:42px; height:48px; text-align:center; font-size:1.25rem; font-weight:700;">
-              <input type="text" maxlength="1" class="form-control otp-box text-mono" value="4" style="width:42px; height:48px; text-align:center; font-size:1.25rem; font-weight:700;">
-              <input type="text" maxlength="1" class="form-control otp-box text-mono" value="1" style="width:42px; height:48px; text-align:center; font-size:1.25rem; font-weight:700;">
-              <input type="text" maxlength="1" class="form-control otp-box text-mono" value="8" style="width:42px; height:48px; text-align:center; font-size:1.25rem; font-weight:700;">
+              <input type="text" maxlength="1" inputmode="numeric" class="form-control otp-box text-mono" style="width:42px; height:48px; text-align:center; font-size:1.25rem; font-weight:700;">
+              <input type="text" maxlength="1" inputmode="numeric" class="form-control otp-box text-mono" style="width:42px; height:48px; text-align:center; font-size:1.25rem; font-weight:700;">
+              <input type="text" maxlength="1" inputmode="numeric" class="form-control otp-box text-mono" style="width:42px; height:48px; text-align:center; font-size:1.25rem; font-weight:700;">
+              <input type="text" maxlength="1" inputmode="numeric" class="form-control otp-box text-mono" style="width:42px; height:48px; text-align:center; font-size:1.25rem; font-weight:700;">
+              <input type="text" maxlength="1" inputmode="numeric" class="form-control otp-box text-mono" style="width:42px; height:48px; text-align:center; font-size:1.25rem; font-weight:700;">
+              <input type="text" maxlength="1" inputmode="numeric" class="form-control otp-box text-mono" style="width:42px; height:48px; text-align:center; font-size:1.25rem; font-weight:700;">
             </div>
             <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.78rem; color:var(--charcoal-500);">
-              <span>Code sent to registered mobile</span>
-              <a href="#" style="color:var(--burgundy-700); font-weight:700;" onclick="triggerSendOtp()">Resend (45s)</a>
+              <span id="otpSentStatusText">Code dispatched via SMS</span>
+              <a href="#" style="color:var(--burgundy-700); font-weight:700;" onclick="event.preventDefault(); triggerSendOtp()">Resend Code</a>
             </div>
           </div>
 
@@ -98,15 +98,15 @@
         <form id="formPasswordLogin" style="display:none;" onsubmit="handlePasswordSubmit(event)">
           <div class="form-group">
             <label for="loginEmail" class="form-label">Registered Email Address <span class="required">*</span></label>
-            <input type="email" id="loginEmail" class="form-control" placeholder="timothy@example.org" value="timothy.disciple@bethesdabible.edu" required>
+            <input type="email" id="loginEmail" class="form-control" placeholder="student@example.org" required>
           </div>
 
           <div class="form-group">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
               <label for="loginPassword" class="form-label" style="margin:0;">Account Password <span class="required">*</span></label>
-              <a href="#" style="font-size:0.78rem; color:var(--burgundy-700); text-decoration:underline;" onclick="alert('Demo: A password reset link has been simulated for your registered email.')">Forgot password?</a>
+              <a href="http://localhost:3000/login" style="font-size:0.78rem; color:var(--burgundy-700); text-decoration:underline;">Portal login assistance</a>
             </div>
-            <input type="password" id="loginPassword" class="form-control" value="SamplePassword123" required>
+            <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" required>
           </div>
 
           <div class="form-group">
@@ -124,22 +124,22 @@
         <form id="formSignupLogin" style="display:none;" onsubmit="handleSignupSubmit(event)">
           <div class="form-group" style="margin-bottom:0.85rem;">
             <label for="signupFullName" class="form-label">Full Legal Name <span class="required">*</span></label>
-            <input type="text" id="signupFullName" class="form-control" placeholder="e.g. Jonathan Edwards" value="Jonathan Edwards" required>
+            <input type="text" id="signupFullName" class="form-control" placeholder="Enter your full name" required>
           </div>
 
           <div class="form-group" style="margin-bottom:0.85rem;">
             <label for="signupEmail" class="form-label">Email Address <span class="required">*</span></label>
-            <input type="email" id="signupEmail" class="form-control" placeholder="e.g. j.edwards@example.com" value="j.edwards@bethesdabible.edu" required>
+            <input type="email" id="signupEmail" class="form-control" placeholder="student@example.org" required>
           </div>
 
           <div class="form-group" style="margin-bottom:0.85rem;">
-            <label for="signupPhone" class="form-label">Mobile Number <span class="required">*</span></label>
-            <input type="tel" id="signupPhone" class="form-control" placeholder="(555) 234-5678" value="+1 (555) 234-5678" required>
+            <label for="signupPhone" class="form-label">Mobile Number (with country code) <span class="required">*</span></label>
+            <input type="tel" id="signupPhone" class="form-control" placeholder="+91 9876543210" required>
           </div>
 
           <div class="form-group" style="margin-bottom:0.85rem;">
             <label for="signupPassword" class="form-label">Create Password <span class="required">*</span></label>
-            <input type="password" id="signupPassword" class="form-control" value="Pass@2026Bethesda" required>
+            <input type="password" id="signupPassword" class="form-control" placeholder="Minimum 6 characters" required>
           </div>
 
           <div class="form-group" style="margin-bottom:1.25rem;">
@@ -231,51 +231,87 @@
       }
     }
 
-    function triggerSendOtp() {
+    function buildFullPhoneInput() {
+      const code = document.getElementById('loginCountryCode')?.value || '+91';
+      const raw = document.getElementById('loginMobile')?.value.trim() || '';
+      if (raw.startsWith('+')) return raw.replace(/[\s()-]/g, '');
+      return `${code}${raw.replace(/[\s()-]/g, '')}`;
+    }
+
+    function readOtpBoxValue() {
+      const boxes = Array.from(document.querySelectorAll('.otp-box'));
+      if (boxes.length > 0) {
+        return boxes.map((b) => (b.value || '').trim()).join('');
+      }
+      return document.getElementById('loginOtpCode')?.value.trim() || '';
+    }
+
+    async function triggerSendOtp() {
       const otpSection = document.getElementById('otpInputSection');
       const sendBtn = document.getElementById('btnSendOtp');
+      const statusText = document.getElementById('otpSentStatusText');
+      const fullPhone = buildFullPhoneInput();
+
+      if (!fullPhone || fullPhone.length < 8) {
+        if (typeof showToast === 'function') showToast('Enter a valid mobile number first.', 'warning');
+        return;
+      }
+
+      if (sendBtn) sendBtn.disabled = true;
+      const res = typeof apiRequestOtp === 'function' ? await apiRequestOtp(fullPhone) : { success: false };
+      if (sendBtn) sendBtn.disabled = false;
+
+      if (!res.success) {
+        if (typeof showToast === 'function') showToast(res.message || 'Unable to send verification code.', 'danger');
+        return;
+      }
+
       if (otpSection) {
         otpSection.style.display = 'block';
-        sendBtn.innerHTML = `✓ Verification Code Sent (Demo: 729418)`;
-        sendBtn.classList.add('btn-gold');
-        sendBtn.classList.remove('btn-secondary');
+        if (sendBtn) {
+          sendBtn.innerHTML = '✓ Verification Code Sent';
+          sendBtn.classList.add('btn-gold');
+          sendBtn.classList.remove('btn-secondary');
+        }
+        if (statusText) {
+          statusText.textContent = res.devOtp
+            ? `Code dispatched (Dev OTP: ${res.devOtp})`
+            : `Code dispatched to ${fullPhone}`;
+        }
         if (typeof showToast === 'function') {
-          showToast('Demo OTP Code: 729418 dispatched to your phone', 'success');
+          showToast('Verification code dispatched to your registered mobile.', 'success');
         }
       }
     }
 
     async function handleOtpSubmit(e) {
       e.preventDefault();
-      triggerSendOtp();
-      const mobile = document.getElementById('loginMobile').value.trim();
-      const otpCode = document.getElementById('loginOtpCode')?.value.trim() || '729418';
-
-      if (typeof apiLoginWithPhone === 'function') {
-        const result = await apiLoginWithPhone(mobile, otpCode);
-        if (result.success) {
-          showToast(`✓ Welcome back, ${result.student.fullName}! Logged in from database.`, 'success');
-          simulateSuccessfulLogin();
-          return;
-        }
+      const otpSection = document.getElementById('otpInputSection');
+      if (otpSection && otpSection.style.display === 'none') {
+        await triggerSendOtp();
+        return;
       }
 
-      // Local database fallback
-      const student = {
-        studentId: 'BBI-2026-8941',
-        fullName: 'Shaik Shafiulla',
-        email: 'shaikshafiulla20012@gmail.com',
-        phone: mobile || '+91 9642402639',
-        role: 'Active Matriculated Student',
-        enrolledSince: 'Fall 2026',
-        status: 'Active'
-      };
-      if (typeof loginStudent === 'function') {
-        loginStudent(student);
-      } else {
-        localStorage.setItem('berea_auth_student', JSON.stringify(student));
+      const fullPhone = buildFullPhoneInput();
+      const otpCode = readOtpBoxValue();
+      if (!otpCode || otpCode.length < 4) {
+        if (typeof showToast === 'function') showToast('Please enter the verification code.', 'warning');
+        return;
       }
-      simulateSuccessfulLogin();
+
+      const result = typeof apiLoginWithPhone === 'function'
+        ? await apiLoginWithPhone(fullPhone, otpCode)
+        : { success: false, message: 'Authentication API unavailable.' };
+
+      if (!result.success) {
+        if (typeof showToast === 'function') showToast(result.message || 'Invalid verification code.', 'danger');
+        return;
+      }
+
+      if (typeof showToast === 'function') {
+        showToast(`✓ Welcome back, ${result.student.fullName}!`, 'success');
+      }
+      redirectAfterAuth();
     }
 
     async function handlePasswordSubmit(e) {
@@ -283,33 +319,19 @@
       const identifier = document.getElementById('loginEmail').value.trim();
       const password = document.getElementById('loginPassword')?.value || '';
 
-      if (typeof apiLoginWithPassword === 'function') {
-        const res = await apiLoginWithPassword(identifier, password);
-        if (res.success) {
-          showToast(`✓ Welcome back, ${res.student.fullName}! Session restored from database.`, 'success');
-          simulateSuccessfulLogin();
-          return;
-        } else {
-          showToast(res.message, 'danger');
-          return;
-        }
+      const res = typeof apiLoginWithPassword === 'function'
+        ? await apiLoginWithPassword(identifier, password)
+        : { success: false, message: 'Authentication API unavailable.' };
+
+      if (!res.success) {
+        if (typeof showToast === 'function') showToast(res.message || 'Invalid credentials.', 'danger');
+        return;
       }
 
-      const student = {
-        studentId: 'BBI-2026-038',
-        fullName: 'Shaik Shafiulla',
-        email: identifier || 'shaikshafiulla20012@gmail.com',
-        phone: '+91 9642402639',
-        role: 'Candidate for Biblical Studies',
-        enrolledSince: 'Fall 2026',
-        status: 'Active'
-      };
-      if (typeof loginStudent === 'function') {
-        loginStudent(student);
-      } else {
-        localStorage.setItem('berea_auth_student', JSON.stringify(student));
+      if (typeof showToast === 'function') {
+        showToast(`✓ Welcome back, ${res.student.fullName}!`, 'success');
       }
-      simulateSuccessfulLogin();
+      redirectAfterAuth();
     }
 
     async function handleSignupSubmit(e) {
@@ -320,56 +342,28 @@
       const password = document.getElementById('signupPassword')?.value || '';
       const track = document.getElementById('signupTrack').value;
 
-      if (typeof apiRegisterStudent === 'function') {
-        const result = await apiRegisterStudent({
-          fullName: name,
-          email: email,
-          phone: phone,
-          password: password,
-          track: track
-        });
+      const result = typeof apiRegisterStudent === 'function'
+        ? await apiRegisterStudent({
+            fullName: name,
+            email,
+            phone,
+            password,
+            track,
+          })
+        : { success: false, message: 'Registration API unavailable.' };
 
-        showToast(`✓ Account created and saved in database for ${name}!`, 'success');
-      } else {
-        const student = {
-          studentId: 'BBI-' + Math.floor(1000 + Math.random() * 9000),
-          fullName: name,
-          email: email,
-          phone: phone,
-          track: track,
-          role: 'Registered Candidate',
-          enrolledSince: 'Fall 2026',
-          status: 'Active'
-        };
-        if (typeof loginStudent === 'function') {
-          loginStudent(student);
-        } else {
-          localStorage.setItem('berea_auth_student', JSON.stringify(student));
-        }
-        showToast(`✓ Welcome to Bethesda Bible Institute, ${name}! Your student account is active.`, 'success');
+      if (!result.success) {
+        if (typeof showToast === 'function') showToast(result.message || 'Account creation failed.', 'danger');
+        return;
       }
 
-      const urlParams = new URLSearchParams(window.location.search);
-      const returnUrl = urlParams.get('returnUrl');
-      const pendingCourse = sessionStorage.getItem('berea_pending_course');
-
-      if (pendingCourse && typeof addToCart === 'function') {
-        addToCart(pendingCourse);
-        sessionStorage.removeItem('berea_pending_course');
+      if (typeof showToast === 'function') {
+        showToast(`✓ Account created and saved for ${name}!`, 'success');
       }
-
-      setTimeout(() => {
-        if (returnUrl) {
-          window.location.href = returnUrl;
-        } else if (pendingCourse) {
-          window.location.href = 'cart.html';
-        } else {
-          window.location.href = 'student-dashboard.html';
-        }
-      }, 700);
+      redirectAfterAuth();
     }
 
-    function simulateSuccessfulLogin() {
+    function redirectAfterAuth() {
       if (typeof showToast === 'function') {
         showToast('Authentication verified! Redirecting...', 'success');
       }

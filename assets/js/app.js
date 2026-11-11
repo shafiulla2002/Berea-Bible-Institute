@@ -592,19 +592,14 @@ async function handleModalSignup(e) {
       password: password,
       track: track
     });
+    if (!res || !res.success) {
+      if (typeof showToast === 'function') showToast(res?.message || 'Unable to register student account.', 'danger');
+      return;
+    }
     student = res.student;
   } else {
-    student = {
-      studentId: 'BBI-' + Math.floor(1000 + Math.random() * 9000),
-      fullName: name,
-      email: email,
-      phone: phone,
-      track: track,
-      role: 'Registered Candidate',
-      enrolledSince: 'Fall 2026',
-      status: 'Active'
-    };
-    loginStudent(student);
+    if (typeof showToast === 'function') showToast('Registration API unavailable.', 'danger');
+    return;
   }
 
   closeAuthModal();
@@ -639,17 +634,8 @@ async function handleModalSignin(e) {
     }
     student = res.student;
   } else {
-    const name = identifier.includes('@') ? identifier.split('@')[0].replace('.', ' ') : 'Registered Student';
-    student = {
-      studentId: 'BBI-2026-8941',
-      fullName: name.charAt(0).toUpperCase() + name.slice(1),
-      email: identifier.includes('@') ? identifier : 'student@bethesdabible.edu',
-      phone: identifier.includes('@') ? '+1 (555) 234-5678' : identifier,
-      role: 'Enrolled Candidate',
-      enrolledSince: 'Fall 2026',
-      status: 'Active'
-    };
-    loginStudent(student);
+    showToast('Authentication API unavailable.', 'danger');
+    return;
   }
 
   closeAuthModal();

@@ -201,11 +201,11 @@
               <div class="card" style="padding:1.5rem; background:var(--cream-bg); margin-bottom:1.75rem;">
                 <label for="checkoutPromoCode" class="form-label">Promotional Scholarship Code</label>
                 <div style="display:flex; gap:0.75rem; margin-bottom:0.5rem;">
-                  <input type="text" id="checkoutPromoCode" class="form-control" placeholder="Enter promo code (e.g. BIBLE2026)" style="font-family:var(--font-mono); text-transform:uppercase;">
+                  <input type="text" id="checkoutPromoCode" class="form-control" placeholder="Enter institutional coupon code" style="font-family:var(--font-mono); text-transform:uppercase;">
                   <button type="button" id="checkoutApplyPromoBtn" class="btn btn-gold">Apply Code</button>
                 </div>
                 <p style="font-size:0.8rem; color:var(--charcoal-500);">
-                  Valid demo codes: <strong style="color:var(--burgundy-900);">BIBLE2026</strong> (20% tuition grant), <strong style="color:var(--burgundy-900);">GRACE50</strong> (50% ministry subsidy).
+                  Coupon discounts are validated in real time against institute policy.
                 </p>
               </div>
 
@@ -352,71 +352,39 @@
               <div class="alert alert-warning" style="margin-bottom:1.5rem; border:2px dashed var(--gold-600);">
                 <div style="font-size:1.5rem; color:var(--gold-800);">⚠</div>
                 <div>
-                  <strong style="color:var(--burgundy-950);">DEMONSTRATION PAYMENT GATEWAY PROTOTYPE</strong>
+                  <strong style="color:var(--burgundy-950);">SECURE RAZORPAY ENROLLMENT CHECKOUT</strong>
                   <p style="font-size:0.8rem; color:var(--charcoal-700); margin-top:0.25rem;">
-                    This interface demonstrates the student payment experience. No real financial transaction will take place, and no cardholder data is collected.
+                    Payment orders are created and cryptographically verified via HMAC-SHA256 before activating your course enrolment.
                   </p>
                 </div>
               </div>
 
               <!-- Payment Method Selection -->
               <div style="margin-bottom:1.5rem;">
-                <label class="form-label" style="margin-bottom:0.75rem;">Select Payment Mode:</label>
+                <label class="form-label" style="margin-bottom:0.75rem;">Supported Payment Modes via Razorpay:</label>
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
                   <label class="card" style="padding:1rem; display:flex; align-items:center; gap:0.75rem; cursor:pointer;">
-                    <input type="radio" name="paymentMethod" value="CARD" checked>
+                    <input type="radio" name="paymentMethod" value="UPI" checked>
+                    <div>
+                      <strong style="font-size:0.9rem;">UPI / QR / NetBanking</strong>
+                      <div style="font-size:0.75rem; color:var(--charcoal-500);">GPay, PhonePe, BHIM, Indian Banks</div>
+                    </div>
+                  </label>
+
+                  <label class="card" style="padding:1rem; display:flex; align-items:center; gap:0.75rem; cursor:pointer;">
+                    <input type="radio" name="paymentMethod" value="CARD">
                     <div>
                       <strong style="font-size:0.9rem;">Credit / Debit Card</strong>
-                      <div style="font-size:0.75rem; color:var(--charcoal-500);">Visa, MasterCard, Amex</div>
-                    </div>
-                  </label>
-
-                  <label class="card" style="padding:1rem; display:flex; align-items:center; gap:0.75rem; cursor:pointer;">
-                    <input type="radio" name="paymentMethod" value="NETBANKING">
-                    <div>
-                      <strong style="font-size:0.9rem;">Institutional NetBanking / UPI</strong>
-                      <div style="font-size:0.75rem; color:var(--charcoal-500);">Direct Bank Transfer / UPI</div>
+                      <div style="font-size:0.75rem; color:var(--charcoal-500);">RuPay, Visa, MasterCard</div>
                     </div>
                   </label>
                 </div>
               </div>
 
-              <!-- Simulated Card Fields -->
-              <div id="cardFieldsContainer" class="card" style="padding:1.5rem; background:var(--cream-bg); margin-bottom:1.75rem;">
-                <div class="form-group">
-                  <label class="form-label">Name on Card</label>
-                  <input type="text" class="form-control" value="Rev. Timothy D. Paul" readonly>
-                </div>
-
-                <div class="form-group">
-                  <label class="form-label">Demo Card Number</label>
-                  <input type="text" class="form-control text-mono" value="•••• •••• •••• 4242 (Simulated Test Card)" readonly>
-                </div>
-
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
-                  <div class="form-group">
-                    <label class="form-label">Expiry</label>
-                    <input type="text" class="form-control text-mono" value="12/28" readonly>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Security Code (CVV)</label>
-                    <input type="text" class="form-control text-mono" value="•••" readonly>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Demo Payment Triggers -->
               <div style="display:flex; flex-direction:column; gap:0.75rem;">
-                <button type="button" id="btnSubmitDemoPayment" class="btn btn-gold btn-lg btn-block" style="font-size:1.15rem;">
-                  🔒 Authorize Demonstration Enrollment ($ Simulation)
+                <button type="button" id="btnSubmitPayment" class="btn btn-gold btn-lg btn-block" style="font-size:1.15rem;">
+                  🔒 Proceed to Secure Razorpay Payment
                 </button>
-                <div style="display:flex; justify-content:center; gap:1.5rem; font-size:0.8rem; color:var(--charcoal-500); margin-top:0.5rem;">
-                  <span>Demo Mode: Instant Simulation</span>
-                  <span>•</span>
-                  <a href="payment-result.html?status=pending&ref=DEMO-PENDING-001" style="color:var(--burgundy-700); text-decoration:underline;">Test Pending Screen</a>
-                  <span>•</span>
-                  <a href="payment-result.html?status=failed&ref=DEMO-FAIL-001" style="color:var(--status-danger); text-decoration:underline;">Test Failed Screen</a>
-                </div>
               </div>
 
               <div style="display:flex; justify-content:flex-start; margin-top:2rem; border-top:1px solid var(--cream-border); padding-top:1.5rem;">
@@ -447,7 +415,7 @@
   <footer class="site-footer">
     <div class="container">
       <div class="footer-bottom" style="border:none; padding:1.5rem 0;">
-        <p>© 2026 Bethesda Bible Institute Hyderabad (Bethesda Church Hyderabad). Demonstration Checkout.</p>
+        <p>© 2026 Bethesda Bible Institute Hyderabad (Bethesda Church Hyderabad). Secure Enrollment Checkout.</p>
         <div class="footer-bottom-links">
           <a href="#" class="footer-link">Security Policies</a>
           <a href="#" class="footer-link">Privacy Statement</a>
@@ -456,6 +424,7 @@
     </div>
   </footer>
 
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script src="assets/js/courses.js"></script>
   <script src="assets/js/cart.js"></script>
   <script src="assets/js/api.js"></script>

@@ -117,7 +117,7 @@
           <div style="margin-top:2rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
             <a href="cart.html" class="btn btn-secondary">← Back to Cart</a>
             <a href="checkout.html" class="btn btn-gold btn-lg">
-              Proceed to Demonstration Payment →
+              Proceed to Secure Checkout →
             </a>
           </div>
         </div>
@@ -128,7 +128,7 @@
   <footer class="site-footer">
     <div class="container">
       <div class="footer-bottom">
-        <p>© 2026 Bethesda Bible Institute Hyderabad (Bethesda Church Hyderabad). Demonstration Order Review.</p>
+        <p>© 2026 Bethesda Bible Institute Hyderabad (Bethesda Church Hyderabad). Enrollment Order Review.</p>
       </div>
     </div>
   </footer>
@@ -142,30 +142,32 @@
       // 1. Render Personal Info
       const personalContainer = document.getElementById('reviewPersonalInfo');
       let reg = {};
+      let auth = {};
       try {
-        reg = JSON.parse(localStorage.getItem('berea_prototype_student_registration') || '{}');
+        reg = JSON.parse(localStorage.getItem('berea_student_registration_draft') || '{}');
+        auth = JSON.parse(localStorage.getItem('berea_auth_student') || '{}');
       } catch (e) {}
 
       personalContainer.innerHTML = `
         <div>
           <span style="font-size:0.75rem; text-transform:uppercase; color:var(--charcoal-500);">Full Legal Name</span>
-          <p style="font-weight:700; color:var(--charcoal-900);">${reg.fullName || 'Timothy David Paul'}</p>
+          <p style="font-weight:700; color:var(--charcoal-900);">${reg.fullName || auth.fullName || 'Not Provided'}</p>
         </div>
         <div>
           <span style="font-size:0.75rem; text-transform:uppercase; color:var(--charcoal-500);">Email Address</span>
-          <p style="font-weight:700; color:var(--charcoal-900);">${reg.email || 'timothy@example.org'}</p>
+          <p style="font-weight:700; color:var(--charcoal-900);">${reg.email || auth.email || 'Not Provided'}</p>
         </div>
         <div>
           <span style="font-size:0.75rem; text-transform:uppercase; color:var(--charcoal-500);">Mobile Phone</span>
-          <p style="font-weight:700; color:var(--charcoal-900);">${reg.mobile || '+1 (555) 234-5678'}</p>
+          <p style="font-weight:700; color:var(--charcoal-900);">${reg.mobile || auth.phone || 'Not Provided'}</p>
         </div>
         <div>
           <span style="font-size:0.75rem; text-transform:uppercase; color:var(--charcoal-500);">Highest Qualification</span>
-          <p style="font-weight:700; color:var(--charcoal-900);">${reg.qualification || "Bachelor's Degree (B.A.)"}</p>
+          <p style="font-weight:700; color:var(--charcoal-900);">${reg.qualification || 'Applicant Record'}</p>
         </div>
         <div style="grid-column:span 2;">
           <span style="font-size:0.75rem; text-transform:uppercase; color:var(--charcoal-500);">Residential Address</span>
-          <p style="font-weight:700; color:var(--charcoal-900);">${reg.address || '700 Cathedral Parkway'}, ${reg.city || 'Colorado Springs'}, ${reg.country || 'United States'}</p>
+          <p style="font-weight:700; color:var(--charcoal-900);">${[reg.address, reg.city, reg.country].filter(Boolean).join(', ') || 'Registered Student Address'}</p>
         </div>
       `;
 
@@ -180,10 +182,10 @@
             <div>
               <span style="font-family:var(--font-mono); font-size:0.75rem; font-weight:700; color:var(--gold-700); background:var(--gold-50); padding:0.15rem 0.5rem; border-radius:4px; border:1px solid var(--gold-300);">${item.code}</span>
               <h4 style="font-size:1.05rem; font-weight:700; color:var(--burgundy-950); margin:0.35rem 0 0.2rem;">${item.title}</h4>
-              <p style="font-size:0.8rem; color:var(--charcoal-600);">Cohort Schedule: <strong>${item.batch || 'Standard Cohort 2026'}</strong></p>
+              <p style="font-size:0.8rem; color:var(--charcoal-600);">Cohort Schedule: <strong>${item.batch || 'Rolling Cohort'}</strong></p>
             </div>
             <div style="font-family:var(--font-serif); font-size:1.35rem; font-weight:800; color:var(--burgundy-900);">
-              $${item.price}
+              ₹${Number(item.price || 0).toLocaleString('en-IN')}
             </div>
           </div>
         `).join('');
@@ -194,22 +196,22 @@
       const feeContainer = document.getElementById('reviewFeeBreakdown');
       feeContainer.innerHTML = `
         <div class="summary-row">
-          <span>Tuition Subtotal (${totals.itemCount} courses)</span>
-          <span>$${totals.subtotal}</span>
+          <span>Tuition Subtotal (${totals.itemCount || 0} courses)</span>
+          <span>₹${Number(totals.subtotal || 0).toLocaleString('en-IN')}</span>
         </div>
         <div class="summary-row">
           <span>Institutional Registration Fee</span>
-          <span>$${totals.registrationFeeTotal}</span>
+          <span>₹${Number(totals.registrationFeeTotal || 0).toLocaleString('en-IN')}</span>
         </div>
         ${totals.discount > 0 ? `
           <div class="summary-row" style="color:var(--status-success); font-weight:700;">
             <span>Scholarship Discount (${totals.appliedCoupon.code})</span>
-            <span>-$${totals.discount}</span>
+            <span>-₹${Number(totals.discount || 0).toLocaleString('en-IN')}</span>
           </div>
         ` : ''}
         <div class="summary-total">
           <span class="summary-total-label">Total Payable:</span>
-          <span class="summary-total-amount">$${totals.finalTotal}</span>
+          <span class="summary-total-amount">₹${Number(totals.finalTotal || 0).toLocaleString('en-IN')}</span>
         </div>
       `;
     });

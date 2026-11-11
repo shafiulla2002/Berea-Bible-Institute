@@ -1,113 +1,92 @@
 /**
- * BEREA BIBLE INSTITUTE & THEOLOGICAL SEMINARY
- * Shopping Cart & Financial Calculations Module
+ * BETHESDA BIBLE INSTITUTE — SHOPPING CART & LIVE COUPON VALIDATION
+ * Validates promotional scholarship codes directly against `/api/v1/public/coupons/validate`.
  */
 
-const CART_STORAGE_KEY = 'berea_prototype_cart';
-const COUPON_STORAGE_KEY = 'berea_prototype_coupon';
-
-const DEMO_COUPONS = {
-  'BIBLE2026': { code: 'BIBLE2026', discountPercent: 20, desc: '20% Evangelical Student Scholarship' },
-  'GRACE50':   { code: 'GRACE50',   discountPercent: 50, desc: '50% Ministry Worker Subsidy' },
-  'WELCOME15': { code: 'WELCOME15', discountFixed: 15,   desc: '$15 First-Time Student Credit' },
-};
+const CART_STORAGE_KEY = 'berea_cart';
+const COUPON_STORAGE_KEY = 'berea_applied_coupon';
 
 function getCart() {
-  // STRICT RULE: Without signing in, user cannot have items in the cart
-  if (typeof isStudentAuthenticated === 'function' && !isStudentAuthenticated()) {
-    return [];
-  }
   try {
-    const raw = localStorage.getItem('berea_cart') || localStorage.getItem(CART_STORAGE_KEY);
+    const raw = localStorage.getItem(CART_STORAGE_KEY);
     return raw ? JSON.parse(raw) : [];
-  } catch {
+  } catch (e) {
     return [];
   }
 }
 
 function saveCart(cart) {
-  const json = JSON.stringify(cart);
-  localStorage.setItem('berea_cart', json);
-  localStorage.setItem(CART_STORAGE_KEY, json);
+  localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
   if (typeof updateCartBadge === 'function') {
     updateCartBadge();
   }
 }
 
 function addToCart(courseId, batchDate = null) {
-  // 0. STRICT AUTH GUARD: Without signing in, the user is unable to add courses to the cart!
-  if (typeof isStudentAuthenticated === 'function' && !isStudentAuthenticated()) {
+  const course = typeof getCourseById === 'function' ? getCourseById(courseId) : null;
+  if (!course) {
     if (typeof showToast === 'function') {
-      showToast('ℹ You must sign up or sign in to your student account to add courses to your cart.', 'warning');
+      showToast('Course details are still loading. Please open the course page.', 'warning');
     }
-    if (typeof openAuthModal === 'function') {
-      sessionStorage.setItem('berea_pending_course', courseId);
-      openAuthModal('signup', null, courseId);
+    return false;
+  }
+
+  if (typeof isCourseEnrolled === 'function' && isCourseEnrolled(courseId)) {
+    if (typeof showToast === 'function') {
+      showToast(`You are already enrolled in "${course.title}".`, 'warning');
     }
     return false;
   }
 
   const cart = getCart();
-  const existingIndex = cart.findIndex(item => (item.courseId || item.id) === courseId);
-  const course = typeof getCourseById === 'function' ? getCourseById(courseId) : null;
+  const existingIdx = cart.findIndex((item) => item.courseId === courseId);
 
-  if (!course) {
-    if (typeof showToast === 'function') showToast('Course not found', 'danger');
-    return false;
-  }
-
-  // 1. Check if user already purchased/enrolled in this course
-  if (typeof isCourseEnrolled === 'function' && isCourseEnrolled(course.id)) {
-    if (typeof showToast === 'function') {
-      showToast(`⚠ You have already purchased ${course.code} (${course.title})! You have active lifetime access to this course in your Student Portal.`, 'danger');
+  if (existingIdx !== -1) {
+    if (batchDate) {
+      cart[existingIdx].batch = batchDate;
+      saveCart(cart);
+      if (typeof showToast === 'function') {
+        showToast(`Cohort updated for ${course.title}.`, 'gold');
+      }
+      return true;
     }
-    return false;
-  }
-
-  // 2. Check if already in current cart
-  if (existingIndex > -1) {
     if (typeof showToast === 'function') {
-      showToast(`ℹ ${course.code} is already in your registration cart`, 'gold');
+      showToast(`"${course.title}" is already in your cart.`, 'warning');
     }
     return false;
   }
 
   cart.push({
     courseId: course.id,
-    id: course.id,
+    instituteId: course.instituteId || '',
     code: course.code,
     title: course.title,
     price: course.price,
-    registrationFee: course.registrationFee,
-    batch: batchDate || course.nextBatch,
-    addedAt: new Date().toISOString()
+    pricePaise: course.pricePaise ?? course.price * 100,
+    registrationFee: course.registrationFee || 0,
+    registrationFeePaise: course.registrationFeePaise ?? (course.registrationFee || 0) * 100,
+    batch: batchDate || course.nextBatch || 'Rolling Cohort',
+    addedAt: new Date().toISOString(),
   });
 
   saveCart(cart);
   if (typeof showToast === 'function') {
-    showToast(`Added "${course.title}" to your enrollment cart!`, 'success');
+    showToast(`Added "${course.title}" to your enrollment cart.`, 'success');
   }
   return true;
 }
 
 function removeFromCart(courseId) {
-  let cart = getCart();
-  const item = cart.find(i => (i.courseId || i.id) === courseId);
-  cart = cart.filter(i => (i.courseId || i.id) !== courseId);
+  const cart = getCart().filter((item) => item.courseId !== courseId);
   saveCart(cart);
-
-  if (typeof showToast === 'function' && item) {
-    showToast(`Removed "${item.title}" from cart`, 'info');
+  if (typeof showToast === 'function') {
+    showToast('Course removed from your cart.', 'info');
   }
-  return true;
 }
 
 function clearCart() {
-  localStorage.removeItem('berea_cart');
   localStorage.removeItem(CART_STORAGE_KEY);
-  localStorage.removeItem('berea_cart_coupon');
   localStorage.removeItem(COUPON_STORAGE_KEY);
-  sessionStorage.removeItem('berea_cart_initialized');
   if (typeof updateCartBadge === 'function') {
     updateCartBadge();
   }
@@ -117,34 +96,62 @@ function getAppliedCoupon() {
   try {
     const raw = localStorage.getItem(COUPON_STORAGE_KEY);
     return raw ? JSON.parse(raw) : null;
-  } catch {
+  } catch (e) {
     return null;
   }
 }
 
-function applyCoupon(code) {
-  if (!code) return { success: false, message: 'Please enter a promo code.' };
-  const clean = code.trim().toUpperCase();
-  const coupon = DEMO_COUPONS[clean];
-
-  if (coupon) {
-    localStorage.setItem(COUPON_STORAGE_KEY, JSON.stringify(coupon));
-    if (typeof showToast === 'function') {
-      showToast(`Promo Code "${coupon.code}" applied! (${coupon.desc})`, 'success');
-    }
-    return { success: true, coupon };
-  } else {
-    if (typeof showToast === 'function') {
-      showToast('Invalid promo code. Try "BIBLE2026" or "GRACE50"', 'danger');
-    }
-    return { success: false, message: 'Invalid promo code. Valid test codes: BIBLE2026, GRACE50, WELCOME15' };
+async function applyCoupon(code) {
+  if (!code || !code.trim()) {
+    if (typeof showToast === 'function') showToast('Please enter a promo code.', 'warning');
+    return false;
   }
+
+  const cart = getCart();
+  const instituteId = cart[0]?.instituteId || undefined;
+  const subtotalPaise = cart.reduce(
+    (sum, item) => sum + (item.pricePaise ?? item.price * 100) + (item.registrationFeePaise ?? (item.registrationFee || 0) * 100),
+    0,
+  );
+
+  if (typeof apiValidateCoupon !== 'function') {
+    if (typeof showToast === 'function') showToast('Coupon validation service is unavailable.', 'danger');
+    return false;
+  }
+
+  const validation = await apiValidateCoupon(code.trim().toUpperCase(), instituteId, subtotalPaise);
+  if (!validation || !validation.valid) {
+    localStorage.removeItem(COUPON_STORAGE_KEY);
+    if (typeof showToast === 'function') {
+      showToast(validation?.error || `Coupon code "${code}" is invalid or expired.`, 'danger');
+    }
+    return false;
+  }
+
+  localStorage.setItem(
+    COUPON_STORAGE_KEY,
+    JSON.stringify({
+      code: validation.code,
+      type: validation.type,
+      value: validation.value,
+      discountPaise: validation.discountPaise,
+      description:
+        validation.type === 'PERCENT'
+          ? `${validation.value}% Scholarship Grant`
+          : `₹${Math.round(validation.value / 100)} Fee Waiver`,
+    }),
+  );
+
+  if (typeof showToast === 'function') {
+    showToast(`Promo code ${validation.code} applied.`, 'success');
+  }
+  return true;
 }
 
 function removeCoupon() {
   localStorage.removeItem(COUPON_STORAGE_KEY);
   if (typeof showToast === 'function') {
-    showToast('Promo code removed', 'info');
+    showToast('Promotional code removed.', 'info');
   }
 }
 
@@ -152,32 +159,36 @@ function calculateCartTotals() {
   const cart = getCart();
   const coupon = getAppliedCoupon();
 
-  let subtotal = 0;
-  let registrationFeeTotal = 0;
+  const subtotalPaise = cart.reduce((sum, item) => sum + (item.pricePaise ?? item.price * 100), 0);
+  const regFeePaise = cart.reduce(
+    (sum, item) => sum + (item.registrationFeePaise ?? (item.registrationFee || 0) * 100),
+    0,
+  );
 
-  cart.forEach(item => {
-    subtotal += Number(item.price) || 0;
-    registrationFeeTotal += Number(item.registrationFee) || 0;
-  });
-
-  let discount = 0;
+  let discountPaise = 0;
   if (coupon) {
-    if (coupon.discountPercent) {
-      discount = Math.round((subtotal * coupon.discountPercent) / 100);
-    } else if (coupon.discountFixed) {
-      discount = Math.min(subtotal, coupon.discountFixed);
+    if (coupon.type === 'PERCENT') {
+      discountPaise = Math.round(((subtotalPaise + regFeePaise) * (coupon.value || 0)) / 100);
+    } else if (coupon.discountPaise !== undefined) {
+      discountPaise = Number(coupon.discountPaise) || 0;
+    } else {
+      discountPaise = Number(coupon.value) || 0;
     }
+    discountPaise = Math.min(subtotalPaise + regFeePaise, Math.max(0, discountPaise));
   }
 
-  const finalTotal = Math.max(0, subtotal + registrationFeeTotal - discount);
+  const finalTotalPaise = Math.max(0, subtotalPaise + regFeePaise - discountPaise);
 
   return {
     itemCount: cart.length,
-    subtotal,
-    registrationFeeTotal,
-    discount,
+    subtotalPaise,
+    registrationFeeTotalPaise: regFeePaise,
+    discountPaise,
+    finalTotalPaise,
+    subtotal: Math.round(subtotalPaise / 100),
+    registrationFeeTotal: Math.round(regFeePaise / 100),
+    discount: Math.round(discountPaise / 100),
+    finalTotal: Math.round(finalTotalPaise / 100),
     appliedCoupon: coupon,
-    finalTotal
   };
 }
-
