@@ -57,6 +57,16 @@
               </p>
             </div>
 
+            <!-- Mock Payment Notice Banner -->
+            <div id="receiptMockNotice" style="display:none; background:#FFFBEB; border:2px dashed var(--gold-600); border-radius:var(--radius-md); padding:1.25rem 1.5rem; margin-bottom:1.75rem;">
+              <div style="font-weight:800; color:var(--burgundy-950); font-size:0.95rem; margin-bottom:0.25rem;">
+                ℹ Mock Payment Completed — No Amount Debited From Your Account
+              </div>
+              <div style="font-size:0.875rem; color:var(--charcoal-700); line-height:1.5;">
+                Because Razorpay keys are not added yet, <strong>no amount has been debited from your bank account or card</strong>. Your enrollment transaction is confirmed and you now have full access to manage your courses.
+              </div>
+            </div>
+
             <!-- Receipt Meta Details -->
             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:1.5rem; background:var(--cream-bg); padding:1.5rem; border-radius:var(--radius-md); border:1px solid var(--cream-border); margin-bottom:2rem; font-size:0.875rem;">
               <div>
@@ -103,9 +113,14 @@
             <button type="button" class="btn btn-secondary" onclick="window.print()">
               🖨 Print / Download Official Receipt
             </button>
-            <a href="student-dashboard.html" class="btn btn-gold btn-lg">
-              Proceed to Student Portal Hub →
-            </a>
+            <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+              <a href="courses.html" class="btn btn-secondary btn-lg">
+                View Course Catalogue (Manage)
+              </a>
+              <a href="student-dashboard.html" class="btn btn-gold btn-lg">
+                Manage My Courses in Student Hub →
+              </a>
+            </div>
           </div>
         </div>
 
@@ -219,6 +234,15 @@
         day: 'numeric',
         year: 'numeric'
       });
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const isMockMode = urlParams.get('mode') === 'mock' || Boolean(order.mockPayment);
+      const mockNoticeEl = document.getElementById('receiptMockNotice');
+      const paymentMethodEl = document.getElementById('receiptPaymentMethod');
+      if (isMockMode) {
+        if (mockNoticeEl) mockNoticeEl.style.display = 'block';
+        if (paymentMethodEl) paymentMethodEl.textContent = 'Mock Payment (Razorpay Keys Not Added — ₹0 Debited)';
+      }
 
       // Courses List
       const coursesContainer = document.getElementById('receiptCoursesList');

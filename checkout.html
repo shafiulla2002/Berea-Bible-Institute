@@ -338,23 +338,26 @@
               </div>
             </div>
 
-            <!-- STEP 7: Payment (Demo Prototype Interface) -->
+            <!-- STEP 7: Payment (Mock Payment / Razorpay Interface) -->
             <div id="step-7" class="checkout-step-panel card" data-step-panel="7" style="display:none; padding:2.5rem;">
               <div style="border-bottom:1px solid var(--cream-border); padding-bottom:1rem; margin-bottom:1.75rem;">
-                <span class="eyebrow" style="color:var(--status-danger); margin-bottom:0.35rem;">STEP 7 OF 7 • PROTOTYPE DEMONSTRATION</span>
-                <h2 style="font-size:1.5rem; color:var(--burgundy-950);">Payment Authorization</h2>
+                <span class="eyebrow" style="color:var(--gold-700); margin-bottom:0.35rem;">STEP 7 OF 7 • ENROLLMENT PAYMENT</span>
+                <h2 style="font-size:1.5rem; color:var(--burgundy-950);">Complete Your Course Enrollment</h2>
                 <p style="font-size:0.9rem; color:var(--charcoal-600);">
-                  This is a simulated demonstration checkout. Do NOT enter real card credentials.
+                  Complete your enrollment below to activate immediate access to your selected courses.
                 </p>
               </div>
 
-              <!-- Demo Banner Warning -->
-              <div class="alert alert-warning" style="margin-bottom:1.5rem; border:2px dashed var(--gold-600);">
-                <div style="font-size:1.5rem; color:var(--gold-800);">⚠</div>
+              <!-- Mock Payment / Razorpay Banner -->
+              <div id="mockPaymentNoticeBanner" class="alert alert-warning" style="margin-bottom:1.5rem; border:2px dashed var(--gold-600); background:#FFFBEB;">
+                <div style="font-size:1.5rem; color:var(--gold-800);">ℹ</div>
                 <div>
-                  <strong style="color:var(--burgundy-950);">SECURE RAZORPAY ENROLLMENT CHECKOUT</strong>
-                  <p style="font-size:0.8rem; color:var(--charcoal-700); margin-top:0.25rem;">
-                    Payment orders are created and cryptographically verified via HMAC-SHA256 before activating your course enrolment.
+                  <strong style="color:var(--burgundy-950);">MOCK PAYMENT ACTIVE (RAZORPAY KEYS NOT ADDED YET)</strong>
+                  <p style="font-size:0.86rem; color:var(--charcoal-800); margin-top:0.25rem; font-weight:600;">
+                    No amount will be debited from your account because Razorpay keys are not added yet.
+                  </p>
+                  <p style="font-size:0.8rem; color:var(--charcoal-700); margin-top:0.2rem;">
+                    Click the button below to complete your transaction via Mock Payment and immediately access &amp; manage your courses. Once Razorpay keys are added in Admin Settings, live gateway checkout will activate automatically.
                   </p>
                 </div>
               </div>

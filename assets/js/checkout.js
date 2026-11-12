@@ -353,21 +353,38 @@ async function executeLiveCheckoutPayment() {
   }
 
   const order = orderRes.order;
+  const isMockPayment = Boolean(order.mockPayment || order.gatewayMode === 'MOCK');
   const orderSummarySnapshot = {
     orderRef: order.orderNumber,
     studentName: fullName,
     studentEmail: email,
     courses: cart,
     totals,
+    mockPayment: isMockPayment,
+    mockPaymentMessage:
+      order.mockPaymentMessage ||
+      'No amount will be debited from your account because Razorpay keys are not added yet.',
     paidAt: new Date().toISOString(),
   };
   localStorage.setItem('berea_last_order', JSON.stringify(orderSummarySnapshot));
 
-  // Case 1: Free checkout or 100% scholarship discount
+  // Case 1: Mock Payment (until Razorpay keys are configured) or Free / 100% scholarship checkout
   if (!order.paymentRequired) {
+    if (isMockPayment && typeof showToast === 'function') {
+      showToast(
+        'No amount will be debited from your account because Razorpay keys are not added yet. Completing transaction...',
+        'success'
+      );
+    }
+    if (payBtn) {
+      payBtn.innerHTML = '<span>✓ Mock Payment Complete (₹0 Debited) — Redirecting...</span>';
+    }
     await apiFetchStudentCourses();
     clearCart();
-    window.location.href = `payment-result.html?status=success&ref=${encodeURIComponent(order.orderNumber)}`;
+    const modeParam = isMockPayment ? 'mock' : 'free';
+    setTimeout(() => {
+      window.location.href = `payment-result.html?status=success&mode=${modeParam}&ref=${encodeURIComponent(order.orderNumber)}`;
+    }, 900);
     return;
   }
 
