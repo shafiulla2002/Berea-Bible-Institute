@@ -180,29 +180,31 @@
   <script src="assets/js/app.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Access Guard: If visitor is not signed in, prompt to sign up first
-      if (typeof isStudentAuthenticated === 'function' && !isStudentAuthenticated()) {
+      // Access Guard: Enforce strict student phone authentication & privacy
+      const student = typeof getAuthenticatedStudent === 'function' ? getAuthenticatedStudent() : null;
+      const token = typeof getAuthToken === 'function' ? getAuthToken() : null;
+      if (!student || !token) {
         const main = document.querySelector('main');
         if (main) {
           main.innerHTML = `
             <section class="section" style="padding: 6rem 1rem; text-align: center; min-height: 70vh; display: flex; align-items: center; justify-content: center;">
               <div class="card" style="max-width: 580px; margin: 0 auto; padding: 3.5rem 2.5rem; box-shadow: var(--shadow-xl); border-top: 5px solid var(--burgundy-800);">
                 <div style="width: 72px; height: 72px; border-radius: 50%; background: var(--burgundy-50); color: var(--burgundy-900); display: flex; align-items: center; justify-content: center; font-size: 2.2rem; margin: 0 auto 1.5rem; border: 1px solid var(--burgundy-100);">
-                  🎓
+                  📱
                 </div>
                 <h1 style="font-size: 1.85rem; color: var(--burgundy-950); margin-bottom: 0.75rem;">
-                  Student Hub Access
+                  Student Sign In Required
                 </h1>
                 <p style="color: var(--charcoal-600); font-size: 1rem; line-height: 1.6; margin-bottom: 2rem;">
-                  Access to course syllabi, live seminar classrooms, academic transcripts, and curriculum materials is reserved for registered Bethesda students. Please sign up for your free student account or sign in to continue.
+                  To protect your student privacy and load your purchased courses, please sign in with your registered mobile phone number.
                 </p>
                 <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                  <button type="button" class="btn btn-gold btn-lg" onclick="openAuthModal('signup', 'student-dashboard.html')">
-                    ✨ Sign Up for Student Account
-                  </button>
-                  <a href="student-login.html?returnUrl=student-dashboard.html" class="btn btn-secondary btn-lg">
-                    Sign In to Existing Account
+                  <a href="student-login.html?returnUrl=student-dashboard.html" class="btn btn-gold btn-lg">
+                    📱 Sign In with Mobile Number
                   </a>
+                  <button type="button" class="btn btn-secondary btn-lg" onclick="openAuthModal('signup', 'student-dashboard.html')">
+                    Create New Account
+                  </button>
                 </div>
                 <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--cream-border);">
                   <a href="index.html" class="btn btn-outline btn-sm">← Return to Main Website</a>
@@ -210,11 +212,6 @@
               </div>
             </section>
           `;
-          setTimeout(() => {
-            if (typeof openAuthModal === 'function') {
-              openAuthModal('signup', 'student-dashboard.html');
-            }
-          }, 400);
         }
         return;
       }
@@ -257,7 +254,10 @@
                 !item.source ||
                 item.source === 'PURCHASE' ||
                 item.source === 'FREE' ||
-                item.source === 'SCHOLARSHIP',
+                item.source === 'SCHOLARSHIP' ||
+                item.source === 'ADMIN' ||
+                item.status === 'ACTIVE' ||
+                item.status === 'COMPLETED',
             )
           : [];
       }

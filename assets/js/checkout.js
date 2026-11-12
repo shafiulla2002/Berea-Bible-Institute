@@ -353,6 +353,13 @@ async function executeLiveCheckoutPayment() {
   }
 
   const order = orderRes.order;
+  if (order.accessToken && order.student && typeof syncActiveAccountSession === 'function') {
+    syncActiveAccountSession({
+      ...order.student,
+      token: order.accessToken,
+    });
+  }
+
   const isMockPayment = Boolean(order.mockPayment || order.gatewayMode === 'MOCK');
   const orderSummarySnapshot = {
     orderRef: order.orderNumber,
@@ -379,7 +386,9 @@ async function executeLiveCheckoutPayment() {
     if (payBtn) {
       payBtn.innerHTML = '<span>✓ Mock Payment Complete (₹0 Debited) — Redirecting...</span>';
     }
-    await apiFetchStudentCourses();
+    if (typeof apiFetchStudentCourses === 'function') {
+      await apiFetchStudentCourses(order.accessToken || undefined);
+    }
     clearCart();
     const modeParam = isMockPayment ? 'mock' : 'free';
     setTimeout(() => {

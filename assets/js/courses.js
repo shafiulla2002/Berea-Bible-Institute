@@ -278,7 +278,9 @@ function isCourseEnrolled(courseId) {
           (!item.source ||
             item.source === 'PURCHASE' ||
             item.source === 'FREE' ||
-            item.source === 'SCHOLARSHIP'),
+            item.source === 'SCHOLARSHIP' ||
+            item.source === 'ADMIN' ||
+            item.status === 'ACTIVE'),
       )
     );
   } catch (e) {

@@ -215,12 +215,12 @@ async function apiLoginWithPhone(phoneNumber, otp = '', challengeTokenOverride =
 
   const studentData = {
     id: res.data.user?.id,
-    studentId: profile?.admissionNo || res.data.user?.id?.slice(0, 8)?.toUpperCase() || 'STUDENT',
-    fullName: res.data.user?.fullName || profile?.fullName || 'Student',
-    email: res.data.user?.email || profile?.email || '',
+    studentId: profile?.profile?.admissionNo || profile?.admissionNo || res.data.user?.admissionNo || res.data.user?.id?.slice(0, 8)?.toUpperCase() || 'STUDENT',
+    fullName: profile?.student?.fullName || res.data.user?.fullName || 'Student',
+    email: profile?.student?.email || res.data.user?.email || '',
     phone: cleanPhone,
     role: 'Student',
-    status: profile?.status || 'ACTIVE',
+    status: profile?.profile?.status || profile?.status || 'ACTIVE',
     token,
   };
 
@@ -368,12 +368,27 @@ async function apiFetchStudentProfile(tokenOverride = null) {
 
 async function apiFetchStudentCourses(tokenOverride = null) {
   const token = tokenOverride || getAuthToken();
-  if (!token) return [];
+  if (!token) {
+    try {
+      const cached = localStorage.getItem('berea_enrolled_courses');
+      if (cached) return JSON.parse(cached);
+    } catch (e) {}
+    return [];
+  }
   const res = await callBackendApi('/students/courses', {
     method: 'GET',
     headers: { Authorization: `Bearer ${token}` },
   });
-  if (!res.ok) return [];
+  if (!res.ok) {
+    if (res.status === 401) {
+      console.warn('Student authentication token expired or invalid (401)');
+    }
+    try {
+      const cached = localStorage.getItem('berea_enrolled_courses');
+      if (cached) return JSON.parse(cached);
+    } catch (e) {}
+    return [];
+  }
   const list = Array.isArray(res.data) ? res.data : res.data.courses || [];
   try {
     localStorage.setItem('berea_enrolled_courses', JSON.stringify(list));
