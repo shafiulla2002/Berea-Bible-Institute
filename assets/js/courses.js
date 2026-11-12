@@ -30,6 +30,30 @@ function escapeCourseHtml(str) {
     .replace(/"/g, '&quot;');
 }
 
+function buildCourseCoverSvgDataUri(title, category, code) {
+  const safeTitle = String(title || 'Theological Course').slice(0, 38).replace(/[<>&"']/g, '');
+  const safeCat = String(category || 'Biblical Studies').slice(0, 32).replace(/[<>&"']/g, '');
+  const safeCode = String(code || 'BBI').slice(0, 18).replace(/[<>&"']/g, '');
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450">
+    <defs>
+      <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#1E1B4B"/>
+        <stop offset="55%" stop-color="#3D0C17"/>
+        <stop offset="100%" stop-color="#0F172A"/>
+      </linearGradient>
+    </defs>
+    <rect width="800" height="450" fill="url(#bg)"/>
+    <circle cx="700" cy="80" r="180" fill="#C5A059" fill-opacity="0.08"/>
+    <circle cx="100" cy="380" r="140" fill="#C5A059" fill-opacity="0.06"/>
+    <rect x="36" y="32" width="728" height="386" rx="14" fill="none" stroke="#C5A059" stroke-opacity="0.28" stroke-width="1.5"/>
+    <text x="400" y="195" text-anchor="middle" fill="#C5A059" font-family="Georgia, serif" font-size="42" font-weight="bold">✝</text>
+    <text x="400" y="255" text-anchor="middle" fill="#FFFFFF" font-family="Georgia, serif" font-size="26" font-weight="bold">${safeTitle}</text>
+    <text x="400" y="295" text-anchor="middle" fill="#DFBE7B" font-family="sans-serif" font-size="15" letter-spacing="2">${safeCat.toUpperCase()}</text>
+    <text x="400" y="345" text-anchor="middle" fill="#94A3B8" font-family="monospace" font-size="13">${safeCode} • BETHESDA BIBLE INSTITUTE</text>
+  </svg>`;
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+}
+
 function normalizeCourseDto(c) {
   if (!c) return null;
   const pricePaise = c.pricing === 'PAID' ? Number(c.salePrice ?? c.price ?? 0) : 0;
@@ -97,9 +121,19 @@ function normalizeCourseDto(c) {
     featured: true,
     shortDesc: (c.description || '').slice(0, 160),
     fullDesc: c.description || '',
+    fallbackImage: buildCourseCoverSvgDataUri(
+      c.title,
+      c.category?.name || 'Biblical Studies',
+      (c.slug || c.id.slice(0, 8)).toUpperCase(),
+    ),
     image:
-      c.coverImage ||
-      'https://images.unsplash.com/photo-1507842229451-7f01be8610ce?auto=format&fit=crop&w=800&q=80',
+      c.coverImage && !String(c.coverImage).includes('1507842229451-7f01be8610ce')
+        ? c.coverImage
+        : buildCourseCoverSvgDataUri(
+            c.title,
+            c.category?.name || 'Biblical Studies',
+            (c.slug || c.id.slice(0, 8)).toUpperCase(),
+          ),
     eligibility: c.eligibility || 'Open to believers committed to structured biblical study.',
     objectives: [
       'Master foundational scripture interpretation and historical context',
@@ -203,10 +237,12 @@ function queryCourses({ search = '', category = 'ALL', level = 'ALL', mode = 'AL
   }
 
   if (category !== 'ALL') {
-    list = list.filter((c) => c.category === category);
+    const catLower = category.toLowerCase();
+    list = list.filter((c) => (c.category || '').toLowerCase().includes(catLower));
   }
   if (level !== 'ALL') {
-    list = list.filter((c) => c.level === level);
+    const lvlLower = level.toLowerCase();
+    list = list.filter((c) => (c.level || '').toLowerCase() === lvlLower);
   }
   if (mode !== 'ALL') {
     list = list.filter(
@@ -217,11 +253,11 @@ function queryCourses({ search = '', category = 'ALL', level = 'ALL', mode = 'AL
     list = list.filter((c) => c.durationCategory === duration);
   }
 
-  if (sort === 'price_asc') {
+  if (sort === 'price_asc' || sort === 'price-asc') {
     list.sort((a, b) => a.price - b.price);
-  } else if (sort === 'price_desc') {
+  } else if (sort === 'price_desc' || sort === 'price-desc') {
     list.sort((a, b) => b.price - a.price);
-  } else if (sort === 'title_asc') {
+  } else if (sort === 'title_asc' || sort === 'name-asc') {
     list.sort((a, b) => a.title.localeCompare(b.title));
   }
 
@@ -233,29 +269,39 @@ function isCourseEnrolled(courseId) {
     if (typeof isStudentAuthenticated === 'function' && !isStudentAuthenticated()) {
       return false;
     }
-    const enrolled = JSON.parse(localStorage.getItem('berea_enrolled_courses') || '[]');
-    return Array.isArray(enrolled) && enrolled.some((item) => item.courseId === courseId);
+    const purchased = JSON.parse(sessionStorage.getItem('berea_purchased_course_ids') || '[]');
+    return Array.isArray(purchased) && purchased.includes(courseId);
   } catch (e) {
     return false;
   }
 }
 
 function createCourseCardHTML(course) {
-  const enrolled = isCourseEnrolled(course.id);
+  const isAuth = typeof isStudentAuthenticated === 'function' && isStudentAuthenticated();
   const priceLabel =
     course.pricing === 'FREE' || course.price === 0
       ? '<span class="price-amount">Free</span>'
       : `<span class="price-amount">₹${course.price.toLocaleString('en-IN')}</span>`;
 
+  const fallbackImg =
+    course.fallbackImage ||
+    buildCourseCoverSvgDataUri(course.title, course.category, course.code);
+
+  const btnClass = isAuth ? 'btn btn-primary btn-sm btn-add-cart' : 'btn btn-gold btn-sm btn-add-cart';
+  const btnLabel = isAuth
+    ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg> Add to Cart`
+    : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7.5" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg> Sign Up to Buy`;
+
   return `
-    <article class="course-card">
-      <div class="course-image-box">
-        <img src="${escapeCourseHtml(course.image)}" alt="${escapeCourseHtml(course.title)}" class="course-image" loading="lazy">
-        <span class="course-category-tag">${escapeCourseHtml(course.category)}</span>
-        <span class="course-level-tag">${escapeCourseHtml(course.level)}</span>
+    <article class="course-card" data-course-id="${escapeCourseHtml(course.id)}">
+      <div class="course-thumb">
+        <img src="${escapeCourseHtml(course.image)}" onerror="this.onerror=null;this.src='${escapeCourseHtml(fallbackImg)}'" alt="${escapeCourseHtml(course.title)}" class="course-thumb-img" loading="lazy">
+        <div class="course-thumb-overlay"></div>
+        <span class="course-badge-category">${escapeCourseHtml(course.category)}</span>
+        <span class="course-badge-level">${escapeCourseHtml(course.level)}</span>
       </div>
-      <div class="course-card-body">
-        <div class="course-meta-row">
+      <div class="course-body">
+        <div class="course-code-wrap">
           <span class="course-code">${escapeCourseHtml(course.code)}</span>
           <span class="course-duration">${escapeCourseHtml(course.duration)}</span>
         </div>
@@ -263,28 +309,24 @@ function createCourseCardHTML(course) {
           <a href="course-details.html?id=${encodeURIComponent(course.id)}">${escapeCourseHtml(course.title)}</a>
         </h3>
         <p class="course-desc">${escapeCourseHtml(course.shortDesc)}</p>
-        <div class="course-instructor">
-          <div class="instructor-avatar">${escapeCourseHtml(course.instructor.avatar)}</div>
-          <div>
-            <div class="instructor-name">${escapeCourseHtml(course.instructor.name)}</div>
-            <div class="instructor-title">${escapeCourseHtml(course.studyMode)}</div>
+        <div class="course-faculty">
+          <div class="faculty-avatar">${escapeCourseHtml(course.instructor.avatar)}</div>
+          <div class="faculty-info">
+            <span class="faculty-name">${escapeCourseHtml(course.instructor.name)}</span>
+            <span class="faculty-role">${escapeCourseHtml(course.studyMode)}</span>
           </div>
         </div>
       </div>
-      <div class="course-card-footer">
-        <div class="course-price">
+      <div class="course-footer">
+        <div class="course-price-block">
           <span class="price-label">${course.pricing === 'FREE' ? 'Tuition Scholarship' : 'Tuition Fee'}</span>
           ${priceLabel}
         </div>
         <div class="course-actions">
           <a href="course-details.html?id=${encodeURIComponent(course.id)}" class="btn btn-secondary btn-sm">Details</a>
-          ${
-            enrolled
-              ? `<a href="student-dashboard.html" class="btn btn-primary btn-sm">Enrolled ✓</a>`
-              : `<button type="button" class="btn btn-gold btn-sm btn-add-cart" data-course-id="${escapeCourseHtml(course.id)}">
-                   Add to Cart
-                 </button>`
-          }
+          <button type="button" class="${btnClass}" data-id="${escapeCourseHtml(course.id)}" data-course-id="${escapeCourseHtml(course.id)}">
+            ${btnLabel}
+          </button>
         </div>
       </div>
     </article>

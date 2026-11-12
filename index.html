@@ -508,6 +508,9 @@
           container.innerHTML = '<div style="grid-column:1/-1; padding:2.5rem; text-align:center; color:var(--charcoal-500);">Published courses will appear here once published by your Institute Admin.</div>';
         } else {
           container.innerHTML = featured.map(createCourseCardHTML).join('');
+          if (typeof updateCourseCardsAuthUI === 'function') {
+            updateCourseCardsAuthUI();
+          }
         }
       }
     });

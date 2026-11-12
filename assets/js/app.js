@@ -389,7 +389,7 @@ function setupGlobalCartListeners() {
     const btn = e.target.closest('.btn-add-cart');
     if (btn) {
       e.preventDefault();
-      const courseId = btn.getAttribute('data-id');
+      const courseId = btn.getAttribute('data-id') || btn.getAttribute('data-course-id');
       if (!courseId) return;
 
       // 1. CHECK IF COURSE IS ALREADY PURCHASED

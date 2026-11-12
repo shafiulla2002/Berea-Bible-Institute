@@ -363,6 +363,9 @@
           if (grid) {
             grid.style.display = 'grid';
             grid.innerHTML = filtered.map(createCourseCardHTML).join('');
+            if (typeof updateCourseCardsAuthUI === 'function') {
+              updateCourseCardsAuthUI();
+            }
           }
         }
       }

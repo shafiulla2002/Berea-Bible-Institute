@@ -353,7 +353,12 @@
       // Course Image Preview
       const imgEl = document.getElementById('detailCourseImage');
       if (imgEl) {
-        imgEl.src = course.image || 'https://images.unsplash.com/photo-1507842229451-7f01be8610ce?auto=format&fit=crop&w=800&q=80';
+        const fallback = course.fallbackImage || (typeof buildCourseCoverSvgDataUri === 'function' ? buildCourseCoverSvgDataUri(course.title, course.category, course.code) : '');
+        imgEl.onerror = function() {
+          this.onerror = null;
+          if (fallback) this.src = fallback;
+        };
+        imgEl.src = course.image || fallback;
         imgEl.alt = course.title;
       }
 
