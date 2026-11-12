@@ -250,7 +250,16 @@
       // Retrieve enrolled courses from database / API
       let enrolled = [];
       if (typeof apiFetchStudentCourses === 'function') {
-        enrolled = await apiFetchStudentCourses();
+        const allEnrolled = await apiFetchStudentCourses();
+        enrolled = Array.isArray(allEnrolled)
+          ? allEnrolled.filter(
+              (item) =>
+                !item.source ||
+                item.source === 'PURCHASE' ||
+                item.source === 'FREE' ||
+                item.source === 'SCHOLARSHIP',
+            )
+          : [];
       }
 
       document.getElementById('statTotalCourses').textContent = enrolled.length;

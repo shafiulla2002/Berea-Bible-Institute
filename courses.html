@@ -328,6 +328,9 @@
       const sortSelect = document.getElementById('catalogSortSelect');
       const resetBtn = document.getElementById('btnResetFilters');
 
+      if (typeof isStudentAuthenticated === 'function' && isStudentAuthenticated() && typeof apiFetchStudentCourses === 'function') {
+        await apiFetchStudentCourses();
+      }
       if (typeof loadPublicCourses === 'function') {
         await loadPublicCourses();
       }

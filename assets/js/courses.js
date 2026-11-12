@@ -269,8 +269,30 @@ function isCourseEnrolled(courseId) {
     if (typeof isStudentAuthenticated === 'function' && !isStudentAuthenticated()) {
       return false;
     }
-    const purchased = JSON.parse(sessionStorage.getItem('berea_purchased_course_ids') || '[]');
-    return Array.isArray(purchased) && purchased.includes(courseId);
+    const enrolled = JSON.parse(localStorage.getItem('berea_enrolled_courses') || '[]');
+    return (
+      Array.isArray(enrolled) &&
+      enrolled.some(
+        (item) =>
+          item.courseId === courseId &&
+          (!item.source ||
+            item.source === 'PURCHASE' ||
+            item.source === 'FREE' ||
+            item.source === 'SCHOLARSHIP'),
+      )
+    );
+  } catch (e) {
+    return false;
+  }
+}
+
+function isCourseInCart(courseId) {
+  try {
+    const cart =
+      typeof getCart === 'function'
+        ? getCart()
+        : JSON.parse(localStorage.getItem('berea_cart') || '[]');
+    return Array.isArray(cart) && cart.some((item) => item.courseId === courseId);
   } catch (e) {
     return false;
   }
@@ -278,6 +300,8 @@ function isCourseEnrolled(courseId) {
 
 function createCourseCardHTML(course) {
   const isAuth = typeof isStudentAuthenticated === 'function' && isStudentAuthenticated();
+  const enrolled = isCourseEnrolled(course.id);
+  const inCart = !enrolled && isCourseInCart(course.id);
   const priceLabel =
     course.pricing === 'FREE' || course.price === 0
       ? '<span class="price-amount">Free</span>'
@@ -287,10 +311,20 @@ function createCourseCardHTML(course) {
     course.fallbackImage ||
     buildCourseCoverSvgDataUri(course.title, course.category, course.code);
 
-  const btnClass = isAuth ? 'btn btn-primary btn-sm btn-add-cart' : 'btn btn-gold btn-sm btn-add-cart';
-  const btnLabel = isAuth
-    ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg> Add to Cart`
-    : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7.5" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg> Sign Up to Buy`;
+  let actionHtml = '';
+  if (enrolled) {
+    actionHtml = `<a href="student-dashboard.html" class="btn btn-primary btn-sm btn-view-enrolled">Manage</a>`;
+  } else if (inCart) {
+    actionHtml = `<a href="cart.html" class="btn btn-gold btn-sm btn-in-cart">✓ Added to Cart</a>`;
+  } else {
+    const btnClass = isAuth
+      ? 'btn btn-primary btn-sm btn-add-cart'
+      : 'btn btn-gold btn-sm btn-add-cart';
+    const btnLabel = isAuth
+      ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg> Add to Cart`
+      : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7.5" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg> Sign Up to Buy`;
+    actionHtml = `<button type="button" class="${btnClass}" data-id="${escapeCourseHtml(course.id)}" data-course-id="${escapeCourseHtml(course.id)}">${btnLabel}</button>`;
+  }
 
   return `
     <article class="course-card" data-course-id="${escapeCourseHtml(course.id)}">
@@ -324,9 +358,7 @@ function createCourseCardHTML(course) {
         </div>
         <div class="course-actions">
           <a href="course-details.html?id=${encodeURIComponent(course.id)}" class="btn btn-secondary btn-sm">Details</a>
-          <button type="button" class="${btnClass}" data-id="${escapeCourseHtml(course.id)}" data-course-id="${escapeCourseHtml(course.id)}">
-            ${btnLabel}
-          </button>
+          ${actionHtml}
         </div>
       </div>
     </article>

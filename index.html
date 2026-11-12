@@ -499,6 +499,9 @@
     document.addEventListener('DOMContentLoaded', async () => {
       const container = document.getElementById('featuredCoursesGrid');
       if (!container) return;
+      if (typeof isStudentAuthenticated === 'function' && isStudentAuthenticated() && typeof apiFetchStudentCourses === 'function') {
+        await apiFetchStudentCourses();
+      }
       if (typeof loadPublicCourses === 'function') {
         await loadPublicCourses();
       }

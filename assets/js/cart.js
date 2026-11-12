@@ -20,6 +20,9 @@ function saveCart(cart) {
   if (typeof updateCartBadge === 'function') {
     updateCartBadge();
   }
+  if (typeof updateCourseCardsAuthUI === 'function') {
+    updateCourseCardsAuthUI();
+  }
 }
 
 function addToCart(courseId, batchDate = null) {

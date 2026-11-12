@@ -321,6 +321,9 @@
         window.location.href = 'courses.html';
         return;
       }
+      if (typeof isStudentAuthenticated === 'function' && isStudentAuthenticated() && typeof apiFetchStudentCourses === 'function') {
+        await apiFetchStudentCourses();
+      }
       const course = typeof fetchCourseDetailLive === 'function'
         ? await fetchCourseDetailLive(courseId)
         : (typeof getCourseById === 'function' ? getCourseById(courseId) : null);
@@ -401,7 +404,7 @@
 
       if (alreadyEnrolled) {
         if (enrollBtn) {
-          enrollBtn.innerHTML = `✓ Enrolled – Access Course in My Portal`;
+          enrollBtn.innerHTML = `Manage Course in My Portal →`;
           enrollBtn.classList.remove('btn-gold');
           enrollBtn.classList.add('btn-primary');
           enrollBtn.addEventListener('click', (e) => {
@@ -410,24 +413,29 @@
           });
         }
         if (addBtn) {
-          addBtn.innerHTML = `✓ Course Already Purchased`;
+          addBtn.innerHTML = `✓ Course Purchased (Manage)`;
           addBtn.classList.remove('btn-primary');
           addBtn.classList.add('btn-secondary');
           addBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            if (typeof showToast === 'function') {
-              showToast(`⚠ You have already purchased ${course.code} (${course.title})! You have active lifetime access to this course in your Student Portal.`, 'warning');
-            }
+            window.location.href = 'student-dashboard.html';
           });
         }
       } else {
         // Add to Cart
         if (addBtn) {
+          if (typeof isCourseInCart === 'function' && isCourseInCart(course.id)) {
+            addBtn.innerHTML = `✓ Added to Cart — View Cart`;
+            addBtn.classList.remove('btn-primary');
+            addBtn.classList.add('btn-gold');
+          }
           addBtn.addEventListener('click', () => {
             if (typeof isCourseEnrolled === 'function' && isCourseEnrolled(course.id)) {
-              if (typeof showToast === 'function') {
-                showToast(`⚠ You have already purchased ${course.code} (${course.title})! Access your lectures in your Student Portal.`, 'danger');
-              }
+              window.location.href = 'student-dashboard.html';
+              return;
+            }
+            if (typeof isCourseInCart === 'function' && isCourseInCart(course.id)) {
+              window.location.href = 'cart.html';
               return;
             }
             if (typeof isStudentAuthenticated === 'function' && !isStudentAuthenticated()) {
@@ -439,7 +447,12 @@
             }
             const selectedBatch = batchSelect.value;
             if (typeof addToCart === 'function') {
-              addToCart(course.id, selectedBatch);
+              const added = addToCart(course.id, selectedBatch);
+              if (added) {
+                addBtn.innerHTML = `✓ Added to Cart — View Cart`;
+                addBtn.classList.remove('btn-primary');
+                addBtn.classList.add('btn-gold');
+              }
             }
           });
         }
