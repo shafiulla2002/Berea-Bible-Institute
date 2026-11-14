@@ -64,11 +64,13 @@ function addToCart(courseId, batchDate = null) {
     instituteId: course.instituteId || '',
     code: course.code,
     title: course.title,
+    isBook: Boolean(course.isBook || course.courseType === 'BOOK'),
+    author: course.author || '',
     price: course.price,
     pricePaise: course.pricePaise ?? course.price * 100,
     registrationFee: course.registrationFee || 0,
     registrationFeePaise: course.registrationFeePaise ?? (course.registrationFee || 0) * 100,
-    batch: batchDate || course.nextBatch || 'Rolling Cohort',
+    batch: (course.isBook || course.courseType === 'BOOK') ? 'Instant Digital eBook Access' : (batchDate || course.nextBatch || 'Rolling Cohort'),
     addedAt: new Date().toISOString(),
   });
 

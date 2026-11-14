@@ -278,26 +278,38 @@
       if (filled) filled.style.display = 'grid';
 
       // Render table rows
-      tbody.innerHTML = cart.map(item => `
-        <tr style="border-bottom:1px solid var(--cream-border);">
-          <td style="padding:1.25rem 0.5rem;">
-            <span style="font-family:var(--font-mono); font-size:0.75rem; font-weight:700; color:var(--gold-700); background:var(--gold-50); padding:0.15rem 0.45rem; border-radius:4px; border:1px solid var(--gold-300);">${item.code}</span>
-            <div style="font-weight:700; font-size:1.05rem; color:var(--burgundy-950); margin:0.35rem 0 0.2rem;">
-              <a href="course-details.html?id=${item.courseId}">${item.title}</a>
-            </div>
-            <div style="font-size:0.78rem; color:var(--charcoal-500);">Registration Fee: ₹${Number(item.registrationFee || 0).toLocaleString('en-IN')} (one-time)</div>
-          </td>
-          <td style="padding:1.25rem 0.5rem; font-size:0.85rem; color:var(--charcoal-700);">
-            <strong>${item.batch || 'Standard Cohort'}</strong>
-          </td>
-          <td style="padding:1.25rem 0.5rem; text-align:right;">
-            <span style="font-family:var(--font-serif); font-size:1.25rem; font-weight:800; color:var(--burgundy-900);">₹${Number(item.price || 0).toLocaleString('en-IN')}</span>
-          </td>
-          <td style="padding:1.25rem 0.5rem; text-align:center;">
-            <button type="button" onclick="removeItem('${item.courseId}')" title="Remove course" style="color:var(--status-danger); font-size:1.25rem; cursor:pointer;">
-              ✕
-            </button>
-          </td>
+      tbody.innerHTML = cart.map(item => {
+        const detailLink = item.isBook ? `book-details.html?id=${item.courseId}` : `course-details.html?id=${item.courseId}`;
+        const typeBadge = item.isBook ? `<span style="font-size:0.7rem; font-weight:700; color:#276749; background:#E6F4EA; padding:0.15rem 0.45rem; border-radius:4px; margin-left:0.35rem;">📖 eBook</span>` : '';
+        const authorLine = item.author ? `<div style="font-size:0.78rem; color:var(--charcoal-600); margin-bottom:0.15rem;">By ${item.author}</div>` : '';
+
+        return `
+          <tr style="border-bottom:1px solid var(--cream-border);">
+            <td style="padding:1.25rem 0.5rem;">
+              <div style="display:flex; align-items:center;">
+                <span style="font-family:var(--font-mono); font-size:0.75rem; font-weight:700; color:var(--gold-700); background:var(--gold-50); padding:0.15rem 0.45rem; border-radius:4px; border:1px solid var(--gold-300);">${item.code || 'BBI'}</span>
+                ${typeBadge}
+              </div>
+              <div style="font-weight:700; font-size:1.05rem; color:var(--burgundy-950); margin:0.35rem 0 0.2rem;">
+                <a href="${detailLink}">${item.title}</a>
+              </div>
+              ${authorLine}
+              <div style="font-size:0.78rem; color:var(--charcoal-500);">Registration Fee: ₹${Number(item.registrationFee || 0).toLocaleString('en-IN')} (one-time)</div>
+            </td>
+            <td style="padding:1.25rem 0.5rem; font-size:0.85rem; color:var(--charcoal-700);">
+              <strong>${item.batch || (item.isBook ? 'Digital eBook Access' : 'Standard Cohort')}</strong>
+            </td>
+            <td style="padding:1.25rem 0.5rem; text-align:right;">
+              <span style="font-family:var(--font-serif); font-size:1.25rem; font-weight:800; color:var(--burgundy-900);">₹${Number(item.price || 0).toLocaleString('en-IN')}</span>
+            </td>
+            <td style="padding:1.25rem 0.5rem; text-align:center;">
+              <button type="button" onclick="removeItem('${item.courseId}')" title="Remove item" style="color:var(--status-danger); font-size:1.25rem; cursor:pointer;">
+                ✕
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
         </tr>
       `).join('');
 

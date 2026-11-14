@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Details | Bethesda Bible Institute Hyderabad</title>
+  <meta name="description" content="Read full theological books, commentaries, and biblical textbooks online with realistic 3D page turning at Bethesda Bible Institute Hyderabad.">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+  <style>
+    .book-hero-wrap {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 3.5rem;
+      align-items: start;
+    }
+    .book-3d-cover-container {
+      perspective: 1000px;
+      text-align: center;
+    }
+    .book-3d-cover-img {
+      width: 100%;
+      max-width: 280px;
+      border-radius: 8px;
+      box-shadow: -10px 18px 36px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.25);
+      transform: rotateY(-12deg) rotateX(2deg);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      background: #0f172a;
+    }
+    .book-3d-cover-container:hover .book-3d-cover-img {
+      transform: rotateY(-4deg) rotateX(0deg) scale(1.02);
+      box-shadow: -6px 22px 42px rgba(0,0,0,0.6);
+    }
+    .meta-pill-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+      margin: 1.75rem 0;
+      padding: 1.25rem;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+    }
+    .meta-pill-item span {
+      display: block;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--gold-300);
+      margin-bottom: 0.2rem;
+    }
+    .meta-pill-item strong {
+      font-size: 0.95rem;
+      color: #FFFFFF;
+    }
+    @media (max-width: 860px) {
+      .book-hero-wrap {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      .book-3d-cover-container {
+        display: flex;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Announcement Bar -->
+  <aside class="topbar">
+    <div class="container">
+      <div>
+        <span class="text-gold font-bold">Bethesda Digital Library:</span>
+        <span>All published books include full 3D browser reading with automatic bookmarking.</span>
+      </div>
+      <div class="topbar-links">
+        <a href="courses.html?type=BOOK" class="topbar-link">Browse All eBooks</a>
+        <span>•</span>
+        <a href="cart.html" class="topbar-link">View Cart</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="brand">
+        <div class="brand-crest">B</div>
+        <div class="brand-text">
+          <span class="brand-title">Bethesda Bible Institute</span>
+          <span class="brand-subtitle">Bethesda Church Hyderabad</span>
+        </div>
+      </a>
+
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="courses.html" class="nav-link">Course Catalogue</a>
+        <a href="courses.html?type=BOOK" class="nav-link active">eBooks & Library</a>
+        <a href="student-dashboard.html" class="nav-link">My Library</a>
+        <a href="registration.html" class="nav-link">Admissions</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="cart.html" class="cart-button" title="View Cart">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+          <span class="cart-badge">0</span>
+        </a>
+        <a href="student-login.html" class="btn btn-secondary btn-sm">Sign In</a>
+        <a href="registration.html" class="btn btn-primary btn-sm">Apply</a>
+        <button type="button" class="mobile-nav-toggle" aria-label="Open Menu">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="mobile-drawer-overlay"></div>
+  <div class="mobile-drawer">
+    <div class="drawer-header">
+      <div class="brand">
+        <div class="brand-crest" style="width:36px; height:36px; font-size:1rem;">B</div>
+        <span class="brand-title" style="font-size:1.05rem;">Bethesda Bible Institute</span>
+      </div>
+      <button type="button" class="drawer-close">✕</button>
+    </div>
+    <div class="drawer-links">
+      <a href="index.html" class="drawer-link">Home</a>
+      <a href="courses.html" class="drawer-link">Course Catalogue</a>
+      <a href="courses.html?type=BOOK" class="drawer-link active">eBooks & Library</a>
+      <a href="student-dashboard.html" class="drawer-link">My Library</a>
+      <a href="cart.html" class="drawer-link">Shopping Cart</a>
+      <a href="student-login.html" class="drawer-link">Student Login</a>
+    </div>
+  </div>
+
+  <main>
+    <!-- Book Hero Section -->
+    <section style="background: linear-gradient(135deg, #1A050B 0%, #2D0814 50%, #111827 100%); color:#FFFFFF; padding:3.5rem 0 4rem; border-bottom:3px solid var(--gold-500);">
+      <div class="container">
+        <!-- Breadcrumbs -->
+        <div style="font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--gold-400); margin-bottom:1.5rem;">
+          <a href="index.html" style="color:var(--gold-300);">Home</a> / 
+          <a href="courses.html" style="color:var(--gold-300);">Catalogue</a> / 
+          <a href="courses.html?type=BOOK" style="color:var(--gold-300);">eBooks</a> / 
+          <span id="breadcrumbBookTitle" style="color:#FFF;">Loading Book...</span>
+        </div>
+
+        <div class="book-hero-wrap">
+          <!-- 3D Cover Column -->
+          <div class="book-3d-cover-container">
+            <img id="detailBookCover" class="book-3d-cover-img" src="" alt="Book Cover" loading="lazy">
+            <div style="margin-top:1.25rem; font-size:0.8rem; color:var(--gold-300); display:flex; align-items:center; justify-content:center; gap:0.4rem;">
+              <span>📖</span>
+              <span>Online 3D Page-Turning Reader</span>
+            </div>
+          </div>
+
+          <!-- Book Info Column -->
+          <div>
+            <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center; margin-bottom:0.75rem;">
+              <span id="detailBadgeCategory" class="badge badge-gold" style="font-size:0.75rem;">Theology</span>
+              <span id="detailBadgeFormat" class="badge" style="background:rgba(255,255,255,0.18); color:#FFF; font-size:0.75rem;">Digital eBook</span>
+              <span id="detailBadgeLanguage" class="badge" style="background:rgba(255,255,255,0.18); color:#FFF; font-size:0.75rem;">English</span>
+            </div>
+
+            <h1 id="detailBookTitle" style="color:#FFFFFF; font-size:clamp(1.85rem, 3.2vw, 2.6rem); line-height:1.25; margin-bottom:0.75rem;">
+              Loading Book Details...
+            </h1>
+
+            <p style="font-size:1.1rem; color:rgba(255,255,255,0.9); margin-bottom:1.25rem;">
+              By <strong id="detailBookAuthor" style="color:var(--gold-300);">Bethesda Faculty Author</strong>
+            </p>
+
+            <div class="meta-pill-grid">
+              <div class="meta-pill-item">
+                <span>Page Count</span>
+                <strong id="detailPageCount">—</strong>
+              </div>
+              <div class="meta-pill-item">
+                <span>Language</span>
+                <strong id="detailLanguage">English</strong>
+              </div>
+              <div class="meta-pill-item">
+                <span>Publication</span>
+                <strong id="detailPublicationInfo">Bethesda Academic Press</strong>
+              </div>
+              <div class="meta-pill-item">
+                <span>Delivery</span>
+                <strong>Instant 3D Reader</strong>
+              </div>
+            </div>
+
+            <!-- Price & Purchase Action Block -->
+            <div style="background:rgba(0,0,0,0.35); border:1px solid rgba(197,160,89,0.3); border-radius:14px; padding:1.25rem 1.5rem; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:1.25rem;">
+              <div>
+                <span style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--gold-400); display:block;">
+                  Lifetime Digital Access
+                </span>
+                <div id="detailBookPrice" style="font-size:1.9rem; font-weight:800; color:#FFFFFF;">
+                  ₹0
+                </div>
+              </div>
+
+              <div id="bookActionContainer" style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+                <button type="button" id="btnBookAddToCart" class="btn btn-primary btn-md" style="font-weight:700;">
+                  🛒 Add to Cart
+                </button>
+                <button type="button" id="btnBookBuyNow" class="btn btn-gold btn-md" style="font-weight:800;">
+                  ⚡ Buy Now
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Book Synopsis & Overview -->
+    <section class="section" style="background:#F8FAFC;">
+      <div class="container" style="max-width:960px;">
+        <div style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:16px; padding:2.5rem; box-shadow:0 4px 18px rgba(0,0,0,0.04); margin-bottom:2.5rem;">
+          <h2 style="font-size:1.4rem; font-weight:800; color:var(--burgundy-950); margin-bottom:1.25rem; border-bottom:2px solid var(--gold-500); padding-bottom:0.5rem; display:inline-block;">
+            About This Book
+          </h2>
+          <div id="detailBookDescription" style="font-size:1rem; line-height:1.75; color:#334155; white-space:pre-line;">
+            Loading synopsis...
+          </div>
+        </div>
+
+        <!-- 3D Reader Features Banner -->
+        <div style="background:linear-gradient(135deg, #1E1B4B 0%, #31102F 100%); color:#FFFFFF; border-radius:16px; padding:2rem 2.5rem; display:flex; flex-wrap:wrap; gap:2rem; align-items:center; justify-content:space-between;">
+          <div style="max-width:540px;">
+            <span style="font-size:0.75rem; font-weight:800; text-transform:uppercase; letter-spacing:0.08em; color:var(--gold-400);">
+              Bethesda In-Browser Reading Technology
+            </span>
+            <h3 style="font-size:1.35rem; font-weight:700; color:#FFFFFF; margin:0.35rem 0 0.65rem;">
+              Realistic 3D Open-Book Page Turning
+            </h3>
+            <p style="font-size:0.92rem; color:rgba(255,255,255,0.8); line-height:1.5; margin:0;">
+              No PDF download required. Read on your laptop, tablet, or phone with lifelike page curling, zoom, page jump, and automatic bookmarking that saves your exact progress.
+            </p>
+          </div>
+          <div>
+            <a href="courses.html?type=BOOK" class="btn btn-gold btn-md" style="font-weight:700;">
+              Browse Library
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>© 2026 Bethesda Bible Institute Hyderabad (Bethesda Church Hyderabad). All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="courses.html?type=BOOK" class="footer-link">eBook Catalogue</a>
+          <a href="student-dashboard.html" class="footer-link">Student Portal</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/courses.js"></script>
+  <script src="assets/js/cart.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const bookId = urlParams.get('id');
+
+      if (!bookId) {
+        window.location.href = 'courses.html?type=BOOK';
+        return;
+      }
+
+      // Check student auth & fetch student enrollments
+      if (typeof isStudentAuthenticated === 'function' && isStudentAuthenticated()) {
+        try {
+          if (typeof apiFetchStudentCourses === 'function') await apiFetchStudentCourses();
+          if (typeof apiFetchStudentBooks === 'function') await apiFetchStudentBooks();
+        } catch (e) {}
+      }
+
+      // Load course details
+      const book = await fetchCourseDetailLive(bookId);
+      if (!book) {
+        document.getElementById('detailBookTitle').textContent = 'Book not found';
+        return;
+      }
+
+      // Populate metadata
+      document.title = `${book.title} | Bethesda Bible Institute Library`;
+      document.getElementById('breadcrumbBookTitle').textContent = book.title;
+      document.getElementById('detailBookTitle').textContent = book.title;
+      document.getElementById('detailBookAuthor').textContent = book.author || book.instructor?.name || 'Bethesda Bible Faculty';
+      document.getElementById('detailBookDescription').textContent = book.fullDesc || book.shortDesc || 'No synopsis provided.';
+      document.getElementById('detailBadgeCategory').textContent = book.category || 'Theology';
+      document.getElementById('detailBadgeLanguage').textContent = book.language || 'English';
+      document.getElementById('detailPageCount').textContent = book.pdfPageCount ? `${book.pdfPageCount} Pages` : 'Complete Book';
+      document.getElementById('detailLanguage').textContent = book.language || 'English';
+      document.getElementById('detailPublicationInfo').textContent = book.publicationInfo || 'Bethesda Academic Press';
+
+      // Price
+      const pricePaise = book.pricePaise || (book.price * 100);
+      const isFree = book.pricing === 'FREE' || pricePaise === 0;
+      const priceText = isFree ? 'FREE' : `₹${book.price.toLocaleString('en-IN')}`;
+      document.getElementById('detailBookPrice').textContent = priceText;
+
+      // Cover image with fallback
+      const coverImg = document.getElementById('detailBookCover');
+      const fallback = book.fallbackImage || buildBookCoverSvgDataUri(book.title, book.author, book.category);
+      coverImg.src = book.image || fallback;
+      coverImg.onerror = () => { coverImg.src = fallback; };
+
+      // Actions (Enrolled vs In Cart vs Buy)
+      const actionContainer = document.getElementById('bookActionContainer');
+      const enrolled = isCourseEnrolled(book.id);
+      const inCart = !enrolled && isCourseInCart(book.id);
+
+      if (enrolled) {
+        actionContainer.innerHTML = `
+          <a href="book-reader.html?id=${encodeURIComponent(book.id)}" class="btn btn-gold btn-md" style="font-weight:800; font-size:1rem; padding:0.75rem 1.75rem; display:inline-flex; align-items:center; gap:0.5rem;">
+            📖 Open in 3D Reader
+          </a>
+        `;
+      } else if (inCart) {
+        actionContainer.innerHTML = `
+          <a href="cart.html" class="btn btn-gold btn-md" style="font-weight:700;">
+            ✓ In Cart — Proceed to Checkout
+          </a>
+        `;
+      } else {
+        const btnAdd = document.getElementById('btnBookAddToCart');
+        const btnBuy = document.getElementById('btnBookBuyNow');
+
+        if (btnAdd) {
+          btnAdd.addEventListener('click', () => {
+            if (typeof addToCart === 'function') {
+              addToCart(book.id);
+            }
+            actionContainer.innerHTML = `
+              <a href="cart.html" class="btn btn-gold btn-md" style="font-weight:700;">
+                ✓ In Cart — Proceed to Checkout
+              </a>
+            `;
+          });
+        }
+
+        if (btnBuy) {
+          btnBuy.addEventListener('click', () => {
+            if (typeof addToCart === 'function') {
+              addToCart(book.id);
+            }
+            window.location.href = 'checkout.html';
+          });
+        }
+      }
+    });
+  </script>
+</body>
+</html>
+

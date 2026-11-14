@@ -25,6 +25,27 @@ function resolveBibleLmsApiBase() {
 
 const BIBLE_LMS_API_BASE = resolveBibleLmsApiBase();
 
+function resolveLmsPortalBaseUrl() {
+  if (typeof window !== 'undefined') {
+    if (window.BIBLE_LMS_PORTAL_BASE) return String(window.BIBLE_LMS_PORTAL_BASE).replace(/\/$/, '');
+    try {
+      const override = localStorage.getItem('berea_portal_base');
+      if (override) return override.replace(/\/$/, '');
+    } catch (e) {}
+  }
+  return 'https://bible-learning-app-bm4j.vercel.app';
+}
+
+function buildLmsPortalUrl(path) {
+  const base = resolveLmsPortalBaseUrl();
+  const cleanPath = String(path || '').startsWith('/') ? path : `/${path || ''}`;
+  const token = getAuthToken();
+  if (token) {
+    return `${base}${cleanPath}#sso_token=${encodeURIComponent(token)}`;
+  }
+  return `${base}${cleanPath}`;
+}
+
 function getDefaultInstituteSlug() {
   if (typeof window !== 'undefined') {
     const params = new URLSearchParams(window.location.search);
@@ -400,4 +421,61 @@ function apiSaveEnrollment(courses) {
   try {
     localStorage.setItem('berea_enrolled_courses', JSON.stringify(courses || []));
   } catch (e) {}
+}
+
+/* ================================
+   6. BOOK COURSES & 3D READER
+   ================================ */
+
+async function apiFetchStudentBooks(tokenOverride = null) {
+  const token = tokenOverride || getAuthToken();
+  if (!token) {
+    try {
+      const cached = localStorage.getItem('berea_enrolled_books');
+      if (cached) return JSON.parse(cached);
+    } catch (e) {}
+    return [];
+  }
+  const res = await callBackendApi('/students/books', {
+    method: 'GET',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) {
+    try {
+      const cached = localStorage.getItem('berea_enrolled_books');
+      if (cached) return JSON.parse(cached);
+    } catch (e) {}
+    return [];
+  }
+  const list = Array.isArray(res.data) ? res.data : [];
+  try {
+    localStorage.setItem('berea_enrolled_books', JSON.stringify(list));
+  } catch (e) {}
+  return list;
+}
+
+async function apiFetchBookProgress(courseId, tokenOverride = null) {
+  const token = tokenOverride || getAuthToken();
+  if (!token) return { lastReadPage: 1, totalPages: 1 };
+  const res = await callBackendApi(`/students/books/${encodeURIComponent(courseId)}/progress`, {
+    method: 'GET',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) return { lastReadPage: 1, totalPages: 1 };
+  return res.data;
+}
+
+async function apiSaveBookProgress(courseId, input, tokenOverride = null) {
+  const token = tokenOverride || getAuthToken();
+  if (!token) return false;
+  const res = await callBackendApi(`/students/books/${encodeURIComponent(courseId)}/progress`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(input),
+  });
+  return res.ok;
+}
+
+function apiGetStudentBookPdfUrl(courseId) {
+  return `${BIBLE_LMS_API_BASE}/students/books/${encodeURIComponent(courseId)}/pdf`;
 }

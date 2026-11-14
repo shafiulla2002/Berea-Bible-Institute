@@ -140,6 +140,24 @@
               <button type="button" id="btnResetFilters" style="font-size:0.78rem; font-weight:700; color:var(--burgundy-700); text-decoration:underline;">Reset All</button>
             </div>
 
+            <!-- Offering Format Filter (All vs Regular Courses vs eBooks) -->
+            <div style="margin-bottom:1.75rem; padding:0.85rem; background:#F8FAFC; border-radius:10px; border:1px solid #E2E8F0;">
+              <h4 style="font-size:0.85rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--charcoal-800); margin-bottom:0.65rem;">
+                Offering Format
+              </h4>
+              <div style="display:flex; flex-direction:column; gap:0.5rem; font-size:0.875rem;">
+                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-weight:600;">
+                  <input type="radio" name="filterCourseType" value="ALL" checked> All Offerings
+                </label>
+                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                  <input type="radio" name="filterCourseType" value="REGULAR"> 🎓 Academic Courses
+                </label>
+                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                  <input type="radio" name="filterCourseType" value="BOOK"> 📖 eBooks & Textbooks
+                </label>
+              </div>
+            </div>
+
             <!-- Categories Filter -->
             <div style="margin-bottom:1.75rem;">
               <h4 style="font-size:0.9rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--charcoal-800); margin-bottom:0.75rem;">
@@ -328,19 +346,17 @@
       const sortSelect = document.getElementById('catalogSortSelect');
       const resetBtn = document.getElementById('btnResetFilters');
 
-      if (typeof isStudentAuthenticated === 'function' && isStudentAuthenticated() && typeof apiFetchStudentCourses === 'function') {
-        await apiFetchStudentCourses();
-      }
-      if (typeof loadPublicCourses === 'function') {
-        await loadPublicCourses();
-      }
-
-      // Check URL query parameters for initial filters (e.g. ?category=Biblical+Languages)
+      // Check URL query parameters for initial filters (e.g. ?category=Biblical+Languages or ?type=BOOK)
       const urlParams = new URLSearchParams(window.location.search);
       const initialCat = urlParams.get('category');
       if (initialCat) {
         const catRadio = document.querySelector(`input[name="filterCategory"][value="${initialCat}"]`);
         if (catRadio) catRadio.checked = true;
+      }
+      const initialType = urlParams.get('type') || urlParams.get('courseType');
+      if (initialType) {
+        const typeRadio = document.querySelector(`input[name="filterCourseType"][value="${initialType.toUpperCase()}"]`);
+        if (typeRadio) typeRadio.checked = true;
       }
 
       function updateCatalog() {
@@ -350,13 +366,14 @@
         const level = document.querySelector('input[name="filterLevel"]:checked')?.value || 'ALL';
         const mode = document.querySelector('input[name="filterMode"]:checked')?.value || 'ALL';
         const duration = document.querySelector('input[name="filterDuration"]:checked')?.value || 'ALL';
+        const courseType = document.querySelector('input[name="filterCourseType"]:checked')?.value || 'ALL';
 
-        const filtered = queryCourses({ search, category, level, mode, duration, sort });
+        const filtered = queryCourses({ search, category, level, mode, duration, courseType, sort });
         const grid = document.getElementById('catalogCourseGrid');
         const count = document.getElementById('catalogueResultCount');
         const empty = document.getElementById('catalogEmptyState');
 
-        if (count) count.textContent = `Showing ${filtered.length} Theological Courses`;
+        if (count) count.textContent = `Showing ${filtered.length} Offerings`;
 
         if (filtered.length === 0) {
           if (grid) grid.style.display = 'none';
@@ -386,7 +403,19 @@
 
       if (resetBtn) resetBtn.addEventListener('click', resetFiltersAndReload);
 
-      // Initial catalog render
+      // Render immediately from cache if available, then refresh live data in parallel
+      if (typeof getAllCourses === 'function' && getAllCourses().length > 0) {
+        updateCatalog();
+      }
+
+      await Promise.all([
+        typeof isStudentAuthenticated === 'function' && isStudentAuthenticated() && typeof apiFetchStudentCourses === 'function'
+          ? apiFetchStudentCourses()
+          : Promise.resolve([]),
+        typeof loadPublicCourses === 'function' ? loadPublicCourses() : Promise.resolve([]),
+      ]);
+
+      // Final catalog render with live data
       updateCatalog();
     });
   </script>
