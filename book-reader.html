@@ -597,12 +597,24 @@
       // Load PDF document securely with Bearer token
       try {
         const pdfStreamUrl = apiGetStudentBookPdfUrl(bookId);
-        const loadingTask = pdfjsLib.getDocument({
-          url: pdfStreamUrl,
-          httpHeaders: {
+        const pdfResponse = await fetch(pdfStreamUrl, {
+          method: 'GET',
+          headers: {
             Authorization: `Bearer ${token}`
           },
-          withCredentials: true,
+          credentials: 'include',
+        });
+        if (!pdfResponse.ok) {
+          let errMsg = `Unable to load book PDF (${pdfResponse.status})`;
+          try {
+            const errJson = await pdfResponse.json();
+            if (errJson && errJson.message) errMsg = errJson.message;
+          } catch (e) {}
+          throw new Error(errMsg);
+        }
+        const pdfBytes = new Uint8Array(await pdfResponse.arrayBuffer());
+        const loadingTask = pdfjsLib.getDocument({
+          data: pdfBytes,
           cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
           cMapPacked: true,
         });
