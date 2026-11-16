@@ -218,7 +218,7 @@ function validateField(field) {
   } else if (field.type === 'email') {
     valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
   } else if (field.type === 'tel') {
-    valid = val.replace(/\D/g, '').length >= 8;
+    valid = val.length > 0;
   } else {
     valid = val.length > 0;
   }
