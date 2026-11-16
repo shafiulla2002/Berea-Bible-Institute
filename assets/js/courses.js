@@ -9,12 +9,12 @@ let PUBLIC_COURSES_LOADED = false;
 let PUBLIC_COURSES_INFLIGHT = null;
 
 const PUBLIC_COURSES_STORAGE_KEY = 'berea_public_courses_v1';
-const PUBLIC_COURSES_TTL_MS = 60 * 1000;
+const PUBLIC_COURSES_TTL_MS = 5 * 60 * 1000;
 
 function hydratePublicCoursesFromStorage() {
   if (typeof window === 'undefined' || PUBLIC_COURSES_CACHE.length > 0) return false;
   try {
-    const raw = sessionStorage.getItem(PUBLIC_COURSES_STORAGE_KEY);
+    const raw = localStorage.getItem(PUBLIC_COURSES_STORAGE_KEY) || sessionStorage.getItem(PUBLIC_COURSES_STORAGE_KEY);
     if (!raw) return false;
     const parsed = JSON.parse(raw);
     if (!parsed || !Array.isArray(parsed.items)) return false;
@@ -242,10 +242,9 @@ async function loadPublicCourses(filters = {}, forceRefresh = false) {
       PUBLIC_COURSES_CACHE = normalized;
       PUBLIC_COURSES_LOADED = true;
       try {
-        sessionStorage.setItem(
-          PUBLIC_COURSES_STORAGE_KEY,
-          JSON.stringify({ ts: Date.now(), items: normalized }),
-        );
+        const payload = JSON.stringify({ ts: Date.now(), items: normalized });
+        localStorage.setItem(PUBLIC_COURSES_STORAGE_KEY, payload);
+        sessionStorage.setItem(PUBLIC_COURSES_STORAGE_KEY, payload);
       } catch (e) {}
     }
     normalized.forEach((c) => {
