@@ -11,10 +11,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <style>
     :root {
-      --reader-bg: #0f172a;
-      --book-cover-color: #276749; /* Deep academic green matching user reference */
-      --book-page-bg: #fdfbf7;   /* Warm antique paper */
-      --book-shadow: rgba(0, 0, 0, 0.45);
+      --reader-bg: #f8fafc;
+      --book-cover-color: #2f732c; /* Classic forest green hardcover matching reference */
+      --book-cover-edge: #21541f;
+      --book-page-bg: #ffffff;
+      --book-shadow: rgba(15, 23, 42, 0.22);
     }
     body, html {
       margin: 0;
@@ -22,7 +23,7 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: var(--reader-bg);
+      background: radial-gradient(circle at 50% 45%, #ffffff 0%, #f1f5f9 100%);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
     #readerApp {
@@ -34,14 +35,14 @@
 
     /* Top Reader Header */
     .reader-header {
-      height: 56px;
-      background: #1e293b;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      height: 54px;
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 1.25rem;
-      color: #FFFFFF;
+      color: #1e293b;
       z-index: 40;
       flex-shrink: 0;
     }
@@ -52,9 +53,9 @@
       min-width: 0;
     }
     .btn-reader-back {
-      background: rgba(255, 255, 255, 0.1);
-      color: #FFFFFF;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: #f1f5f9;
+      color: #1e293b;
+      border: 1px solid #cbd5e1;
       border-radius: 8px;
       padding: 0.4rem 0.85rem;
       font-size: 0.82rem;
@@ -66,7 +67,7 @@
       transition: background 0.2s;
     }
     .btn-reader-back:hover {
-      background: rgba(255, 255, 255, 0.2);
+      background: #e2e8f0;
     }
     .reader-book-info {
       overflow: hidden;
@@ -76,14 +77,14 @@
     .reader-book-title {
       font-size: 0.95rem;
       font-weight: 700;
-      color: #FFFFFF;
+      color: #0f172a;
       display: block;
       overflow: hidden;
       text-overflow: ellipsis;
     }
     .reader-book-author {
       font-size: 0.75rem;
-      color: #94a3b8;
+      color: #64748b;
     }
     .reader-header-center {
       display: flex;
@@ -94,28 +95,31 @@
       display: flex;
       align-items: center;
       gap: 0.6rem;
-      background: rgba(0, 0, 0, 0.3);
+      background: #f8fafc;
       padding: 0.35rem 0.8rem;
       border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid #e2e8f0;
+    }
+    .reader-progress-wrap > span:first-child {
+      color: #475569 !important;
     }
     .reader-progress-bar {
       width: 70px;
       height: 6px;
-      background: rgba(255, 255, 255, 0.2);
+      background: #e2e8f0;
       border-radius: 3px;
       overflow: hidden;
     }
     .reader-progress-fill {
       height: 100%;
-      background: #c5a059;
+      background: #2f732c;
       width: 0%;
       transition: width 0.3s;
     }
     .reader-progress-text {
       font-size: 0.75rem;
       font-weight: 700;
-      color: #c5a059;
+      color: #2f732c;
     }
     .reader-header-right {
       display: flex;
@@ -123,12 +127,13 @@
       gap: 0.5rem;
     }
     .tool-btn {
-      background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      color: #cbd5e1;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      color: #334155;
       border-radius: 8px;
       padding: 0.4rem 0.65rem;
       font-size: 0.82rem;
+      font-weight: 600;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
@@ -136,8 +141,9 @@
       transition: all 0.2s;
     }
     .tool-btn:hover {
-      background: rgba(255, 255, 255, 0.12);
-      color: #FFFFFF;
+      background: #f1f5f9;
+      color: #0f172a;
+      border-color: #94a3b8;
     }
 
     /* Main Reader Viewport */
@@ -148,48 +154,62 @@
       justify-content: center;
       position: relative;
       overflow: auto;
-      padding: 1rem 0;
+      padding: 1.25rem 0;
       perspective: 2400px;
     }
 
-    /* 3D Physical Open Book Structure (matches user's green book image) */
+    /* 3D Physical Open Book Structure (Green Hardcover + Layered Page Stack) */
     .physical-book {
       position: relative;
-      background: var(--book-cover-color);
-      border-radius: 12px;
-      padding: 14px 16px 16px 14px;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65), 0 10px 20px rgba(0, 0, 0, 0.4);
+      background: linear-gradient(180deg, #378334 0%, var(--book-cover-color) 15%, #286425 85%, #20521e 100%);
+      border: 1px solid var(--book-cover-edge);
+      border-radius: 4px;
+      padding: 8px 11px 10px 11px;
+      box-shadow:
+        0 26px 55px rgba(15, 23, 42, 0.24),
+        0 10px 22px rgba(15, 23, 42, 0.14),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
       display: flex;
       max-width: 95vw;
-      max-height: calc(100vh - 140px);
+      max-height: calc(100vh - 135px);
       box-sizing: border-box;
       transition: transform 0.3s;
     }
     .book-pages-wrapper {
       display: flex;
       background: var(--book-page-bg);
-      border-radius: 6px;
+      border-radius: 1px;
       overflow: hidden;
       position: relative;
-      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.08);
+      /* Realistic stacked paper edge effect on left, right & bottom */
+      box-shadow:
+        -3px 0 0 #e5e7eb,
+        -5px 0 0 #d1d5db,
+        3px 0 0 #e5e7eb,
+        5px 0 0 #d1d5db,
+        0 3px 0 #e5e7eb,
+        0 5px 0 #d1d5db,
+        0 2px 10px rgba(0, 0, 0, 0.22);
     }
     .book-spine-crease {
       position: absolute;
       top: 0;
       bottom: 0;
       left: 50%;
-      width: 32px;
+      width: 44px;
       transform: translateX(-50%);
       background: linear-gradient(
         to right,
-        rgba(0, 0, 0, 0.18) 0%,
-        rgba(0, 0, 0, 0.08) 35%,
-        rgba(0, 0, 0, 0.02) 50%,
-        rgba(0, 0, 0, 0.08) 65%,
-        rgba(0, 0, 0, 0.18) 100%
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 0, 0, 0.05) 28%,
+        rgba(0, 0, 0, 0.16) 46%,
+        rgba(0, 0, 0, 0.24) 50%,
+        rgba(0, 0, 0, 0.14) 54%,
+        rgba(0, 0, 0, 0.04) 72%,
+        rgba(0, 0, 0, 0) 100%
       );
       pointer-events: none;
-      z-index: 10;
+      z-index: 12;
     }
     .book-left-page, .book-right-page {
       display: flex;
@@ -200,69 +220,127 @@
       overflow: hidden;
       min-width: 280px;
       min-height: 400px;
+      cursor: pointer;
     }
     .book-left-page {
-      box-shadow: inset -15px 0 20px -10px rgba(0, 0, 0, 0.12);
-      border-right: 1px solid rgba(0, 0, 0, 0.06);
+      box-shadow: inset -18px 0 28px -14px rgba(0, 0, 0, 0.14);
     }
     .book-right-page {
-      box-shadow: inset 15px 0 20px -10px rgba(0, 0, 0, 0.12);
+      box-shadow: inset 18px 0 28px -14px rgba(0, 0, 0, 0.14);
     }
     .book-page-canvas {
       display: block;
       max-width: 100%;
       height: auto;
-      max-height: calc(100vh - 180px);
+      max-height: calc(100vh - 175px);
     }
 
-    /* Page Turn Turning Leaf (3D Curl Effect) */
+    /* Interactive Bottom-Right Corner Peel Hint (matches reference screenshot) */
+    .page-corner-peel {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(
+        135deg,
+        transparent 48%,
+        rgba(0, 0, 0, 0.12) 49%,
+        #f8fafc 52%,
+        #e2e8f0 78%,
+        #cbd5e1 100%
+      );
+      box-shadow: -3px -3px 10px rgba(0, 0, 0, 0.16);
+      border-top-left-radius: 6px;
+      pointer-events: auto;
+      cursor: pointer;
+      z-index: 15;
+      transition: width 0.28s cubic-bezier(0.22, 1, 0.36, 1), height 0.28s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.28s ease;
+    }
+    .book-right-page:hover .page-corner-peel,
+    .page-corner-peel:hover {
+      width: 68px;
+      height: 68px;
+      box-shadow: -6px -6px 16px rgba(0, 0, 0, 0.24);
+    }
+    .page-corner-peel::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, transparent 50%, rgba(255, 255, 255, 0.55) 52%, transparent 72%);
+      pointer-events: none;
+    }
+    .page-corner-peel.hidden {
+      display: none;
+    }
+
+    /* Page Turn Turning Leaf (Realistic 3D Curl Effect) */
     .page-turn-overlay {
       position: absolute;
       top: 0;
       bottom: 0;
       right: 0;
       width: 50%;
-      background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(245,245,245,0.9) 100%);
-      box-shadow: -15px 15px 30px rgba(0, 0, 0, 0.35);
+      background: linear-gradient(
+        90deg,
+        rgba(226, 232, 240, 0.96) 0%,
+        #ffffff 12%,
+        #f8fafc 85%,
+        #e2e8f0 100%
+      );
+      box-shadow: -18px 8px 34px rgba(15, 23, 42, 0.28);
       transform-origin: left center;
-      transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s;
       pointer-events: none;
-      z-index: 20;
+      z-index: 25;
       display: none;
     }
     .page-turn-overlay.flipping-next {
       display: block;
-      animation: curlPageForward 0.6s ease-in-out forwards;
+      animation: curlPageForward 0.52s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     }
     .page-turn-overlay.flipping-prev {
       display: block;
       left: 0;
       right: auto;
       transform-origin: right center;
-      animation: curlPageBackward 0.6s ease-in-out forwards;
+      background: linear-gradient(
+        -90deg,
+        rgba(226, 232, 240, 0.96) 0%,
+        #ffffff 12%,
+        #f8fafc 85%,
+        #e2e8f0 100%
+      );
+      box-shadow: 18px 8px 34px rgba(15, 23, 42, 0.28);
+      animation: curlPageBackward 0.52s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     }
     @keyframes curlPageForward {
       0% {
         transform: rotateY(0deg) skewY(0deg);
-        box-shadow: 0 0 0 rgba(0,0,0,0);
+        opacity: 0.95;
       }
       50% {
-        transform: rotateY(-70deg) skewY(-3deg) scale(0.98);
-        box-shadow: -20px 20px 40px rgba(0,0,0,0.4);
+        transform: rotateY(-88deg) skewY(-4deg) scale(0.98);
+        box-shadow: -22px 18px 40px rgba(15, 23, 42, 0.35);
+        opacity: 1;
       }
       100% {
         transform: rotateY(-180deg) skewY(0deg);
-        box-shadow: 0 0 0 rgba(0,0,0,0);
+        box-shadow: 0 0 0 rgba(0, 0, 0, 0);
         opacity: 0;
       }
     }
     @keyframes curlPageBackward {
       0% {
         transform: rotateY(0deg) skewY(0deg);
+        opacity: 0.95;
       }
       50% {
-        transform: rotateY(70deg) skewY(3deg) scale(0.98);
-        box-shadow: 20px 20px 40px rgba(0,0,0,0.4);
+        transform: rotateY(88deg) skewY(4deg) scale(0.98);
+        box-shadow: 22px 18px 40px rgba(15, 23, 42, 0.35);
+        opacity: 1;
       }
       100% {
         transform: rotateY(180deg) skewY(0deg);
@@ -275,24 +353,25 @@
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      width: 52px;
-      height: 52px;
+      width: 46px;
+      height: 46px;
       border-radius: 50%;
-      background: rgba(30, 41, 59, 0.85);
+      background: rgba(255, 255, 255, 0.92);
       backdrop-filter: blur(4px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #FFFFFF;
+      border: 1px solid #cbd5e1;
+      color: #1e293b;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       z-index: 30;
       transition: all 0.2s;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12);
     }
     .nav-arrow:hover {
-      background: #c5a059;
-      color: #1a050b;
+      background: #2f732c;
+      border-color: #2f732c;
+      color: #ffffff;
       transform: translateY(-50%) scale(1.08);
     }
     .nav-arrow.disabled {
@@ -305,15 +384,15 @@
 
     /* Bottom Control Bar */
     .reader-footer {
-      height: 60px;
-      background: #1e293b;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      height: 54px;
+      background: #ffffff;
+      border-top: 1px solid #e2e8f0;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 1.5rem;
       padding: 0 1.5rem;
-      color: #cbd5e1;
+      color: #334155;
       z-index: 40;
       flex-shrink: 0;
     }
@@ -324,27 +403,30 @@
       font-size: 0.85rem;
       font-weight: 600;
     }
+    .page-jump-control strong {
+      color: #0f172a !important;
+    }
     .page-input {
       width: 50px;
       padding: 0.3rem 0.4rem;
       text-align: center;
-      background: #0f172a;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
       border-radius: 6px;
-      color: #FFFFFF;
+      color: #0f172a;
       font-weight: 700;
     }
 
     /* Table of Contents / Outline Drawer */
     .reader-drawer {
       position: fixed;
-      top: 56px;
-      bottom: 60px;
+      top: 54px;
+      bottom: 54px;
       left: 0;
       width: 320px;
-      background: #1e293b;
-      border-right: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+      background: #ffffff;
+      border-right: 1px solid #e2e8f0;
+      box-shadow: 10px 0 30px rgba(15, 23, 42, 0.12);
       z-index: 50;
       transform: translateX(-100%);
       transition: transform 0.3s ease;
@@ -356,11 +438,11 @@
     }
     .drawer-header {
       padding: 1rem 1.25rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid #e2e8f0;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      color: #FFFFFF;
+      color: #0f172a;
       font-weight: 700;
       font-size: 0.95rem;
     }
@@ -372,7 +454,7 @@
     .toc-item {
       display: block;
       padding: 0.6rem 0.85rem;
-      color: #cbd5e1;
+      color: #334155;
       text-decoration: none;
       border-radius: 6px;
       font-size: 0.85rem;
@@ -380,28 +462,28 @@
       cursor: pointer;
     }
     .toc-item:hover {
-      background: rgba(255, 255, 255, 0.08);
-      color: #c5a059;
+      background: #f1f5f9;
+      color: #2f732c;
     }
 
     /* Loading Overlay */
     .reader-loading {
       position: absolute;
       inset: 0;
-      background: rgba(15, 23, 42, 0.85);
+      background: rgba(248, 250, 252, 0.92);
       backdrop-filter: blur(6px);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      color: #FFFFFF;
+      color: #0f172a;
       z-index: 60;
     }
     .loading-spinner {
       width: 44px;
       height: 44px;
-      border: 4px solid rgba(197, 160, 89, 0.2);
-      border-top-color: #c5a059;
+      border: 4px solid rgba(47, 115, 44, 0.2);
+      border-top-color: #2f732c;
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
       margin-bottom: 1rem;
@@ -526,6 +608,7 @@
           <!-- Right Page -->
           <div class="book-right-page" id="rightPageBox">
             <canvas id="canvasRight" class="book-page-canvas"></canvas>
+            <div id="pageCornerPeel" class="page-corner-peel" title="Turn Page"></div>
           </div>
 
           <!-- 3D Page Turn Leaf Overlay -->
@@ -765,9 +848,13 @@
         document.getElementById('readerProgressFill').style.width = `${pct}%`;
         document.getElementById('readerProgressText').textContent = `${pct}%`;
 
-        // Update arrow states
+        // Update arrow states & corner peel hint
         document.getElementById('btnPrevPage').classList.toggle('disabled', currentPage <= 1);
         document.getElementById('btnNextPage').classList.toggle('disabled', currentPage >= totalPages);
+        const cornerPeel = document.getElementById('pageCornerPeel');
+        if (cornerPeel) {
+          cornerPeel.classList.toggle('hidden', currentPage >= totalPages);
+        }
 
         // Schedule auto-saving reading progress
         scheduleAutoSave(currentPage);
@@ -816,6 +903,8 @@
       document.getElementById('btnPrevPage').addEventListener('click', flipPrev);
       document.getElementById('btnFooterNext').addEventListener('click', flipNext);
       document.getElementById('btnFooterPrev').addEventListener('click', flipPrev);
+      document.getElementById('rightPageBox').addEventListener('click', flipNext);
+      document.getElementById('leftPageBox').addEventListener('click', flipPrev);
 
       // Keyboard arrow navigation
       window.addEventListener('keydown', (e) => {
