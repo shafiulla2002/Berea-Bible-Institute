@@ -137,7 +137,10 @@
           <aside class="catalogue-sidebar" style="background:#FFFFFF; border:1px solid var(--cream-border); border-radius:var(--radius-lg); padding:1.75rem; box-shadow:var(--shadow-sm); position:sticky; top:calc(var(--header-height) + 1.5rem);">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; border-bottom:1px solid var(--cream-border); padding-bottom:0.75rem;">
               <h3 style="font-size:1.15rem; font-weight:700; color:var(--burgundy-950);">Filter Catalogue</h3>
-              <button type="button" id="btnResetFilters" style="font-size:0.78rem; font-weight:700; color:var(--burgundy-700); text-decoration:underline;">Reset All</button>
+              <div style="display:flex; align-items:center; gap:0.75rem;">
+                <button type="button" id="btnResetFilters" style="font-size:0.78rem; font-weight:700; color:var(--burgundy-700); text-decoration:underline;">Reset All</button>
+                <button type="button" class="mobile-filter-close" aria-label="Close Filters">Done ✕</button>
+              </div>
             </div>
 
             <!-- Offering Format Filter (All vs Regular Courses vs eBooks) -->

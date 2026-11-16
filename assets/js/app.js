@@ -729,6 +729,23 @@ function initShellNavigation() {
   if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
   if (overlay) overlay.addEventListener('click', closeDrawer);
 
+  // Mobile Catalogue Filter Sidebar Toggle (courses.html)
+  const filterToggleBtn = document.getElementById('btnMobileFilterToggle');
+  const filterSidebar = document.querySelector('.catalogue-sidebar');
+  const filterCloseBtn = document.querySelector('.mobile-filter-close');
+  if (filterToggleBtn && filterSidebar) {
+    filterToggleBtn.addEventListener('click', () => {
+      filterSidebar.classList.add('mobile-open');
+      document.body.style.overflow = 'hidden';
+    });
+  }
+  if (filterCloseBtn && filterSidebar) {
+    filterCloseBtn.addEventListener('click', () => {
+      filterSidebar.classList.remove('mobile-open');
+      document.body.style.overflow = '';
+    });
+  }
+
   const currentPath = window.location.pathname.split('/').pop() || 'index.html';
   const navLinks = document.querySelectorAll('.nav-link, .drawer-link');
   navLinks.forEach(link => {

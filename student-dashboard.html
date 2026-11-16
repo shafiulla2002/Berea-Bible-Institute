@@ -38,9 +38,39 @@
           </svg>
           <span class="cart-badge">0</span>
         </a>
+        <button type="button" class="mobile-nav-toggle" aria-label="Open Menu">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
       </div>
     </div>
   </header>
+
+  <!-- Mobile Navigation Drawer -->
+  <div class="mobile-drawer-overlay"></div>
+  <div class="mobile-drawer">
+    <div class="drawer-header">
+      <div class="brand">
+        <div class="brand-crest">B</div>
+        <div class="brand-text">
+          <span class="brand-title">Bethesda Bible Institute</span>
+        </div>
+      </div>
+      <button type="button" class="drawer-close" aria-label="Close Menu">✕</button>
+    </div>
+    <nav class="drawer-links">
+      <a href="index.html" class="drawer-link">Home</a>
+      <a href="student-dashboard.html" class="drawer-link active">My Courses</a>
+      <a href="courses.html" class="drawer-link">Course Catalogue</a>
+      <a href="cart.html" class="drawer-link">Shopping Cart</a>
+    </nav>
+    <div class="drawer-footer">
+      <a href="courses.html" class="btn btn-primary" style="width:100%;">Explore Courses</a>
+    </div>
+  </div>
 
   <main>
     <!-- Portal Welcome Header -->
@@ -100,7 +130,7 @@
           </div>
         </div>
 
-        <div style="display:grid; grid-template-columns: 1fr 340px; gap:2.5rem; align-items:start;">
+        <div class="dashboard-layout" style="display:grid; grid-template-columns: 1fr 340px; gap:2.5rem; align-items:start;">
           <!-- Left: Tabbed Courses & Books Content -->
           <div>
             <!-- Section Tabs -->
