@@ -1468,3 +1468,54 @@ p {
 }
 
 
+
+
+/* Featured Courses Right-to-Left Moving Carousel */
+.featured-marquee-viewport {
+  overflow: hidden;
+  width: 100%;
+  padding: 0.5rem 0 1rem;
+  position: relative;
+}
+
+.featured-marquee-track {
+  display: flex;
+  gap: 1.75rem;
+  width: max-content;
+  animation: marqueeRightToLeft 36s linear infinite;
+  will-change: transform;
+}
+
+.featured-marquee-viewport:hover .featured-marquee-track,
+.featured-marquee-track.is-static {
+  animation-play-state: paused;
+}
+
+.featured-marquee-track.is-static {
+  animation: none;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.featured-marquee-track > .course-card {
+  width: 340px;
+  flex-shrink: 0;
+}
+
+@keyframes marqueeRightToLeft {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 480px) {
+  .featured-marquee-track {
+    gap: 1.15rem;
+  }
+  .featured-marquee-track > .course-card {
+    width: 285px;
+  }
+}

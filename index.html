@@ -166,8 +166,10 @@
           </a>
         </div>
 
-        <div id="featuredCoursesGrid" class="courses-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:2rem;">
-          <!-- Dynamically populated from courses.js -->
+        <div class="featured-marquee-viewport">
+          <div id="featuredCoursesGrid" class="featured-marquee-track">
+            <!-- Dynamically populated from courses.js -->
+          </div>
         </div>
       </div>
     </section>
@@ -502,9 +504,12 @@
 
       const renderFeatured = () => {
         if (typeof getFeaturedCourses !== 'function') return false;
-        const featured = getFeaturedCourses();
+        const featured = getFeaturedCourses(8);
         if (featured.length === 0) return false;
-        container.innerHTML = featured.map(createCourseCardHTML).join('');
+        // Duplicate cards when >= 2 for a seamless right-to-left infinite marquee
+        const trackItems = featured.length >= 2 ? [...featured, ...featured] : featured;
+        container.classList.toggle('is-static', featured.length < 2);
+        container.innerHTML = trackItems.map(createCourseCardHTML).join('');
         if (typeof updateCourseCardsAuthUI === 'function') {
           updateCourseCardsAuthUI();
         }
@@ -514,8 +519,9 @@
       // 1. Render immediately from cached courses if available, otherwise show lightweight placeholders
       const renderedFromCache = renderFeatured();
       if (!renderedFromCache) {
+        container.classList.add('is-static');
         container.innerHTML = Array(3).fill(0).map(() => `
-          <div class="card" style="padding:1.5rem; min-height:320px; display:flex; flex-direction:column; justify-content:space-between; opacity:0.65;">
+          <div class="card" style="width:340px; flex-shrink:0; padding:1.5rem; min-height:320px; display:flex; flex-direction:column; justify-content:space-between; opacity:0.65;">
             <div>
               <div style="height:160px; background:var(--cream-alt); border-radius:var(--radius-md); margin-bottom:1rem;"></div>
               <div style="height:20px; width:75%; background:var(--cream-alt); border-radius:4px; margin-bottom:0.5rem;"></div>

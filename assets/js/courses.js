@@ -298,8 +298,8 @@ function getCourseById(id) {
   );
 }
 
-function getFeaturedCourses() {
-  return PUBLIC_COURSES_CACHE.slice(0, 3);
+function getFeaturedCourses(limit = 8) {
+  return PUBLIC_COURSES_CACHE.slice(0, limit);
 }
 
 function getCategories() {
