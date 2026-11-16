@@ -557,37 +557,77 @@ function createAuthModalDOM() {
 
 async function handleModalSignup(e) {
   e.preventDefault();
+  const form = e.target;
+  const submitBtn = form?.querySelector('button[type="submit"]');
+  const origBtnText = submitBtn ? submitBtn.textContent : '';
   const name = document.getElementById('modalSignupName').value.trim();
   const email = document.getElementById('modalSignupEmail').value.trim();
   const phone = document.getElementById('modalSignupPhone').value.trim();
   const password = document.getElementById('modalSignupPassword')?.value || '';
   const track = document.getElementById('modalSignupTrack').value;
 
+  const showModalInlineError = (msg) => {
+    let errBox = document.getElementById('authModalInlineError');
+    if (!errBox && form) {
+      errBox = document.createElement('div');
+      errBox.id = 'authModalInlineError';
+      errBox.style.cssText = 'background:#FEF2F2; border:1px solid #FECACA; color:#991B1B; padding:0.75rem 1rem; border-radius:8px; font-size:0.84rem; font-weight:600; margin-bottom:1rem;';
+      form.prepend(errBox);
+    }
+    if (errBox) {
+      errBox.textContent = msg;
+      errBox.style.display = 'block';
+    }
+  };
+
+  const existingErr = document.getElementById('authModalInlineError');
+  if (existingErr) existingErr.style.display = 'none';
+
   if (!name || !email) {
-    alert('Please enter your full name and email address.');
+    showModalInlineError('Please enter your full name and email address.');
+    if (typeof showToast === 'function') showToast('Please enter your full name and email address.', 'danger');
     return;
+  }
+
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Creating Account...';
   }
 
   let student;
-  if (typeof apiRegisterStudent === 'function') {
-    const res = await apiRegisterStudent({
-      fullName: name,
-      email: email,
-      phone: phone,
-      password: password,
-      track: track
-    });
-    if (!res || !res.success) {
-      if (typeof showToast === 'function') showToast(res?.message || 'Unable to register student account.', 'danger');
+  try {
+    if (typeof apiRegisterStudent === 'function') {
+      const res = await apiRegisterStudent({
+        fullName: name,
+        email: email,
+        phone: phone,
+        password: password,
+        track: track
+      });
+      if (!res || !res.success) {
+        const msg = res?.message || 'Unable to register student account.';
+        showModalInlineError(msg);
+        if (typeof showToast === 'function') showToast(msg, 'danger');
+        return;
+      }
+      student = res.student;
+    } else {
+      showModalInlineError('Registration API unavailable.');
+      if (typeof showToast === 'function') showToast('Registration API unavailable.', 'danger');
       return;
     }
-    student = res.student;
-  } else {
-    if (typeof showToast === 'function') showToast('Registration API unavailable.', 'danger');
-    return;
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = origBtnText;
+    }
   }
 
   closeAuthModal();
+  if (typeof updateAuthHeaderUI === 'function') updateAuthHeaderUI();
+  if (typeof updateCourseCardsAuthUI === 'function') updateCourseCardsAuthUI();
+  if (typeof updateAuthHeaderUI === 'function') updateAuthHeaderUI();
+  if (typeof updateCourseCardsAuthUI === 'function') updateCourseCardsAuthUI();
 
   const pending = authModalPendingCourseId || sessionStorage.getItem('berea_pending_course');
   if (pending && typeof addToCart === 'function') {
@@ -624,6 +664,8 @@ async function handleModalSignin(e) {
   }
 
   closeAuthModal();
+  if (typeof updateAuthHeaderUI === 'function') updateAuthHeaderUI();
+  if (typeof updateCourseCardsAuthUI === 'function') updateCourseCardsAuthUI();
 
   const pending = authModalPendingCourseId || sessionStorage.getItem('berea_pending_course');
   if (pending && typeof addToCart === 'function') {
