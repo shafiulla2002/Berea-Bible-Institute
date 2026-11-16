@@ -65,6 +65,7 @@ function logoutStudent() {
   localStorage.removeItem('berea_auth_student');
   localStorage.removeItem('berea_auth_token');
   localStorage.removeItem('berea_enrolled_courses');
+  localStorage.removeItem('berea_enrolled_books');
   localStorage.removeItem('berea_student_registration');
   if (typeof clearCart === 'function') {
     clearCart();

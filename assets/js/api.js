@@ -127,6 +127,7 @@ function clearActiveAccountSession() {
     localStorage.removeItem('berea_auth_token');
     localStorage.removeItem('berea_auth_student');
     localStorage.removeItem('berea_enrolled_courses');
+    localStorage.removeItem('berea_enrolled_books');
   } catch (e) {}
 }
 
@@ -231,8 +232,11 @@ async function apiLoginWithPhone(phoneNumber, otp = '', challengeTokenOverride =
 
   const token = res.data.accessToken;
   localStorage.setItem('berea_auth_token', token);
-  const enrolled = await apiFetchStudentCourses(token);
-  const profile = await apiFetchStudentProfile(token);
+  const [enrolled, _books, profile] = await Promise.all([
+    apiFetchStudentCourses(token),
+    apiFetchStudentBooks(token),
+    apiFetchStudentProfile(token),
+  ]);
 
   const studentData = {
     id: res.data.user?.id,
@@ -265,8 +269,11 @@ async function apiLoginWithPassword(identifier, password) {
 
   const token = res.data.accessToken;
   localStorage.setItem('berea_auth_token', token);
-  const enrolled = await apiFetchStudentCourses(token);
-  const profile = await apiFetchStudentProfile(token);
+  const [enrolled, _books, profile] = await Promise.all([
+    apiFetchStudentCourses(token),
+    apiFetchStudentBooks(token),
+    apiFetchStudentProfile(token),
+  ]);
 
   const studentData = {
     id: res.data.user?.id,
