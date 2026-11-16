@@ -239,18 +239,26 @@ function updateCourseCardsAuthUI() {
   const isAuth = isStudentAuthenticated();
   document.querySelectorAll('.course-card').forEach(card => {
     const courseId = card.getAttribute('data-course-id');
+    const isBook = card.classList.contains('book-course-card');
     const isEnrolled = typeof isCourseEnrolled === 'function' && isCourseEnrolled(courseId);
     const inCart = !isEnrolled && typeof isCourseInCart === 'function' && isCourseInCart(courseId);
     const actionsDiv = card.querySelector('.course-actions');
     if (!actionsDiv || !courseId) return;
 
-    const detailsLink = actionsDiv.querySelector('a[href*="course-details.html"]');
+    const detailsLink = actionsDiv.querySelector('a[href*="course-details.html"], a[href*="book-details.html"]');
+    const defaultDetailHref = isBook
+      ? `book-details.html?id=${encodeURIComponent(courseId)}`
+      : `course-details.html?id=${encodeURIComponent(courseId)}`;
     const detailsHtml = detailsLink
       ? detailsLink.outerHTML
-      : `<a href="course-details.html?id=${encodeURIComponent(courseId)}" class="btn btn-secondary btn-sm">Details</a>`;
+      : `<a href="${defaultDetailHref}" class="btn btn-secondary btn-sm">Details</a>`;
 
     if (isEnrolled) {
-      actionsDiv.innerHTML = `${detailsHtml}<a href="student-dashboard.html" class="btn btn-primary btn-sm btn-view-enrolled" title="Manage this enrolled course in your Student Hub">Manage</a>`;
+      if (isBook) {
+        actionsDiv.innerHTML = `${detailsHtml}<a href="book-reader.html?id=${encodeURIComponent(courseId)}" class="btn btn-gold btn-sm" style="display:inline-flex; align-items:center; gap:0.4rem; font-weight:700;">📖 Read Online</a>`;
+      } else {
+        actionsDiv.innerHTML = `${detailsHtml}<a href="student-dashboard.html" class="btn btn-primary btn-sm btn-view-enrolled" title="Manage this enrolled course in your Student Hub">Manage</a>`;
+      }
     } else if (inCart) {
       actionsDiv.innerHTML = `${detailsHtml}<a href="cart.html" class="btn btn-gold btn-sm btn-in-cart" title="This course is in your cart — click to view cart">✓ Added to Cart</a>`;
     } else if (isAuth) {

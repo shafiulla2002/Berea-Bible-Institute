@@ -415,6 +415,9 @@
         typeof isStudentAuthenticated === 'function' && isStudentAuthenticated() && typeof apiFetchStudentCourses === 'function'
           ? apiFetchStudentCourses()
           : Promise.resolve([]),
+        typeof isStudentAuthenticated === 'function' && isStudentAuthenticated() && typeof apiFetchStudentBooks === 'function'
+          ? apiFetchStudentBooks()
+          : Promise.resolve([]),
         typeof loadPublicCourses === 'function' ? loadPublicCourses() : Promise.resolve([]),
       ]);
 

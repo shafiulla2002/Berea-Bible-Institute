@@ -537,8 +537,9 @@
       if (typeof loadPublicCourses === 'function') {
         tasks.push(loadPublicCourses());
       }
-      if (typeof isStudentAuthenticated === 'function' && isStudentAuthenticated() && typeof apiFetchStudentCourses === 'function') {
-        tasks.push(apiFetchStudentCourses());
+      if (typeof isStudentAuthenticated === 'function' && isStudentAuthenticated()) {
+        if (typeof apiFetchStudentCourses === 'function') tasks.push(apiFetchStudentCourses());
+        if (typeof apiFetchStudentBooks === 'function') tasks.push(apiFetchStudentBooks());
       }
       await Promise.allSettled(tasks);
 

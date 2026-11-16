@@ -110,11 +110,28 @@ function formatInrCurrency(rupeesOrNumber) {
 
 function syncActiveAccountSession(studentData) {
   try {
+    const prevRaw = localStorage.getItem('berea_auth_student');
+    if (prevRaw && studentData) {
+      try {
+        const prev = JSON.parse(prevRaw);
+        const prevKey = prev?.id || prev?.email || prev?.studentId;
+        const nextKey = studentData?.id || studentData?.email || studentData?.studentId;
+        if (prevKey && nextKey && prevKey !== nextKey) {
+          localStorage.setItem('berea_enrolled_courses', '[]');
+          localStorage.setItem('berea_enrolled_books', '[]');
+          localStorage.removeItem('berea_cart');
+        }
+      } catch (e) {}
+    }
     if (studentData && studentData.token) {
       localStorage.setItem('berea_auth_token', studentData.token);
     }
     const cleanProfile = { ...(studentData || {}) };
     delete cleanProfile.token;
+    const ownerKey = cleanProfile.id || cleanProfile.email || cleanProfile.studentId || '';
+    if (ownerKey) {
+      localStorage.setItem('berea_enrolled_owner', String(ownerKey));
+    }
     localStorage.setItem('berea_auth_student', JSON.stringify(cleanProfile));
     if (typeof loginStudent === 'function') {
       loginStudent(cleanProfile);
@@ -320,6 +337,13 @@ async function apiRegisterStudent(studentInput) {
     token: res.data.accessToken,
   };
 
+  // Newly registered student starts with 0 enrolled courses/books
+  try {
+    localStorage.setItem('berea_enrolled_courses', '[]');
+    localStorage.setItem('berea_enrolled_books', '[]');
+    localStorage.removeItem('berea_cart');
+  } catch (e) {}
+
   syncActiveAccountSession(studentData);
   return { success: true, student: studentData, raw: res.data };
 }
@@ -408,8 +432,10 @@ async function apiFetchStudentCourses(tokenOverride = null) {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!res.ok) {
-    if (res.status === 401) {
-      console.warn('Student authentication token expired or invalid (401)');
+    if (res.status === 401 || res.status === 403) {
+      console.warn('Student authentication token expired or invalid');
+      localStorage.setItem('berea_enrolled_courses', '[]');
+      return [];
     }
     try {
       const cached = localStorage.getItem('berea_enrolled_courses');
@@ -448,6 +474,10 @@ async function apiFetchStudentBooks(tokenOverride = null) {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!res.ok) {
+    if (res.status === 401 || res.status === 403) {
+      localStorage.setItem('berea_enrolled_books', '[]');
+      return [];
+    }
     try {
       const cached = localStorage.getItem('berea_enrolled_books');
       if (cached) return JSON.parse(cached);

@@ -363,10 +363,18 @@ function isCourseEnrolled(courseId) {
     if (typeof isStudentAuthenticated === 'function' && !isStudentAuthenticated()) {
       return false;
     }
+    if (typeof getAuthenticatedStudent === 'function') {
+      const student = getAuthenticatedStudent();
+      const currentOwner = student?.id || student?.email || student?.studentId || '';
+      const cachedOwner = localStorage.getItem('berea_enrolled_owner') || '';
+      if (currentOwner && cachedOwner && currentOwner !== cachedOwner) {
+        return false;
+      }
+    }
     const enrolled = JSON.parse(localStorage.getItem('berea_enrolled_courses') || '[]');
     const books = JSON.parse(localStorage.getItem('berea_enrolled_books') || '[]');
     const inCourses = Array.isArray(enrolled) && enrolled.some(
-      (item) => item.courseId === courseId && (!item.source || item.status === 'ACTIVE' || item.source === 'PURCHASE')
+      (item) => item.courseId === courseId && (!item.source || item.status === 'ACTIVE' || item.status === 'COMPLETED' || item.source === 'PURCHASE')
     );
     const inBooks = Array.isArray(books) && books.some(
       (item) => item.courseId === courseId || item.id === courseId
