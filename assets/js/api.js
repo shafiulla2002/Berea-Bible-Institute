@@ -41,9 +41,34 @@ function buildLmsPortalUrl(path) {
   const cleanPath = String(path || '').startsWith('/') ? path : `/${path || ''}`;
   const token = getAuthToken();
   if (token) {
-    return `${base}${cleanPath}#sso_token=${encodeURIComponent(token)}`;
+    const sep = cleanPath.includes('?') ? '&' : '?';
+    return `${base}${cleanPath}${sep}sso_token=${encodeURIComponent(token)}#sso_token=${encodeURIComponent(token)}`;
   }
   return `${base}${cleanPath}`;
+}
+
+async function apiRefreshStudentSession() {
+  const token = getAuthToken();
+  if (!token) return null;
+  try {
+    const res = await callBackendApi('/auth/refresh-session', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (res.ok && res.data?.accessToken) {
+      const newToken = res.data.accessToken;
+      localStorage.setItem('berea_auth_token', newToken);
+      const student = typeof getAuthenticatedStudent === 'function' ? getAuthenticatedStudent() : null;
+      if (student) {
+        student.token = newToken;
+        if (typeof syncActiveAccountSession === 'function') {
+          syncActiveAccountSession(student);
+        }
+      }
+      return newToken;
+    }
+  } catch (e) {}
+  return token;
 }
 
 function getDefaultInstituteSlug() {
@@ -466,7 +491,7 @@ async function apiFetchStudentCourses(tokenOverride = null) {
   if (!res.ok) {
     if (res.status === 401 || res.status === 403) {
       console.warn('Student authentication token expired or invalid');
-      localStorage.setItem('berea_enrolled_courses', '[]');
+      clearActiveAccountSession();
       return [];
     }
     try {
@@ -507,7 +532,7 @@ async function apiFetchStudentBooks(tokenOverride = null) {
   });
   if (!res.ok) {
     if (res.status === 401 || res.status === 403) {
-      localStorage.setItem('berea_enrolled_books', '[]');
+      clearActiveAccountSession();
       return [];
     }
     try {
