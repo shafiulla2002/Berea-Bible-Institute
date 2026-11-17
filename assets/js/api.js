@@ -239,23 +239,26 @@ async function apiRequestOtp(phoneNumber) {
 }
 
 /**
- * After a successful sign-in, load the profile (required for the session) and warm
- * enrolled courses/books. Course/book prefetch is capped so a slow backend does not
- * hold the student on the login screen; destination pages re-fetch them anyway.
+ * After a successful sign-in, warm enrolled courses, books, and profile in parallel
+ * asynchronously so the user is immediately transitioned to the destination page without delay.
  */
-async function prefetchStudentSessionData(token) {
-  const coursesTask = apiFetchStudentCourses(token).catch(() => []);
-  const booksTask = apiFetchStudentBooks(token).catch(() => []);
-  const profileTask = apiFetchStudentProfile(token).catch(() => null);
-  const capMs = 2500;
-  const capped = (p, fallback) =>
-    Promise.race([p, new Promise((resolve) => setTimeout(() => resolve(fallback), capMs))]);
-  const [enrolled, , profile] = await Promise.all([
-    capped(coursesTask, []),
-    capped(booksTask, []),
-    profileTask,
-  ]);
-  return [enrolled, profile];
+function prefetchStudentSessionDataAsync(token) {
+  if (!token) return;
+  apiFetchStudentProfile(token).then((profile) => {
+    if (profile) {
+      try {
+        const student = JSON.parse(localStorage.getItem('berea_auth_student') || '{}');
+        student.studentId = profile?.profile?.admissionNo || profile?.admissionNo || student.studentId;
+        student.fullName = profile?.student?.fullName || student.fullName;
+        student.email = profile?.student?.email || student.email;
+        student.status = profile?.profile?.status || profile?.status || student.status;
+        localStorage.setItem('berea_auth_student', JSON.stringify(student));
+      } catch (e) {}
+    }
+  }).catch(() => null);
+
+  apiFetchStudentCourses(token).catch(() => []);
+  apiFetchStudentBooks(token).catch(() => []);
 }
 
 async function apiLoginWithPhone(phoneNumber, otp = '', challengeTokenOverride = null) {
@@ -283,21 +286,23 @@ async function apiLoginWithPhone(phoneNumber, otp = '', challengeTokenOverride =
 
   const token = res.data.accessToken;
   localStorage.setItem('berea_auth_token', token);
-  const [enrolled, profile] = await prefetchStudentSessionData(token);
 
   const studentData = {
     id: res.data.user?.id,
-    studentId: profile?.profile?.admissionNo || profile?.admissionNo || res.data.user?.admissionNo || res.data.user?.id?.slice(0, 8)?.toUpperCase() || 'STUDENT',
-    fullName: profile?.student?.fullName || res.data.user?.fullName || 'Student',
-    email: profile?.student?.email || res.data.user?.email || '',
+    studentId: res.data.user?.admissionNo || res.data.user?.id?.slice(0, 8)?.toUpperCase() || 'STUDENT',
+    fullName: res.data.user?.fullName || 'Student',
+    email: res.data.user?.email || '',
     phone: cleanPhone,
     role: 'Student',
-    status: profile?.profile?.status || profile?.status || 'ACTIVE',
+    status: 'ACTIVE',
     token,
   };
 
   syncActiveAccountSession(studentData);
-  return { success: true, student: studentData, courses: enrolled };
+  // Warm caches in background without delaying login redirect
+  prefetchStudentSessionDataAsync(token);
+
+  return { success: true, student: studentData, courses: [] };
 }
 
 async function apiLoginWithPassword(identifier, password) {
@@ -316,21 +321,22 @@ async function apiLoginWithPassword(identifier, password) {
 
   const token = res.data.accessToken;
   localStorage.setItem('berea_auth_token', token);
-  const [enrolled, profile] = await prefetchStudentSessionData(token);
 
   const studentData = {
     id: res.data.user?.id,
-    studentId: profile?.admissionNo || res.data.user?.id?.slice(0, 8)?.toUpperCase() || 'STUDENT',
-    fullName: res.data.user?.fullName || profile?.fullName || 'Student',
-    email: res.data.user?.email || profile?.email || identifier,
-    phone: profile?.phoneNumber || '',
+    studentId: res.data.user?.admissionNo || res.data.user?.id?.slice(0, 8)?.toUpperCase() || 'STUDENT',
+    fullName: res.data.user?.fullName || 'Student',
+    email: res.data.user?.email || identifier,
+    phone: res.data.user?.phone || '',
     role: 'Student',
-    status: profile?.status || 'ACTIVE',
+    status: 'ACTIVE',
     token,
   };
 
   syncActiveAccountSession(studentData);
-  return { success: true, student: studentData, courses: enrolled };
+  prefetchStudentSessionDataAsync(token);
+
+  return { success: true, student: studentData, courses: [] };
 }
 
 async function apiRegisterStudent(studentInput) {

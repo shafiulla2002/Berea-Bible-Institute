@@ -343,8 +343,13 @@
         initialBooksCache = JSON.parse(localStorage.getItem('berea_enrolled_books') || '[]');
       } catch (e) {}
 
-      if (initialCoursesCache.length > 0 || initialBooksCache.length > 0) {
-        renderDashboardLists(initialCoursesCache, initialBooksCache);
+      const hasInitialData = (Array.isArray(initialCoursesCache) && initialCoursesCache.length > 0) ||
+                             (Array.isArray(initialBooksCache) && initialBooksCache.length > 0);
+
+      if (hasInitialData) {
+        const initialRender = renderDashboardLists(initialCoursesCache, initialBooksCache);
+        renderAcademicCards(initialRender.enrolled);
+        renderBookCards(initialRender.enrolledBooks);
       } else {
         container.innerHTML = `
           <div style="padding:2.5rem 2rem; text-align:center; background:#FFFFFF; border:1px solid var(--cream-border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); color:var(--charcoal-600);">
@@ -361,70 +366,76 @@
       ]);
 
       const { enrolled, enrolledBooks } = renderDashboardLists(allEnrolled, booksApi);
+      renderAcademicCards(enrolled);
+      renderBookCards(enrolledBooks);
 
       // 1. Render Academic Courses List
-      if (enrolled.length === 0) {
-        container.innerHTML = `
-          <div style="padding:3.5rem 2rem; text-align:center; background:#FFFFFF; border:1px solid var(--cream-border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm);">
-            <div style="font-size:3rem; color:var(--gold-600); margin-bottom:1rem;">🎓</div>
-            <h3 style="font-size:1.4rem; color:var(--burgundy-950); margin-bottom:0.5rem;">No Academic Courses Enrolled</h3>
-            <p style="color:var(--charcoal-600); max-width:520px; margin:0 auto 1.5rem; font-size:0.95rem; line-height:1.65;">
-              Explore our comprehensive course catalogue to select and enroll in academic theology courses.
-            </p>
-            <a href="courses.html?type=REGULAR" class="btn btn-gold btn-lg">Browse Academic Catalog</a>
-          </div>
-        `;
-      } else {
-        container.innerHTML = enrolled.map(item => {
-          const fullCourse = typeof getCourseById === 'function' ? getCourseById(item.courseId) : null;
-          const instructorName = fullCourse?.instructor?.name || item.instructorName || 'Institute Faculty';
-          const duration = fullCourse?.duration || item.durationLabel || 'Guided Cohort';
-          const code = fullCourse?.code || item.code || (item.courseId || '').slice(0, 8).toUpperCase();
-          const title = item.course?.title || fullCourse?.title || item.title || 'Enrolled Program';
-          const batchName = item.batch?.name || item.batch || 'Assigned Cohort';
-          const pct = Number(item.progressPct ?? item.progressPercent ?? 0);
-
-          return `
-            <div class="card" style="padding:2rem; box-shadow:var(--shadow-sm); border-left:5px solid var(--burgundy-700);">
-              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:1rem; flex-wrap:wrap; gap:0.5rem;">
-                <div>
-                  <span style="font-family:var(--font-mono); font-size:0.75rem; font-weight:700; color:var(--gold-700); background:var(--gold-50); padding:0.2rem 0.5rem; border-radius:4px; border:1px solid var(--gold-300);">${code}</span>
-                  <h3 style="font-size:1.35rem; color:var(--burgundy-950); margin:0.35rem 0 0.2rem;">${title}</h3>
-                  <p style="font-size:0.85rem; color:var(--charcoal-600);">Faculty: <strong>${instructorName}</strong> • ${duration}</p>
-                </div>
-                <span class="badge badge-success">${item.status || 'ACTIVE'}</span>
-              </div>
-
-              <div style="margin:1.5rem 0;">
-                <div style="display:flex; justify-content:space-between; font-size:0.85rem; font-weight:700; color:var(--charcoal-700); margin-bottom:0.4rem;">
-                  <span>Curriculum Progress</span>
-                  <span style="color:var(--burgundy-800);">${pct}% Completed</span>
-                </div>
-                <div style="width:100%; height:8px; background:var(--cream-border); border-radius:4px; overflow:hidden;">
-                  <div style="width:${pct}%; height:100%; background:linear-gradient(90deg, var(--burgundy-800), var(--gold-500)); border-radius:4px;"></div>
-                </div>
-              </div>
-
-              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; border-top:1px solid var(--cream-border); padding-top:1.25rem;">
-                <div style="font-size:0.8rem; color:var(--charcoal-500);">
-                  Cohort: <strong>${batchName}</strong>
-                </div>
-                <div style="display:flex; gap:0.75rem;">
-                  <a href="course-details.html?id=${item.courseId}" class="btn btn-secondary btn-sm">Course Syllabus</a>
-                  <a href="${typeof buildLmsPortalUrl === 'function' ? buildLmsPortalUrl(`/student/courses/${item.courseId}`) : `https://bible-learning-app-bm4j.vercel.app/student/courses/${item.courseId}`}" class="btn btn-gold btn-sm">
-                    Open Learning Portal →
-                  </a>
-                </div>
-              </div>
+      function renderAcademicCards(list) {
+        if (!container) return;
+        if (!list || list.length === 0) {
+          container.innerHTML = `
+            <div style="padding:3.5rem 2rem; text-align:center; background:#FFFFFF; border:1px solid var(--cream-border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm);">
+              <div style="font-size:3rem; color:var(--gold-600); margin-bottom:1rem;">🎓</div>
+              <h3 style="font-size:1.4rem; color:var(--burgundy-950); margin-bottom:0.5rem;">No Academic Courses Enrolled</h3>
+              <p style="color:var(--charcoal-600); max-width:520px; margin:0 auto 1.5rem; font-size:0.95rem; line-height:1.65;">
+                Explore our comprehensive course catalogue to select and enroll in academic theology courses.
+              </p>
+              <a href="courses.html?type=REGULAR" class="btn btn-gold btn-lg">Browse Academic Catalog</a>
             </div>
           `;
-        }).join('');
+        } else {
+          container.innerHTML = list.map(item => {
+            const fullCourse = typeof getCourseById === 'function' ? getCourseById(item.courseId) : null;
+            const instructorName = fullCourse?.instructor?.name || item.instructorName || 'Institute Faculty';
+            const duration = fullCourse?.duration || item.durationLabel || 'Guided Cohort';
+            const code = fullCourse?.code || item.code || (item.courseId || '').slice(0, 8).toUpperCase();
+            const title = item.course?.title || fullCourse?.title || item.title || 'Enrolled Program';
+            const batchName = item.batch?.name || item.batch || 'Assigned Cohort';
+            const pct = Number(item.progressPct ?? item.progressPercent ?? 0);
+
+            return `
+              <div class="card" style="padding:2rem; box-shadow:var(--shadow-sm); border-left:5px solid var(--burgundy-700);">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:1rem; flex-wrap:wrap; gap:0.5rem;">
+                  <div>
+                    <span style="font-family:var(--font-mono); font-size:0.75rem; font-weight:700; color:var(--gold-700); background:var(--gold-50); padding:0.2rem 0.5rem; border-radius:4px; border:1px solid var(--gold-300);">${code}</span>
+                    <h3 style="font-size:1.35rem; color:var(--burgundy-950); margin:0.35rem 0 0.2rem;">${title}</h3>
+                    <p style="font-size:0.85rem; color:var(--charcoal-600);">Faculty: <strong>${instructorName}</strong> • ${duration}</p>
+                  </div>
+                  <span class="badge badge-success">${item.status || 'ACTIVE'}</span>
+                </div>
+
+                <div style="margin:1.5rem 0;">
+                  <div style="display:flex; justify-content:space-between; font-size:0.85rem; font-weight:700; color:var(--charcoal-700); margin-bottom:0.4rem;">
+                    <span>Curriculum Progress</span>
+                    <span style="color:var(--burgundy-800);">${pct}% Completed</span>
+                  </div>
+                  <div style="width:100%; height:8px; background:var(--cream-border); border-radius:4px; overflow:hidden;">
+                    <div style="width:${pct}%; height:100%; background:linear-gradient(90deg, var(--burgundy-800), var(--gold-500)); border-radius:4px;"></div>
+                  </div>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; border-top:1px solid var(--cream-border); padding-top:1.25rem;">
+                  <div style="font-size:0.8rem; color:var(--charcoal-500);">
+                    Cohort: <strong>${batchName}</strong>
+                  </div>
+                  <div style="display:flex; gap:0.75rem;">
+                    <a href="course-details.html?id=${item.courseId}" class="btn btn-secondary btn-sm">Course Syllabus</a>
+                    <a href="${typeof buildLmsPortalUrl === 'function' ? buildLmsPortalUrl(`/student/courses/${item.courseId}`) : `https://bible-learning-app-bm4j.vercel.app/student/courses/${item.courseId}`}" class="btn btn-gold btn-sm">
+                      Open Learning Portal →
+                    </a>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
       }
 
       // 2. Render My Books & Library List
-      const booksContainer = document.getElementById('enrolledBooksList');
-      if (booksContainer) {
-        if (enrolledBooks.length === 0) {
+      function renderBookCards(list) {
+        const booksContainer = document.getElementById('enrolledBooksList');
+        if (!booksContainer) return;
+        if (!list || list.length === 0) {
           booksContainer.innerHTML = `
             <div style="padding:3.5rem 2rem; text-align:center; background:#FFFFFF; border:1px solid var(--cream-border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm);">
               <div style="font-size:3rem; color:#276749; margin-bottom:1rem;">📖</div>
@@ -436,7 +447,7 @@
             </div>
           `;
         } else {
-          booksContainer.innerHTML = enrolledBooks.map(b => {
+          booksContainer.innerHTML = list.map(b => {
             const lastPage = b.lastReadPage || 1;
             const total = Math.max(1, b.totalPages || 1);
             const pct = Math.min(100, Math.round((lastPage / total) * 100));

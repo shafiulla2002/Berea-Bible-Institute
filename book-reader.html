@@ -686,50 +686,47 @@
       let isRendering = false;
       let saveProgressTimer = null;
 
-      // Fetch Book metadata
-      try {
-        const bookData = await fetchCourseDetailLive(bookId);
-        if (bookData) {
-          document.getElementById('readerBookTitle').textContent = bookData.title || 'eBook Reader';
-          document.getElementById('readerBookAuthor').textContent = `By ${bookData.author || 'Bethesda Bible Faculty'}`;
-          document.title = `${bookData.title} | Online Book Reader`;
-        }
-      } catch (e) {}
+      // Parallelize Metadata, Saved Progress, and PDF Stream request
+      const metadataTask = (async () => {
+        try {
+          const bookData = (typeof getCourseById === 'function' ? getCourseById(bookId) : null) || (await fetchCourseDetailLive(bookId));
+          if (bookData) {
+            document.getElementById('readerBookTitle').textContent = bookData.title || 'eBook Reader';
+            document.getElementById('readerBookAuthor').textContent = `By ${bookData.author || 'Bethesda Bible Faculty'}`;
+            document.title = `${bookData.title} | Online Book Reader`;
+          }
+        } catch (e) {}
+      })();
 
-      // Fetch student's saved reading progress
-      try {
-        const progress = await apiFetchBookProgress(bookId);
-        if (progress && progress.lastReadPage > 0) {
-          currentPage = progress.lastReadPage;
-        }
-      } catch (e) {}
+      const progressTask = (async () => {
+        try {
+          const progress = await apiFetchBookProgress(bookId);
+          if (progress && progress.lastReadPage > 0) {
+            currentPage = progress.lastReadPage;
+          }
+        } catch (e) {}
+      })();
 
-      // Load PDF document securely with Bearer token
+      // Stream PDF directly to PDF.js with Range Requests enabled
       try {
         const pdfStreamUrl = apiGetStudentBookPdfUrl(bookId);
-        const pdfResponse = await fetch(pdfStreamUrl, {
-          method: 'GET',
-          headers: {
+
+        const loadingTask = pdfjsLib.getDocument({
+          url: pdfStreamUrl,
+          httpHeaders: {
             Authorization: `Bearer ${token}`
           },
-          credentials: 'include',
-        });
-        if (!pdfResponse.ok) {
-          let errMsg = `Unable to load book PDF (${pdfResponse.status})`;
-          try {
-            const errJson = await pdfResponse.json();
-            if (errJson && errJson.message) errMsg = errJson.message;
-          } catch (e) {}
-          throw new Error(errMsg);
-        }
-        const pdfBytes = new Uint8Array(await pdfResponse.arrayBuffer());
-        const loadingTask = pdfjsLib.getDocument({
-          data: pdfBytes,
+          withCredentials: true,
+          disableAutoFetch: false,
+          disableStream: false,
+          disableRange: false,
           cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
           cMapPacked: true,
         });
 
-        pdfDoc = await loadingTask.promise;
+        // Wait for metadata, progress, and PDF header in parallel
+        const [, , doc] = await Promise.all([metadataTask, progressTask, loadingTask.promise]);
+        pdfDoc = doc;
         totalPages = pdfDoc.numPages;
         document.getElementById('labelTotalPages').textContent = totalPages;
         document.getElementById('inputCurrentPage').max = totalPages;
