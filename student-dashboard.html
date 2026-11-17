@@ -261,7 +261,47 @@
 
     async function renderEnrolledDashboard() {
       const container = document.getElementById('enrolledCoursesList');
-      if (!container) return;
+      const booksContainer = document.getElementById('enrolledBooksList');
+      const tabCourses = document.getElementById('tabBtnCourses');
+      const tabBooks = document.getElementById('tabBtnBooks');
+      if (!container || !booksContainer) return;
+
+      // Track active tab state and bind tab handlers immediately so clicks work at any moment
+      let activeTab = 'courses';
+
+      function switchDashboardTab(tab) {
+        activeTab = tab;
+        if (tab === 'courses') {
+          if (tabCourses) {
+            tabCourses.style.borderBottom = '3px solid var(--burgundy-700)';
+            tabCourses.style.color = 'var(--burgundy-950)';
+          }
+          if (tabBooks) {
+            tabBooks.style.borderBottom = 'none';
+            tabBooks.style.color = '#64748B';
+          }
+          container.style.display = 'flex';
+          booksContainer.style.display = 'none';
+        } else {
+          if (tabBooks) {
+            tabBooks.style.borderBottom = '3px solid #276749';
+            tabBooks.style.color = '#276749';
+          }
+          if (tabCourses) {
+            tabCourses.style.borderBottom = 'none';
+            tabCourses.style.color = '#64748B';
+          }
+          container.style.display = 'none';
+          booksContainer.style.display = 'flex';
+        }
+      }
+
+      if (tabCourses) {
+        tabCourses.addEventListener('click', () => switchDashboardTab('courses'));
+      }
+      if (tabBooks) {
+        tabBooks.addEventListener('click', () => switchDashboardTab('books'));
+      }
 
       // Personalize student info from auth storage
       const student = typeof getAuthenticatedStudent === 'function' ? getAuthenticatedStudent() : null;
@@ -287,34 +327,44 @@
 
         if (Array.isArray(allEnrolled)) {
           allEnrolled.forEach((item) => {
-            const fullCourse = typeof getCourseById === 'function' ? getCourseById(item.courseId) : null;
-            const isBook = item.course?.courseType === 'BOOK' || fullCourse?.courseType === 'BOOK' || item.isBook;
+            const courseId = item.courseId || item.id || item.course?.id;
+            const fullCourse = typeof getCourseById === 'function' ? getCourseById(courseId) : null;
+            const isBook = item.course?.courseType === 'BOOK' || fullCourse?.courseType === 'BOOK' || item.isBook || item.courseType === 'BOOK';
             if (isBook) {
               enrolledBooks.push({
                 ...item,
-                title: item.course?.title || fullCourse?.title || item.title || 'eBook',
-                author: item.course?.author || fullCourse?.author || 'Bethesda Bible Faculty',
-                coverImage: item.course?.coverImage || fullCourse?.image,
+                courseId: courseId,
+                title: item.course?.title || fullCourse?.title || item.title || 'eBook Course',
+                author: item.course?.author || fullCourse?.author || item.author || 'Bethesda Bible Faculty',
+                coverImage: item.course?.coverImage || fullCourse?.image || item.coverImage,
                 lastReadPage: item.lastReadPage || 1,
                 totalPages: item.totalPages || fullCourse?.pdfPageCount || 1,
+                lastReadAt: item.lastReadAt || item.enrolledAt,
+                status: item.status || 'ACTIVE',
               });
             } else {
-              enrolled.push(item);
+              enrolled.push({
+                ...item,
+                courseId: courseId,
+              });
             }
           });
         }
 
         if (Array.isArray(booksApi)) {
           booksApi.forEach((b) => {
-            if (!enrolledBooks.some((eb) => eb.courseId === b.courseId || eb.courseId === b.id)) {
+            const targetId = b.courseId || b.id || b.course?.id;
+            const fullCourse = typeof getCourseById === 'function' ? getCourseById(targetId) : null;
+            if (!enrolledBooks.some((eb) => eb.courseId === targetId || eb.id === targetId)) {
               enrolledBooks.push({
-                courseId: b.courseId || b.id,
-                title: b.title,
-                author: b.author,
-                coverImage: b.coverImage,
+                ...b,
+                courseId: targetId,
+                title: b.title || b.course?.title || fullCourse?.title || 'eBook Course',
+                author: b.author || b.course?.author || fullCourse?.author || 'Bethesda Bible Faculty',
+                coverImage: b.coverImage || b.course?.coverImage || fullCourse?.image,
                 lastReadPage: b.lastReadPage || 1,
-                totalPages: b.totalPages || 1,
-                lastReadAt: b.lastReadAt,
+                totalPages: b.totalPages || b.pdfPageCount || fullCourse?.pdfPageCount || 1,
+                lastReadAt: b.lastReadAt || b.enrolledAt,
                 status: b.status || 'ACTIVE',
               });
             }
@@ -419,6 +469,7 @@
       const { enrolled, enrolledBooks } = renderDashboardLists(allEnrolled, booksApi);
       renderAcademicCards(enrolled);
       renderBookCards(enrolledBooks);
+      switchDashboardTab(activeTab);
 
       // 1. Render Academic Courses List
       function renderAcademicCards(list) {
@@ -484,7 +535,6 @@
 
       // 2. Render My Books & Library List
       function renderBookCards(list) {
-        const booksContainer = document.getElementById('enrolledBooksList');
         if (!booksContainer) return;
         if (!list || list.length === 0) {
           booksContainer.innerHTML = `
@@ -499,6 +549,7 @@
           `;
         } else {
           booksContainer.innerHTML = list.map(b => {
+            const targetCourseId = b.courseId || b.id || '';
             const lastPage = b.lastReadPage || 1;
             const total = Math.max(1, b.totalPages || 1);
             const pct = Math.min(100, Math.round((lastPage / total) * 100));
@@ -508,7 +559,7 @@
               <div class="card" style="padding:1.75rem; box-shadow:var(--shadow-sm); border-left:5px solid #276749; display:flex; flex-direction:column; gap:1.25rem;">
                 <div style="display:flex; gap:1.5rem; align-items:start; flex-wrap:wrap;">
                   <div style="width:105px; height:145px; border-radius:6px; overflow:hidden; background:#1e1b4b; box-shadow:0 8px 18px rgba(0,0,0,0.3); flex-shrink:0;">
-                    <img src="${b.coverImage || 'https://placehold.co/105x145?text=eBook'}" alt="${b.title}" style="width:100%; height:100%; object-fit:cover;" onerror="this.onerror=null;this.src='https://placehold.co/105x145?text=eBook'">
+                    <img src="${b.coverImage || 'https://placehold.co/105x145?text=eBook'}" alt="${b.title || 'eBook'}" style="width:100%; height:100%; object-fit:cover;" onerror="this.onerror=null;this.src='https://placehold.co/105x145?text=eBook'">
                   </div>
                   <div style="flex:1; min-width:240px;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.35rem;">
@@ -537,8 +588,8 @@
                     Activity: <strong>${lastDate}</strong>
                   </div>
                   <div style="display:flex; gap:0.75rem;">
-                    <a href="book-details.html?id=${b.courseId}" class="btn btn-secondary btn-sm">Book Overview</a>
-                    <a href="book-reader.html?id=${b.courseId}" class="btn btn-gold btn-sm" style="font-weight:800; display:inline-flex; align-items:center; gap:0.4rem;">
+                    <a href="book-details.html?id=${encodeURIComponent(targetCourseId)}" class="btn btn-secondary btn-sm">Book Overview</a>
+                    <a href="book-reader.html?id=${encodeURIComponent(targetCourseId)}" class="btn btn-gold btn-sm" style="font-weight:800; display:inline-flex; align-items:center; gap:0.4rem;">
                       📖 Continue Reading (Page ${lastPage}) →
                     </a>
                   </div>
@@ -547,32 +598,6 @@
             `;
           }).join('');
         }
-      }
-
-      // 3. Tab Click Handlers
-      const tabCourses = document.getElementById('tabBtnCourses');
-      const tabBooks = document.getElementById('tabBtnBooks');
-
-      if (tabCourses && tabBooks) {
-        tabCourses.addEventListener('click', () => {
-          tabCourses.style.borderBottom = '3px solid var(--burgundy-700)';
-          tabCourses.style.color = 'var(--burgundy-950)';
-          tabBooks.style.borderBottom = 'none';
-          tabBooks.style.color = '#64748B';
-
-          container.style.display = 'flex';
-          if (booksContainer) booksContainer.style.display = 'none';
-        });
-
-        tabBooks.addEventListener('click', () => {
-          tabBooks.style.borderBottom = '3px solid #276749';
-          tabBooks.style.color = '#276749';
-          tabCourses.style.borderBottom = 'none';
-          tabCourses.style.color = '#64748B';
-
-          container.style.display = 'none';
-          if (booksContainer) booksContainer.style.display = 'flex';
-        });
       }
     }
   </script>
