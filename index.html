@@ -166,10 +166,24 @@
           </a>
         </div>
 
-        <div class="featured-marquee-viewport">
-          <div id="featuredCoursesGrid" class="featured-marquee-track">
-            <!-- Dynamically populated from courses.js -->
+        <div class="featured-marquee-wrapper">
+          <button type="button" id="marqueePrevBtn" class="marquee-nav-btn marquee-nav-prev" aria-label="Move courses left">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+
+          <div class="featured-marquee-viewport" id="featuredMarqueeViewport">
+            <div id="featuredCoursesGrid" class="featured-marquee-track">
+              <!-- Dynamically populated from courses.js -->
+            </div>
           </div>
+
+          <button type="button" id="marqueeNextBtn" class="marquee-nav-btn marquee-nav-next" aria-label="Move courses right">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
         </div>
       </div>
     </section>
@@ -547,6 +561,43 @@
       if (!renderFeatured()) {
         container.innerHTML = '<div style="grid-column:1/-1; padding:2.5rem; text-align:center; color:var(--charcoal-500);">Published courses will appear here once published by your Institute Admin.</div>';
       }
+
+      // 4. Interactive Left / Right Navigation Controls for Course Cards
+      const prevBtn = document.getElementById('marqueePrevBtn');
+      const nextBtn = document.getElementById('marqueeNextBtn');
+      let manualShift = 0;
+      let resumeTimeout = null;
+
+      function shiftCarousel(direction) {
+        if (!container) return;
+        const cardStep = 360; // Approximate card width + gap
+        container.style.animationPlayState = 'paused';
+
+        const computed = window.getComputedStyle(container).transform;
+        let currentX = 0;
+        if (computed && computed !== 'none') {
+          const match = computed.match(/matrix.*\((.+)\)/);
+          if (match) {
+            const vals = match[1].split(', ');
+            currentX = parseFloat(vals[4]) || 0;
+          }
+        }
+
+        container.style.animation = 'none';
+        container.style.transition = 'transform 0.45s cubic-bezier(0.16, 1, 0.3, 1)';
+        const targetX = direction === 'next' ? currentX - cardStep : currentX + cardStep;
+        container.style.transform = `translateX(${targetX}px)`;
+
+        clearTimeout(resumeTimeout);
+        resumeTimeout = setTimeout(() => {
+          container.style.transition = 'none';
+          container.style.transform = '';
+          container.style.animation = 'marqueeLeftToRight 38s linear infinite';
+        }, 4000);
+      }
+
+      if (prevBtn) prevBtn.addEventListener('click', () => shiftCarousel('prev'));
+      if (nextBtn) nextBtn.addEventListener('click', () => shiftCarousel('next'));
     });
   </script>
 </body>

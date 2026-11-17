@@ -20,23 +20,36 @@ document.addEventListener('DOMContentLoaded', () => {
  */
 function isStudentAuthenticated() {
   const student = localStorage.getItem('berea_auth_student');
-  if (!student) return false;
+  const token = localStorage.getItem('berea_auth_token');
+  if (!student && !token) return false;
   try {
-    const parsed = JSON.parse(student);
-    return !!(parsed && (parsed.email || parsed.studentId));
+    if (student) {
+      const parsed = JSON.parse(student);
+      if (parsed && (parsed.id || parsed.phone || parsed.email || parsed.studentId || parsed.fullName)) {
+        return true;
+      }
+    }
+    return !!token;
   } catch (e) {
-    return false;
+    return !!token;
   }
 }
 
 function getAuthenticatedStudent() {
   const student = localStorage.getItem('berea_auth_student');
-  if (!student) return null;
-  try {
-    return JSON.parse(student);
-  } catch (e) {
-    return null;
+  if (student) {
+    try {
+      const parsed = JSON.parse(student);
+      if (parsed && (parsed.id || parsed.phone || parsed.email || parsed.studentId || parsed.fullName)) {
+        return parsed;
+      }
+    } catch (e) {}
   }
+  const token = localStorage.getItem('berea_auth_token');
+  if (token) {
+    return { fullName: 'Student', role: 'Student' };
+  }
+  return null;
 }
 
 function loginStudent(studentData) {
@@ -366,13 +379,9 @@ function setupGlobalCartListeners() {
         e.preventDefault();
         e.stopPropagation();
         if (typeof showToast === 'function') {
-          showToast('ℹ Please sign up or sign in to your student account to access the Student Hub.', 'gold');
+          showToast('ℹ Please sign in to your student account to access the Student Hub.', 'gold');
         }
-        if (typeof openAuthModal === 'function') {
-          openAuthModal('signup', 'student-dashboard.html');
-        } else {
-          window.location.href = 'student-login.html?returnUrl=student-dashboard.html';
-        }
+        window.location.href = 'student-login.html?returnUrl=student-dashboard.html';
         return;
       }
     }
@@ -567,7 +576,7 @@ async function handleModalSignup(e) {
   e.preventDefault();
   const form = e.target;
   const submitBtn = form?.querySelector('button[type="submit"]');
-  const origBtnText = submitBtn ? submitBtn.textContent : '';
+  const origBtnHtml = submitBtn ? submitBtn.innerHTML : '';
   const name = document.getElementById('modalSignupName').value.trim();
   const email = document.getElementById('modalSignupEmail').value.trim();
   const phone = document.getElementById('modalSignupPhone').value.trim();
@@ -599,7 +608,17 @@ async function handleModalSignup(e) {
 
   if (submitBtn) {
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Creating Account...';
+    submitBtn.innerHTML = `
+      <span style="display:inline-flex; align-items:center; justify-content:center; gap:0.55rem; width:100%;">
+        <svg class="btn-spinner" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin 0.8s linear infinite;">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-opacity="0.25"></circle>
+          <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor"></path>
+        </svg>
+        <span>Creating Account...</span>
+      </span>
+    `;
+    submitBtn.style.opacity = '1';
+    submitBtn.style.cursor = 'wait';
   }
 
   let student;
@@ -627,7 +646,9 @@ async function handleModalSignup(e) {
   } finally {
     if (submitBtn) {
       submitBtn.disabled = false;
-      submitBtn.textContent = origBtnText;
+      submitBtn.innerHTML = origBtnHtml;
+      submitBtn.style.opacity = '';
+      submitBtn.style.cursor = '';
     }
   }
 
@@ -655,20 +676,47 @@ async function handleModalSignup(e) {
 
 async function handleModalSignin(e) {
   e.preventDefault();
+  const form = e.target;
+  const submitBtn = form?.querySelector('button[type="submit"]');
+  const origBtnHtml = submitBtn ? submitBtn.innerHTML : '';
   const identifier = document.getElementById('modalSigninIdentifier').value.trim();
   const password = document.getElementById('modalSigninPassword')?.value || '';
 
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `
+      <span style="display:inline-flex; align-items:center; justify-content:center; gap:0.55rem; width:100%;">
+        <svg class="btn-spinner" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin 0.8s linear infinite;">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-opacity="0.25"></circle>
+          <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor"></path>
+        </svg>
+        <span>Signing In...</span>
+      </span>
+    `;
+    submitBtn.style.opacity = '1';
+    submitBtn.style.cursor = 'wait';
+  }
+
   let student = null;
-  if (typeof apiLoginWithPassword === 'function') {
-    const res = await apiLoginWithPassword(identifier, password);
-    if (!res.success) {
-      showToast(res.message || 'Invalid credentials.', 'danger');
+  try {
+    if (typeof apiLoginWithPassword === 'function') {
+      const res = await apiLoginWithPassword(identifier, password);
+      if (!res.success) {
+        showToast(res.message || 'Invalid credentials.', 'danger');
+        return;
+      }
+      student = res.student;
+    } else {
+      showToast('Authentication API unavailable.', 'danger');
       return;
     }
-    student = res.student;
-  } else {
-    showToast('Authentication API unavailable.', 'danger');
-    return;
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = origBtnHtml;
+      submitBtn.style.opacity = '';
+      submitBtn.style.cursor = '';
+    }
   }
 
   closeAuthModal();

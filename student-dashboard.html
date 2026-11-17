@@ -220,10 +220,11 @@
   <script src="assets/js/app.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Access Guard: Enforce strict student phone authentication & privacy
+      // Access Guard: Enforce student authentication & privacy
+      const isAuth = typeof isStudentAuthenticated === 'function' ? isStudentAuthenticated() : false;
       const student = typeof getAuthenticatedStudent === 'function' ? getAuthenticatedStudent() : null;
       const token = typeof getAuthToken === 'function' ? getAuthToken() : null;
-      if (!student || !token) {
+      if (!isAuth && !student && !token) {
         const main = document.querySelector('main');
         if (main) {
           main.innerHTML = `
