@@ -346,16 +346,60 @@
       const hasInitialData = (Array.isArray(initialCoursesCache) && initialCoursesCache.length > 0) ||
                              (Array.isArray(initialBooksCache) && initialBooksCache.length > 0);
 
+      // Progress bar animation helper while data is loaded
+      let currentProgress = 15;
+      let progressInterval = null;
+
+      function updateLoadingProgress(pct, statusText) {
+        currentProgress = Math.max(currentProgress, pct);
+        const bar = document.getElementById('dashProgressBarFill');
+        const text = document.getElementById('dashProgressBarText');
+        const status = document.getElementById('dashProgressBarStatus');
+        if (bar) bar.style.width = `${Math.min(100, currentProgress)}%`;
+        if (text) text.textContent = `${Math.round(Math.min(100, currentProgress))}%`;
+        if (status && statusText) status.textContent = statusText;
+      }
+
+      function startLoadingProgress() {
+        container.innerHTML = `
+          <div style="padding:2.5rem 2rem; background:#FFFFFF; border:1px solid var(--cream-border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); max-width:640px; margin:0 auto; text-align:center;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; font-weight:700; font-size:0.95rem; color:var(--burgundy-950);">
+              <span id="dashProgressBarStatus">Connecting to Academic Database...</span>
+              <span id="dashProgressBarText" style="color:var(--burgundy-800); font-family:var(--font-mono);">15%</span>
+            </div>
+            <div style="width:100%; height:12px; background:var(--cream-alt, #f1f5f9); border-radius:8px; overflow:hidden; border:1px solid var(--cream-border); padding:2px; box-sizing:border-box;">
+              <div id="dashProgressBarFill" style="width:15%; height:100%; background:linear-gradient(90deg, var(--burgundy-800), var(--gold-500)); border-radius:6px; transition:width 0.25s ease-out;"></div>
+            </div>
+            <p style="margin-top:0.75rem; font-size:0.82rem; color:var(--charcoal-500); margin-bottom:0;">
+              Synchronizing enrolled curriculum, cohorts, and library access...
+            </p>
+          </div>
+        `;
+        progressInterval = setInterval(() => {
+          if (currentProgress < 90) {
+            currentProgress += Math.floor(Math.random() * 12) + 5;
+            if (currentProgress >= 40 && currentProgress < 70) {
+              updateLoadingProgress(currentProgress, 'Fetching Enrolled Courses & Cohorts...');
+            } else if (currentProgress >= 70) {
+              updateLoadingProgress(currentProgress, 'Preparing Course Curriculum & Materials...');
+            } else {
+              updateLoadingProgress(currentProgress);
+            }
+          }
+        }, 120);
+      }
+
+      function finishLoadingProgress() {
+        if (progressInterval) clearInterval(progressInterval);
+        updateLoadingProgress(100, '✓ Complete! Rendering Courses...');
+      }
+
       if (hasInitialData) {
         const initialRender = renderDashboardLists(initialCoursesCache, initialBooksCache);
         renderAcademicCards(initialRender.enrolled);
         renderBookCards(initialRender.enrolledBooks);
       } else {
-        container.innerHTML = `
-          <div style="padding:2.5rem 2rem; text-align:center; background:#FFFFFF; border:1px solid var(--cream-border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); color:var(--charcoal-600);">
-            Loading your enrolled courses...
-          </div>
-        `;
+        startLoadingProgress();
       }
 
       // Fetch public courses, enrolled courses, and enrolled books in parallel
@@ -364,6 +408,13 @@
         typeof apiFetchStudentCourses === 'function' ? apiFetchStudentCourses() : Promise.resolve([]),
         typeof apiFetchStudentBooks === 'function' ? apiFetchStudentBooks() : Promise.resolve([]),
       ]);
+
+      finishLoadingProgress();
+
+      // Brief 180ms delay to smoothly show 100% completion before revealing the courses
+      if (!hasInitialData) {
+        await new Promise((r) => setTimeout(r, 180));
+      }
 
       const { enrolled, enrolledBooks } = renderDashboardLists(allEnrolled, booksApi);
       renderAcademicCards(enrolled);
