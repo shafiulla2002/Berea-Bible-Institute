@@ -616,11 +616,21 @@
         </div>
       </div>
 
-      <!-- Loading State -->
+      <!-- Loading State with Percentage Progress Bar -->
       <div id="readerLoading" class="reader-loading">
-        <div class="loading-spinner"></div>
-        <p style="font-weight:600; font-size:1.05rem; margin-bottom:0.25rem;">Opening Book in 3D Reader...</p>
-        <p style="font-size:0.85rem; color:#94a3b8;">Verifying active enrollment and streaming authorized pages</p>
+        <div style="background:#FFFFFF; border:1px solid #e2e8f0; border-radius:14px; padding:2.5rem 2rem; box-shadow:0 20px 40px rgba(0,0,0,0.12); max-width:480px; width:90%; text-align:center;">
+          <div style="font-size:2.4rem; margin-bottom:0.75rem;">📖</div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; font-weight:700; font-size:0.95rem; color:#0f172a;">
+            <span id="readerProgressStatus">Opening Book in 3D Reader...</span>
+            <span id="readerProgressPercent" style="color:#286425; font-family:var(--font-mono, monospace); font-size:1.05rem;">15%</span>
+          </div>
+          <div style="width:100%; height:12px; background:#f1f5f9; border-radius:8px; overflow:hidden; border:1px solid #cbd5e1; padding:2px; box-sizing:border-box;">
+            <div id="readerProgressFill" style="width:15%; height:100%; background:linear-gradient(90deg, #286425, #c5a059); border-radius:6px; transition:width 0.2s ease-out;"></div>
+          </div>
+          <p id="readerProgressSubtext" style="margin-top:0.75rem; font-size:0.82rem; color:#64748b; margin-bottom:0;">
+            Verifying active enrollment and streaming authorized pages...
+          </p>
+        </div>
       </div>
     </main>
 
@@ -686,6 +696,46 @@
       let isRendering = false;
       let saveProgressTimer = null;
 
+      // Reader Percentage Loading Controller
+      let readerProgress = 15;
+      let readerProgressInterval = null;
+
+      function updateReaderProgress(pct, statusText, subText) {
+        readerProgress = Math.max(readerProgress, pct);
+        const fill = document.getElementById('readerProgressFill');
+        const text = document.getElementById('readerProgressPercent');
+        const status = document.getElementById('readerProgressStatus');
+        const sub = document.getElementById('readerProgressSubtext');
+
+        if (fill) fill.style.width = `${Math.min(100, readerProgress)}%`;
+        if (text) text.textContent = `${Math.round(Math.min(100, readerProgress))}%`;
+        if (status && statusText) status.textContent = statusText;
+        if (sub && subText) sub.textContent = subText;
+      }
+
+      function startReaderProgress() {
+        updateReaderProgress(15, 'Opening Book in 3D Reader...', 'Verifying active enrollment and streaming authorized pages...');
+        readerProgressInterval = setInterval(() => {
+          if (readerProgress < 90) {
+            readerProgress += Math.floor(Math.random() * 8) + 4;
+            if (readerProgress >= 40 && readerProgress < 70) {
+              updateReaderProgress(readerProgress, 'Streaming Authorized Pages...', 'Loading encrypted PDF document stream...');
+            } else if (readerProgress >= 70) {
+              updateReaderProgress(readerProgress, 'Preparing 3D Reader Canvas...', 'Initializing pages and reading position...');
+            } else {
+              updateReaderProgress(readerProgress);
+            }
+          }
+        }, 120);
+      }
+
+      function finishReaderProgress() {
+        if (readerProgressInterval) clearInterval(readerProgressInterval);
+        updateReaderProgress(100, '✓ Complete! Book Ready', 'Rendering high-resolution 3D pages...');
+      }
+
+      startReaderProgress();
+
       // Parallelize Metadata, Saved Progress, and PDF Stream request
       const metadataTask = (async () => {
         try {
@@ -724,6 +774,13 @@
           cMapPacked: true,
         });
 
+        loadingTask.onProgress = (progressData) => {
+          if (progressData && progressData.total > 0) {
+            const pct = Math.round((progressData.loaded / progressData.total) * 90);
+            updateReaderProgress(Math.max(readerProgress, pct), 'Streaming Authorized Pages...', `Received ${Math.round(progressData.loaded / 1024)} KB of ${Math.round(progressData.total / 1024)} KB`);
+          }
+        };
+
         // Wait for metadata, progress, and PDF header in parallel
         const [, , doc] = await Promise.all([metadataTask, progressTask, loadingTask.promise]);
         pdfDoc = doc;
@@ -738,6 +795,9 @@
           const outline = await pdfDoc.getOutline();
           renderOutline(outline);
         } catch (e) {}
+
+        finishReaderProgress();
+        await new Promise((r) => setTimeout(r, 180));
 
         // Hide loading
         document.getElementById('readerLoading').style.display = 'none';
