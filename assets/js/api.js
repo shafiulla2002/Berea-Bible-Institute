@@ -68,6 +68,12 @@ function getAuthToken() {
 }
 
 async function callBackendApi(subPath, fetchOptions = {}) {
+  const method = String(fetchOptions.method || 'GET').toUpperCase();
+  // Guard read requests against hanging forever (e.g. API cold start / dropped connection)
+  const controller = method === 'GET' && typeof AbortController !== 'undefined' && !fetchOptions.signal
+    ? new AbortController()
+    : null;
+  const timeoutId = controller ? setTimeout(() => controller.abort(), 25000) : null;
   try {
     const token = getAuthToken();
     const headers = {
@@ -78,6 +84,7 @@ async function callBackendApi(subPath, fetchOptions = {}) {
 
     const res = await fetch(`${BIBLE_LMS_API_BASE}${subPath}`, {
       ...fetchOptions,
+      ...(controller ? { signal: controller.signal } : {}),
       credentials: 'include',
       headers,
     });
@@ -99,7 +106,14 @@ async function callBackendApi(subPath, fetchOptions = {}) {
 
     return { ok: true, status: res.status, data: payload };
   } catch (err) {
-    return { ok: false, status: 0, error: err && err.message ? err.message : 'Network error' };
+    const aborted = err && err.name === 'AbortError';
+    return {
+      ok: false,
+      status: 0,
+      error: aborted ? 'The server took too long to respond. Please try again.' : (err && err.message ? err.message : 'Network error'),
+    };
+  } finally {
+    if (timeoutId) clearTimeout(timeoutId);
   }
 }
 
@@ -224,6 +238,26 @@ async function apiRequestOtp(phoneNumber) {
   };
 }
 
+/**
+ * After a successful sign-in, load the profile (required for the session) and warm
+ * enrolled courses/books. Course/book prefetch is capped so a slow backend does not
+ * hold the student on the login screen; destination pages re-fetch them anyway.
+ */
+async function prefetchStudentSessionData(token) {
+  const coursesTask = apiFetchStudentCourses(token).catch(() => []);
+  const booksTask = apiFetchStudentBooks(token).catch(() => []);
+  const profileTask = apiFetchStudentProfile(token).catch(() => null);
+  const capMs = 2500;
+  const capped = (p, fallback) =>
+    Promise.race([p, new Promise((resolve) => setTimeout(() => resolve(fallback), capMs))]);
+  const [enrolled, , profile] = await Promise.all([
+    capped(coursesTask, []),
+    capped(booksTask, []),
+    profileTask,
+  ]);
+  return [enrolled, profile];
+}
+
 async function apiLoginWithPhone(phoneNumber, otp = '', challengeTokenOverride = null) {
   const cleanPhone = String(phoneNumber || '').trim();
   let challengeToken = challengeTokenOverride;
@@ -249,11 +283,7 @@ async function apiLoginWithPhone(phoneNumber, otp = '', challengeTokenOverride =
 
   const token = res.data.accessToken;
   localStorage.setItem('berea_auth_token', token);
-  const [enrolled, _books, profile] = await Promise.all([
-    apiFetchStudentCourses(token),
-    apiFetchStudentBooks(token),
-    apiFetchStudentProfile(token),
-  ]);
+  const [enrolled, profile] = await prefetchStudentSessionData(token);
 
   const studentData = {
     id: res.data.user?.id,
@@ -286,11 +316,7 @@ async function apiLoginWithPassword(identifier, password) {
 
   const token = res.data.accessToken;
   localStorage.setItem('berea_auth_token', token);
-  const [enrolled, _books, profile] = await Promise.all([
-    apiFetchStudentCourses(token),
-    apiFetchStudentBooks(token),
-    apiFetchStudentProfile(token),
-  ]);
+  const [enrolled, profile] = await prefetchStudentSessionData(token);
 
   const studentData = {
     id: res.data.user?.id,

@@ -321,12 +321,15 @@
         window.location.href = 'courses.html';
         return;
       }
-      if (typeof isStudentAuthenticated === 'function' && isStudentAuthenticated() && typeof apiFetchStudentCourses === 'function') {
-        await apiFetchStudentCourses();
-      }
-      const course = typeof fetchCourseDetailLive === 'function'
-        ? await fetchCourseDetailLive(courseId)
-        : (typeof getCourseById === 'function' ? getCourseById(courseId) : null);
+      // Fetch enrolment state and course detail in parallel (no serial waterfall)
+      const enrolmentTask =
+        typeof isStudentAuthenticated === 'function' && isStudentAuthenticated() && typeof apiFetchStudentCourses === 'function'
+          ? apiFetchStudentCourses().catch(() => null)
+          : Promise.resolve(null);
+      const detailTask = typeof fetchCourseDetailLive === 'function'
+        ? fetchCourseDetailLive(courseId).catch(() => (typeof getCourseById === 'function' ? getCourseById(courseId) : null))
+        : Promise.resolve(typeof getCourseById === 'function' ? getCourseById(courseId) : null);
+      const [, course] = await Promise.all([enrolmentTask, detailTask]);
 
       if (!course) {
         window.location.href = 'courses.html';

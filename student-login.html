@@ -89,8 +89,8 @@
             </div>
           </div>
 
-          <button type="submit" class="btn btn-gold btn-lg btn-block">
-            Verify & Sign In to Portal
+          <button type="submit" id="btnVerifyOtp" class="btn btn-gold btn-lg btn-block">
+            Verify &amp; Sign In to Portal
           </button>
         </form>
 
@@ -115,7 +115,7 @@
             </label>
           </div>
 
-          <button type="submit" class="btn btn-gold btn-lg btn-block">
+          <button type="submit" id="btnPasswordLogin" class="btn btn-gold btn-lg btn-block">
             Sign In with Password
           </button>
         </form>
@@ -152,8 +152,8 @@
             </select>
           </div>
 
-          <button type="submit" class="btn btn-gold btn-lg btn-block">
-            Create Student Account & Continue
+          <button type="submit" id="btnSignupSubmit" class="btn btn-gold btn-lg btn-block">
+            Create Student Account &amp; Continue
           </button>
           <p style="font-size:0.75rem; text-align:center; color:var(--charcoal-500); margin-top:0.75rem;">
             By signing up, you can immediately enroll and purchase academic cohorts.
@@ -178,11 +178,156 @@
     </div>
   </footer>
 
+  <style>
+    @keyframes bbiSpin { to { transform: rotate(360deg); } }
+    .bbi-btn-spinner {
+      display: inline-block; width: 1em; height: 1em; margin-right: 0.55rem; vertical-align: -0.15em;
+      border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%;
+      animation: bbiSpin 0.7s linear infinite;
+    }
+    .btn.is-loading { cursor: progress; opacity: 0.85; pointer-events: none; }
+    .bbi-auth-overlay {
+      position: fixed; inset: 0; z-index: 9999; display: none; align-items: center; justify-content: center;
+      background: rgba(255, 252, 245, 0.88); backdrop-filter: blur(2px); flex-direction: column; gap: 1rem;
+      font-weight: 700; color: var(--burgundy-800, #1e2a4a);
+    }
+    .bbi-auth-overlay.active { display: flex; }
+    .bbi-auth-overlay .bbi-big-spinner {
+      width: 48px; height: 48px; border: 4px solid var(--gold-500, #e6b422); border-right-color: transparent;
+      border-radius: 50%; animation: bbiSpin 0.8s linear infinite;
+    }
+  </style>
+  <div id="authRedirectOverlay" class="bbi-auth-overlay" aria-live="polite">
+    <div class="bbi-big-spinner"></div>
+    <div id="authRedirectOverlayText">Signing you in to the Student Portal...</div>
+  </div>
+
   <script src="assets/js/courses.js"></script>
   <script src="assets/js/cart.js"></script>
   <script src="assets/js/api.js"></script>
   <script src="assets/js/app.js"></script>
   <script>
+    function setButtonLoading(btn, isLoading, loadingText) {
+      if (!btn) return;
+      if (isLoading) {
+        if (!btn.dataset.originalHtml) btn.dataset.originalHtml = btn.innerHTML;
+        btn.disabled = true;
+        btn.classList.add('is-loading');
+        btn.setAttribute('aria-busy', 'true');
+        btn.innerHTML = `<span class="bbi-btn-spinner" aria-hidden="true"></span>${loadingText || 'Please wait...'}`;
+      } else {
+        btn.disabled = false;
+        btn.classList.remove('is-loading');
+        btn.removeAttribute('aria-busy');
+        if (btn.dataset.originalHtml) {
+          btn.innerHTML = btn.dataset.originalHtml;
+          delete btn.dataset.originalHtml;
+        }
+      }
+    }
+
+    function showAuthOverlay(text) {
+      const overlay = document.getElementById('authRedirectOverlay');
+      const label = document.getElementById('authRedirectOverlayText');
+      if (label && text) label.textContent = text;
+      if (overlay) overlay.classList.add('active');
+    }
+
+    function hideAuthOverlay() {
+      const overlay = document.getElementById('authRedirectOverlay');
+      if (overlay) overlay.classList.remove('active');
+    }
+
+    // OTP boxes: auto-advance, backspace to previous, arrow keys, paste full code
+    function initOtpBoxes() {
+      const boxes = Array.from(document.querySelectorAll('.otp-box'));
+      if (boxes.length === 0) return;
+
+      const fillFrom = (startIdx, digits) => {
+        let idx = startIdx;
+        for (const d of digits) {
+          if (idx >= boxes.length) break;
+          boxes[idx].value = d;
+          idx++;
+        }
+        const next = boxes[Math.min(idx, boxes.length - 1)];
+        next.focus();
+        next.select && next.select();
+        if (boxes.every((b) => b.value)) {
+          const verifyBtn = document.getElementById('btnVerifyOtp');
+          if (verifyBtn) verifyBtn.focus();
+        }
+      };
+
+      boxes.forEach((box, i) => {
+        box.setAttribute('autocomplete', i === 0 ? 'one-time-code' : 'off');
+        box.setAttribute('pattern', '[0-9]*');
+        box.setAttribute('aria-label', `Verification code digit ${i + 1}`);
+
+        box.addEventListener('input', () => {
+          const digits = (box.value || '').replace(/\D/g, '');
+          if (!digits) {
+            box.value = '';
+            return;
+          }
+          if (digits.length > 1) {
+            // Autofill / fast typing delivered multiple digits into one box
+            box.value = '';
+            fillFrom(i, digits.split(''));
+            return;
+          }
+          box.value = digits;
+          if (i < boxes.length - 1) {
+            boxes[i + 1].focus();
+            boxes[i + 1].select && boxes[i + 1].select();
+          } else {
+            const verifyBtn = document.getElementById('btnVerifyOtp');
+            if (verifyBtn && boxes.every((b) => b.value)) verifyBtn.focus();
+          }
+        });
+
+        box.addEventListener('keydown', (ev) => {
+          if (ev.key === 'Backspace') {
+            if (!box.value && i > 0) {
+              ev.preventDefault();
+              boxes[i - 1].value = '';
+              boxes[i - 1].focus();
+            }
+          } else if (ev.key === 'ArrowLeft' && i > 0) {
+            ev.preventDefault();
+            boxes[i - 1].focus();
+          } else if (ev.key === 'ArrowRight' && i < boxes.length - 1) {
+            ev.preventDefault();
+            boxes[i + 1].focus();
+          } else if (ev.key.length === 1 && /\d/.test(ev.key) && box.value) {
+            // Overwrite an already-filled box instead of being blocked by maxlength
+            box.value = '';
+          }
+        });
+
+        box.addEventListener('focus', () => {
+          box.select && box.select();
+        });
+
+        box.addEventListener('paste', (ev) => {
+          const text = (ev.clipboardData || window.clipboardData)?.getData('text') || '';
+          const digits = text.replace(/\D/g, '');
+          if (!digits) return;
+          ev.preventDefault();
+          fillFrom(i, digits.split(''));
+        });
+      });
+    }
+
+    function clearOtpBoxes(focusFirst = true) {
+      const boxes = Array.from(document.querySelectorAll('.otp-box'));
+      boxes.forEach((b) => { b.value = ''; });
+      if (focusFirst && boxes[0]) boxes[0].focus();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initOtpBoxes();
+    });
     document.addEventListener('DOMContentLoaded', () => {
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get('mode') === 'signup') {
@@ -257,9 +402,15 @@
         return;
       }
 
-      if (sendBtn) sendBtn.disabled = true;
-      const res = typeof apiRequestOtp === 'function' ? await apiRequestOtp(fullPhone) : { success: false };
-      if (sendBtn) sendBtn.disabled = false;
+      if (sendBtn) setButtonLoading(sendBtn, true, 'Sending verification code...');
+      let res;
+      try {
+        res = typeof apiRequestOtp === 'function' ? await apiRequestOtp(fullPhone) : { success: false };
+      } catch (err) {
+        res = { success: false, message: err && err.message };
+      } finally {
+        if (sendBtn) setButtonLoading(sendBtn, false);
+      }
 
       if (!res.success) {
         if (typeof showToast === 'function') showToast(res.message || 'Unable to send verification code.', 'danger');
@@ -268,6 +419,7 @@
 
       if (otpSection) {
         otpSection.style.display = 'block';
+        clearOtpBoxes(true);
         if (sendBtn) {
           sendBtn.innerHTML = '✓ Verification Code Sent';
           sendBtn.classList.add('btn-gold');
@@ -299,15 +451,26 @@
         return;
       }
 
-      const result = typeof apiLoginWithPhone === 'function'
-        ? await apiLoginWithPhone(fullPhone, otpCode)
-        : { success: false, message: 'Authentication API unavailable.' };
+      const verifyBtn = document.getElementById('btnVerifyOtp');
+      if (verifyBtn && verifyBtn.disabled) return; // prevent double submit
+      setButtonLoading(verifyBtn, true, 'Verifying code...');
+
+      let result;
+      try {
+        result = typeof apiLoginWithPhone === 'function'
+          ? await apiLoginWithPhone(fullPhone, otpCode)
+          : { success: false, message: 'Authentication API unavailable.' };
+      } catch (err) {
+        result = { success: false, message: err && err.message };
+      }
 
       if (!result.success) {
+        setButtonLoading(verifyBtn, false);
         if (typeof showToast === 'function') showToast(result.message || 'Invalid verification code.', 'danger');
         return;
       }
 
+      setButtonLoading(verifyBtn, true, 'Signing you in...');
       if (typeof showToast === 'function') {
         showToast(`✓ Welcome back, ${result.student.fullName}!`, 'success');
       }
@@ -319,11 +482,21 @@
       const identifier = document.getElementById('loginEmail').value.trim();
       const password = document.getElementById('loginPassword')?.value || '';
 
-      const res = typeof apiLoginWithPassword === 'function'
-        ? await apiLoginWithPassword(identifier, password)
-        : { success: false, message: 'Authentication API unavailable.' };
+      const pwdBtn = document.getElementById('btnPasswordLogin');
+      if (pwdBtn && pwdBtn.disabled) return;
+      setButtonLoading(pwdBtn, true, 'Signing in...');
+
+      let res;
+      try {
+        res = typeof apiLoginWithPassword === 'function'
+          ? await apiLoginWithPassword(identifier, password)
+          : { success: false, message: 'Authentication API unavailable.' };
+      } catch (err) {
+        res = { success: false, message: err && err.message };
+      }
 
       if (!res.success) {
+        setButtonLoading(pwdBtn, false);
         if (typeof showToast === 'function') showToast(res.message || 'Invalid credentials.', 'danger');
         return;
       }
@@ -342,17 +515,27 @@
       const password = document.getElementById('signupPassword')?.value || '';
       const track = document.getElementById('signupTrack').value;
 
-      const result = typeof apiRegisterStudent === 'function'
-        ? await apiRegisterStudent({
-            fullName: name,
-            email,
-            phone,
-            password,
-            track,
-          })
-        : { success: false, message: 'Registration API unavailable.' };
+      const signupBtn = document.getElementById('btnSignupSubmit');
+      if (signupBtn && signupBtn.disabled) return;
+      setButtonLoading(signupBtn, true, 'Creating your account...');
+
+      let result;
+      try {
+        result = typeof apiRegisterStudent === 'function'
+          ? await apiRegisterStudent({
+              fullName: name,
+              email,
+              phone,
+              password,
+              track,
+            })
+          : { success: false, message: 'Registration API unavailable.' };
+      } catch (err) {
+        result = { success: false, message: err && err.message };
+      }
 
       if (!result.success) {
+        setButtonLoading(signupBtn, false);
         if (typeof showToast === 'function') showToast(result.message || 'Account creation failed.', 'danger');
         return;
       }
@@ -364,9 +547,7 @@
     }
 
     function redirectAfterAuth() {
-      if (typeof showToast === 'function') {
-        showToast('Authentication verified! Redirecting...', 'success');
-      }
+      showAuthOverlay('Authentication verified! Opening your Student Portal...');
       const urlParams = new URLSearchParams(window.location.search);
       const returnUrl = urlParams.get('returnUrl');
       const pendingCourse = sessionStorage.getItem('berea_pending_course');
@@ -384,8 +565,19 @@
         } else {
           window.location.href = 'student-dashboard.html';
         }
-      }, 700);
+      }, 300);
     }
+
+    // If the browser restores this page from bfcache (Back button), clear stale loading states
+    window.addEventListener('pageshow', (ev) => {
+      if (ev.persisted) {
+        hideAuthOverlay();
+        ['btnVerifyOtp', 'btnPasswordLogin', 'btnSignupSubmit', 'btnSendOtp'].forEach((id) => {
+          const b = document.getElementById(id);
+          if (b && b.classList.contains('is-loading')) setButtonLoading(b, false);
+        });
+      }
+    });
   </script>
 </body>
 </html>

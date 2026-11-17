@@ -236,7 +236,12 @@ async function loadPublicCourses(filters = {}, forceRefresh = false) {
 
   const fetchPromise = (async () => {
     const res = await apiFetchPublicCourses(filters);
+    const hasError = !!(res && res.error);
     const rawList = Array.isArray(res?.data) ? res.data : Array.isArray(res?.items) ? res.items : [];
+    // Network/API failure: keep the last known good catalogue instead of wiping it
+    if (hasError) {
+      return isUnfiltered ? PUBLIC_COURSES_CACHE : [];
+    }
     const normalized = rawList.map(normalizeCourseDto).filter(Boolean);
     if (isUnfiltered) {
       PUBLIC_COURSES_CACHE = normalized;
