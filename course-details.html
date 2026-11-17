@@ -158,9 +158,17 @@
             </div>
 
             <!-- Curriculum Modules -->
-            <div class="card" style="padding:2.25rem;">
-              <h2 style="font-size:1.5rem; margin-bottom:1.25rem; color:var(--burgundy-950);">Curriculum Modules & Syllabi</h2>
-              <div id="detailCurriculumList" style="display:flex; flex-direction:column; gap:0.75rem;">
+            <div class="card" id="curriculum" style="padding:2.25rem;">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1.25rem;">
+                <div>
+                  <h2 style="font-size:1.5rem; margin-bottom:0.25rem; color:var(--burgundy-950);">Curriculum Modules & Syllabi</h2>
+                  <p style="font-size:0.875rem; color:var(--charcoal-600); margin:0;">Explore lesson topics, lecture units, and academic deliverables.</p>
+                </div>
+                <button id="btnDownloadSyllabusPdf" type="button" class="btn btn-secondary btn-sm" style="display:inline-flex; align-items:center; gap:0.5rem; font-weight:600; padding:0.55rem 1rem; border-color:var(--burgundy-700); color:var(--burgundy-900);">
+                  📥 Download Syllabus PDF
+                </button>
+              </div>
+              <div id="detailCurriculumList" style="display:flex; flex-direction:column; gap:0.85rem;">
                 <!-- Populated via JavaScript -->
               </div>
             </div>
@@ -379,12 +387,104 @@
 
       // Curriculum Modules
       const currList = document.getElementById('detailCurriculumList');
-      currList.innerHTML = course.curriculum.map((m, idx) => `
-        <div style="padding:1rem 1.25rem; background:var(--cream-bg); border:1px solid var(--cream-border); border-radius:var(--radius-md); display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-weight:600; color:var(--charcoal-800);">${m.module}</span>
-          <span style="font-size:0.8rem; color:var(--charcoal-500); font-family:var(--font-mono);">${m.lessons} Lessons</span>
-        </div>
-      `).join('');
+      if (currList) {
+        if (!course.curriculum || course.curriculum.length === 0) {
+          currList.innerHTML = `
+            <div style="padding:1.5rem; text-align:center; background:var(--cream-bg); border:1px dashed var(--cream-border); border-radius:var(--radius-md); color:var(--charcoal-600); font-size:0.9rem;">
+              Syllabus modules and lecture sequences are currently being prepared for this course.
+            </div>
+          `;
+        } else {
+          currList.innerHTML = course.curriculum.map((m, idx) => {
+            const hasChapters = Array.isArray(m.chapters) && m.chapters.length > 0;
+            const chaptersHtml = hasChapters
+              ? m.chapters.map((ch, chIdx) => {
+                  const lessons = Array.isArray(ch.lessons) ? ch.lessons : [];
+                  const lessonsListHtml = lessons.length > 0
+                    ? lessons.map((les, lIdx) => {
+                        const typeBadge = les.type === 'VIDEO' ? '🎥 Video' : les.type === 'PDF' ? '📄 Document' : les.type === 'QUIZ' ? '📝 Quiz' : les.type === 'AUDIO' ? '🎧 Audio' : '📖 Lesson';
+                        const durText = les.durationSec ? `${Math.round(les.durationSec / 60)} min` : '';
+                        return `
+                          <li style="display:flex; justify-content:space-between; align-items:center; padding:0.4rem 0.5rem; font-size:0.875rem; border-bottom:1px solid #f1ece4;">
+                            <span style="color:var(--charcoal-800); display:flex; align-items:center; gap:0.4rem;">
+                              <span style="color:var(--gold-600); font-weight:600; font-size:0.75rem;">${idx + 1}.${chIdx + 1}.${lIdx + 1}</span>
+                              ${les.title}
+                            </span>
+                            <span style="display:flex; align-items:center; gap:0.5rem;">
+                              <span style="font-size:0.75rem; padding:0.15rem 0.45rem; border-radius:4px; background:#f5f0e8; color:var(--burgundy-900); font-weight:500;">${typeBadge}</span>
+                              ${durText ? `<span style="font-size:0.75rem; color:var(--charcoal-500); font-family:var(--font-mono);">${durText}</span>` : ''}
+                            </span>
+                          </li>
+                        `;
+                      }).join('')
+                    : `<li style="font-size:0.825rem; color:var(--charcoal-500); padding:0.35rem 0.5rem;">Lecture unit materials and topics</li>`;
+
+                  return `
+                    <div style="margin-top:0.6rem; padding:0.6rem 0.85rem; background:#ffffff; border:1px solid var(--cream-border); border-radius:6px;">
+                      <div style="font-size:0.9rem; font-weight:600; color:var(--burgundy-900); margin-bottom:0.35rem;">
+                        ${ch.title}
+                      </div>
+                      <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column;">
+                        ${lessonsListHtml}
+                      </ul>
+                    </div>
+                  `;
+                }).join('')
+              : '';
+
+            return `
+              <details class="curriculum-module-card" ${idx < 2 ? 'open' : ''} style="background:var(--cream-bg); border:1px solid var(--cream-border); border-radius:var(--radius-md); overflow:hidden;">
+                <summary style="padding:1rem 1.25rem; font-weight:600; color:var(--charcoal-800); cursor:pointer; display:flex; justify-content:space-between; align-items:center; user-select:none;">
+                  <span style="display:flex; align-items:center; gap:0.6rem;">
+                    <span style="display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:50%; background:var(--burgundy-900); color:#fff; font-size:0.75rem; font-weight:700;">${idx + 1}</span>
+                    <span>${m.module}</span>
+                  </span>
+                  <span style="display:flex; align-items:center; gap:0.6rem;">
+                    <span style="font-size:0.8rem; color:var(--burgundy-800); font-family:var(--font-mono); font-weight:600;">${m.lessons} Lessons</span>
+                    <span style="font-size:0.75rem; color:var(--charcoal-500);">▼</span>
+                  </span>
+                </summary>
+                <div style="padding:0.75rem 1.25rem 1.25rem 1.25rem; border-top:1px solid var(--cream-border); background:#faf8f5;">
+                  ${chaptersHtml || '<p style="font-size:0.85rem; color:var(--charcoal-600); margin:0;">In-depth lecture sequence and readings for this module.</p>'}
+                </div>
+              </details>
+            `;
+          }).join('');
+        }
+      }
+
+      // Download Syllabus PDF button handler
+      const btnDownloadSyllabus = document.getElementById('btnDownloadSyllabusPdf');
+      if (btnDownloadSyllabus) {
+        btnDownloadSyllabus.addEventListener('click', async (e) => {
+          e.preventDefault();
+          const origText = btnDownloadSyllabus.innerHTML;
+          try {
+            btnDownloadSyllabus.disabled = true;
+            btnDownloadSyllabus.innerHTML = '⏳ Preparing PDF...';
+            if (typeof apiDownloadCourseSyllabusPdf === 'function') {
+              await apiDownloadCourseSyllabusPdf(course.id || course.slug, `${course.slug || 'course'}-syllabus.pdf`);
+            } else {
+              const apiBase = (typeof BIBLE_LMS_API_BASE !== 'undefined' ? BIBLE_LMS_API_BASE : '').replace(/\/+$/, '');
+              const url = `${apiBase}/public/courses/${encodeURIComponent(course.id || course.slug)}/syllabus`;
+              window.open(url, '_blank');
+            }
+          } catch (err) {
+            alert(err && err.message ? err.message : 'Unable to download syllabus PDF right now.');
+          } finally {
+            btnDownloadSyllabus.disabled = false;
+            btnDownloadSyllabus.innerHTML = origText;
+          }
+        });
+      }
+
+      // Auto-scroll to curriculum if opened from "Course Syllabus" link
+      if (window.location.hash === '#curriculum') {
+        const currEl = document.getElementById('curriculum');
+        if (currEl) {
+          setTimeout(() => currEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
+        }
+      }
 
       // Faculty Info
       document.getElementById('detailFacultyAvatar').textContent = course.instructor.avatar;

@@ -548,3 +548,31 @@ async function apiSaveBookProgress(courseId, input, tokenOverride = null) {
 function apiGetStudentBookPdfUrl(courseId) {
   return `${BIBLE_LMS_API_BASE}/students/books/${encodeURIComponent(courseId)}/pdf`;
 }
+
+function getCourseSyllabusPdfUrl(idOrSlug) {
+  if (!idOrSlug) return null;
+  return `${BIBLE_LMS_API_BASE}/public/courses/${encodeURIComponent(idOrSlug)}/syllabus`;
+}
+
+async function apiDownloadCourseSyllabusPdf(idOrSlug, defaultFileName = 'course-syllabus.pdf') {
+  if (!idOrSlug) throw new Error('Course identifier missing');
+  const url = getCourseSyllabusPdfUrl(idOrSlug);
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error('Syllabus PDF is currently being finalized for this course.');
+  }
+  const blob = await res.blob();
+  const disposition = res.headers.get('content-disposition') || '';
+  const match = disposition.match(/filename="?([^"]+)"?/i);
+  const fileName = match ? match[1] : defaultFileName;
+
+  const blobUrl = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = blobUrl;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(blobUrl);
+  return fileName;
+}

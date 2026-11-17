@@ -515,7 +515,7 @@
                 📖 Continue Learning →
               </a>
             ` : `
-              <a href="course-details.html?id=${item.courseId}" class="btn btn-secondary btn-sm">Course Syllabus</a>
+              <a href="course-details.html?id=${encodeURIComponent(item.courseId)}#curriculum" class="btn btn-secondary btn-sm">Course Syllabus</a>
               <a href="${typeof buildLmsPortalUrl === 'function' ? buildLmsPortalUrl(`/student/courses/${item.courseId}`) : `https://bible-learning-app-bm4j.vercel.app/student/courses/${item.courseId}`}" class="btn btn-gold btn-sm">
                 Open Learning Portal →
               </a>
