@@ -506,19 +506,19 @@ function createAuthModalDOM() {
         <form id="modalSignupForm" onsubmit="handleModalSignup(event)">
           <div class="form-group" style="margin-bottom:0.85rem;">
             <label class="form-label" style="font-size:0.8rem;">Full Legal Name <span class="required">*</span></label>
-            <input type="text" id="modalSignupName" class="form-control" placeholder="e.g. Jonathan Edwards" value="Jonathan Edwards" required>
+            <input type="text" id="modalSignupName" class="form-control" placeholder="e.g. Jonathan Edwards" value="" required>
           </div>
           <div class="form-group" style="margin-bottom:0.85rem;">
             <label class="form-label" style="font-size:0.8rem;">Email Address <span class="required">*</span></label>
-            <input type="email" id="modalSignupEmail" class="form-control" placeholder="e.g. j.edwards@example.com" value="j.edwards@berea-seminary.edu" required>
+            <input type="email" id="modalSignupEmail" class="form-control" placeholder="e.g. j.edwards@example.com" value="" required>
           </div>
           <div class="form-group" style="margin-bottom:0.85rem;">
             <label class="form-label" style="font-size:0.8rem;">Mobile Phone <span class="required">*</span></label>
-            <input type="tel" id="modalSignupPhone" class="form-control" placeholder="(555) 234-5678" value="+1 (555) 234-5678" required>
+            <input type="tel" id="modalSignupPhone" class="form-control" placeholder="e.g. +91 98765 43210" value="" required>
           </div>
           <div class="form-group" style="margin-bottom:0.85rem;">
             <label class="form-label" style="font-size:0.8rem;">Create Password <span class="required">*</span></label>
-            <input type="password" id="modalSignupPassword" class="form-control" value="Pass@2026Berea" required>
+            <input type="password" id="modalSignupPassword" class="form-control" placeholder="Create a secure account password" value="" required>
           </div>
           <div class="form-group" style="margin-bottom:1.25rem;">
             <label class="form-label" style="font-size:0.8rem;">Primary Theological Field of Interest</label>
@@ -542,11 +542,11 @@ function createAuthModalDOM() {
         <form id="modalSigninForm" style="display:none;" onsubmit="handleModalSignin(event)">
           <div class="form-group" style="margin-bottom:0.85rem;">
             <label class="form-label" style="font-size:0.8rem;">Registered Email or Mobile <span class="required">*</span></label>
-            <input type="text" id="modalSigninIdentifier" class="form-control" placeholder="Email or Mobile" value="timothy.disciple@berea-seminary.edu" required>
+            <input type="text" id="modalSigninIdentifier" class="form-control" placeholder="e.g. email or mobile number" value="" required>
           </div>
           <div class="form-group" style="margin-bottom:1.25rem;">
             <label class="form-label" style="font-size:0.8rem;">Account Password <span class="required">*</span></label>
-            <input type="password" id="modalSigninPassword" class="form-control" value="SamplePassword123" required>
+            <input type="password" id="modalSigninPassword" class="form-control" placeholder="Enter your password" value="" required>
           </div>
           <button type="submit" class="btn btn-gold btn-block btn-lg">
             Sign In & Access Account
